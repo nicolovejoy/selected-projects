@@ -32,7 +32,9 @@ export default async function ProjectPage({
       </header>
 
       <div className="prose prose-neutral mt-8 max-w-none">
-        <p>{project.description}</p>
+        {project.description.split("\n\n").map((para, i) => (
+          <p key={i}>{para}</p>
+        ))}
       </div>
 
       <div className="mt-10 flex flex-wrap gap-3">
