@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProject, projects } from "@/lib/projects";
+import { getProject, getProjectBody, projects } from "@/lib/projects";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -13,7 +13,8 @@ export default async function ProjectPage({
 }) {
   const { slug } = await params;
   const project = getProject(slug);
-  if (!project) notFound();
+  const Body = getProjectBody(slug);
+  if (!project || !Body) notFound();
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
@@ -31,10 +32,8 @@ export default async function ProjectPage({
         <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
       </header>
 
-      <div className="prose prose-neutral mt-8 max-w-none">
-        {project.description.split("\n\n").map((para, i) => (
-          <p key={i}>{para}</p>
-        ))}
+      <div className="prose prose-neutral mt-8 max-w-none [&_p]:mt-4 [&_p:first-child]:mt-0">
+        <Body />
       </div>
 
       <div className="mt-10 flex flex-wrap gap-3">

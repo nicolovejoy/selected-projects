@@ -59,6 +59,14 @@ export function ConnectForm() {
         />
       </div>
 
+      <Field
+        label="Anywhere we can find you online? (optional)"
+        name="links"
+        placeholder="LinkedIn, GitHub, personal site…"
+      />
+
+      <Honeypot />
+
       {state.message && !state.ok && (
         <p className="text-sm text-red-600">{state.message}</p>
       )}
@@ -79,11 +87,13 @@ function Field({
   name,
   type = "text",
   required,
+  placeholder,
 }: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
+  placeholder?: string;
 }) {
   return (
     <div>
@@ -93,6 +103,7 @@ function Field({
         name={name}
         type={type}
         required={required}
+        placeholder={placeholder}
         className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
       />
     </div>
@@ -113,5 +124,26 @@ function Checkbox({
       <input type="checkbox" name={name} value={value} className="rounded" />
       <span>{label}</span>
     </label>
+  );
+}
+
+function Honeypot() {
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        position: "absolute",
+        left: "-10000px",
+        top: "auto",
+        width: 1,
+        height: 1,
+        overflow: "hidden",
+      }}
+    >
+      <label>
+        Website
+        <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+      </label>
+    </div>
   );
 }
