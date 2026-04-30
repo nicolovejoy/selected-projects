@@ -1,17 +1,19 @@
 export const metadata = {
   name: "MusicForge",
-  tagline: "A music stand for working musicians.",
+  tagline: "A chart reading, writing and modifying app for musicians.",
   status: "beta",
   url: "https://musicforge.org",
   github: "musicforge",
 };
 
-MusicForge is a music stand for working musicians, available as both a web app and a native iOS app. The catalog is more than 750 songs in chord-chart form, and any song can be transposed to any key on the spot — no scrolling through a binder, no marker-and-Sharpie rewrites between sets.
+MusicForge is available both as a web app and a native iOS app, offering the ability to render LilyPond charts as PDFs in any key, with many variants (male vs. female singer, clefs, move up or down an octave for better legibility).
 
-Setlists sync across devices in real time. One person on stage acts as the leader: when they change the chart, change the key, or jump to the next song, every follower's screen catches up within seconds. Useful at gigs where the rhythm section is glancing at iPads in stands and the singer just called an audible.
+Setlists tied to bands allow for organizing and sharing a list of songs presented in a given way (key, clef, octave, voice variant).
 
-Other things in the box: a built-in metronome with subdivision feels for swing, triplets, and sixteenths; offline caching so flaky venue Wi-Fi doesn't kill the show; and per-song memory for keys, octave, tempo, and display preferences.
+The built-in metronome is highly configurable and settings persist for charts in a setlist.
 
-The web app also includes SongForge, a writing surface for creating new chord charts. SongForge is web-only — the iOS app is read-only on that front for now.
+The web app also includes SongForge, a writing surface for creating new chord charts. SongForge is web-only — the iOS app is read-only on that front for now. These songs are stored in a new "BarStock" format that is akin to guitar chord charts (lyrics and chords, but no melody indicated) though it allows for definition of measures and such, and eventually may lead to a full chart writing capability with, say, a MIDI keyboard.
 
-Source charts come from Eric Benson's open library of lead sheets; conversion into MusicForge's chord-chart format is automated.
+Source charts currently come from Eric Benson's library of lead sheets; over time this ecosystem will allow users to bring in their own charts, in BarStock or LilyPond formats, or perhaps even as a PDF file. Also a conversion feature from PDF to BarStock is envisioned. If you have ideas or requests, let me know!
+
+Nico
