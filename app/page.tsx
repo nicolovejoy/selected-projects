@@ -3,26 +3,30 @@ import Image from "next/image";
 import { projects } from "@/lib/projects";
 import { StatusBadge } from "@/components/status-badge";
 import Home, { metadata as homeMetadata } from "@/content/home.mdx";
+import { heroes, homeHero, heroGradient } from "@/content/heroes";
 
 type HomeMeta = { title: string };
 const homeMeta = homeMetadata as HomeMeta;
 
 export default function HomePage() {
+  const fade = heroes[homeHero];
   return (
     <>
       <section className="relative isolate overflow-hidden border-b border-neutral-100">
         <div className="absolute inset-0 -z-10">
           <Image
-            src="/sunset.jpg"
+            src={`/${homeHero}.jpg`}
             alt=""
             fill
             priority
             sizes="100vw"
-            className="object-cover object-right"
+            className="object-cover"
+            style={{ objectPosition: fade.objectPosition }}
           />
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-r from-white from-30% via-white/85 via-50% to-transparent to-70%"
+            className="absolute inset-0"
+            style={{ background: heroGradient(fade) }}
           />
         </div>
 
