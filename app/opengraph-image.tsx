@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Piano House — a workshop of small projects.";
+export const alt = "Piano House — explorations in AI and vibe-coding.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -71,7 +71,7 @@ export default function OGImage() {
               lineHeight: 1.3,
             }}
           >
-            A workshop of small projects.
+            Explorations in AI and vibe-coding.
           </div>
         </div>
       </div>

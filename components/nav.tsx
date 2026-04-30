@@ -34,7 +34,7 @@ export function Footer() {
   return (
     <footer className="mt-24 border-t border-neutral-200">
       <div className="mx-auto flex max-w-5xl flex-col items-start gap-2 px-6 py-8 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
-        <span>Piano House — a workshop of small projects.</span>
+        <span>Piano House — explorations in AI and vibe-coding.</span>
         <span className="font-mono text-[11px] text-neutral-400">
           Built {builtAt} PT{buildInfo.commit && <> · {buildInfo.commit}</>}
         </span>

@@ -23,11 +23,11 @@ import { Nav, Footer } from "@/components/nav";
 
 export const metadata: Metadata = {
   title: "Piano House",
-  description: "A workshop of small projects.",
+  description: "Explorations in AI and vibe-coding.",
   metadataBase: new URL("https://pianohouseproject.org"),
   openGraph: {
     title: "Piano House",
-    description: "A workshop of small projects.",
+    description: "Explorations in AI and vibe-coding.",
     url: "https://pianohouseproject.org",
     siteName: "Piano House",
     type: "website",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Piano House",
-    description: "A workshop of small projects.",
+    description: "Explorations in AI and vibe-coding.",
   },
 };
 

@@ -28,8 +28,9 @@ export default function Home() {
               Piano House
             </h1>
             <p className="mt-4 text-lg text-neutral-700">
-              A workshop of small projects — tools, experiments, and things we&rsquo;re
-              building together. Have a look around.
+              An evolving exploration of the brave new world of AI and
+              vibe-coding — tools, experiments, and things we&rsquo;re building
+              together to learn, explore, and have fun. Have a look around.
             </p>
           </div>
         </div>
