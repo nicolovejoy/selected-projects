@@ -13,7 +13,7 @@ export default function HomePage() {
       <section className="relative isolate overflow-hidden border-b border-neutral-100">
         <div className="absolute inset-0 -z-10">
           <Image
-            src="/piano-house.jpg"
+            src="/sunset.jpg"
             alt=""
             fill
             priority

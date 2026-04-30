@@ -43,3 +43,6 @@ next-env.d.ts
 
 # generated at build time
 /lib/build-info.json
+
+# image originals — local only, compressed copies live in public/
+/assets/originals/
