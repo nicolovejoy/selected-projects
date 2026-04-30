@@ -18,7 +18,7 @@ export default function Home() {
           />
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-r from-white from-40% via-white/85 via-65% to-transparent"
+            className="absolute inset-0 bg-gradient-to-r from-white from-35% to-transparent to-55%"
           />
         </div>
 
