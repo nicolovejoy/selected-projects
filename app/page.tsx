@@ -46,8 +46,8 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto max-w-5xl px-6 py-16">
-        <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
-          Projects
+        <h2 className="text-sm font-medium tracking-wider text-neutral-500">
+          projects
         </h2>
         <ul className="mt-6 grid gap-4 sm:grid-cols-2">
           {projects.map((p) => (

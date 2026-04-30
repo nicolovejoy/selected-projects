@@ -33,7 +33,6 @@ export default function OGImage() {
             fontSize: 24,
             color: "#525252",
             letterSpacing: 1,
-            textTransform: "uppercase",
             fontFamily: "system-ui, sans-serif",
           }}
         >
