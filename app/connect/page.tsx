@@ -1,18 +1,22 @@
 import { Suspense } from "react";
 import { ConnectForm } from "./form";
+import Connect, { metadata as connectMetadata } from "@/content/connect.mdx";
+import { site } from "@/content/site";
+
+type ConnectMeta = { title: string };
+const connectMeta = connectMetadata as ConnectMeta;
 
 export const metadata = {
-  title: "Connect — Piano House Project",
+  title: `${connectMeta.title} — ${site.title}`,
 };
 
 export default function ConnectPage() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">
-      <h1 className="text-3xl font-semibold tracking-tight">Connect</h1>
-      <p className="mt-3 text-neutral-600">
-        We're glad you are here! If you would like to try something, ask a
-        question, or build with us, drop us a note.
-      </p>
+      <h1 className="text-3xl font-semibold tracking-tight">{connectMeta.title}</h1>
+      <div className="mt-3 text-neutral-600">
+        <Connect />
+      </div>
       <Suspense>
         <ConnectForm />
       </Suspense>

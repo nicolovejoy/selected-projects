@@ -1,8 +1,13 @@
 import { ImageResponse } from "next/og";
+import { site } from "@/content/site";
 
-export const alt = "Piano House Project — explorations in AI and vibe-coding.";
+export const alt = site.footerTagline;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+const lastSpace = site.title.lastIndexOf(" ");
+const ogTitleTop = lastSpace === -1 ? site.title : site.title.slice(0, lastSpace);
+const ogTitleBottom = lastSpace === -1 ? "" : site.title.slice(lastSpace + 1);
 
 export default function OGImage() {
   return new ImageResponse(
@@ -63,8 +68,8 @@ export default function OGImage() {
               lineHeight: 0.95,
             }}
           >
-            <span>Piano House</span>
-            <span>Project</span>
+            <span>{ogTitleTop}</span>
+            <span>{ogTitleBottom}</span>
           </div>
           <div
             style={{
@@ -74,7 +79,7 @@ export default function OGImage() {
               lineHeight: 1.3,
             }}
           >
-            Explorations in AI and vibe-coding.
+            {site.description}
           </div>
         </div>
       </div>

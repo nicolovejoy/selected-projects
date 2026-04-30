@@ -12,11 +12,10 @@ Projects: musicforge, ibuild4you, prntd, lojong (repo: `~/src/am-i-an-ai`), prom
 
 ## Where editable text lives
 
-See `docs/editing.md` for the canonical map. Project descriptions and `/about` are MDX (`content/`). Home hero, `/connect` intro, footer, nav labels, and site `<title>`/description are still inline TSX. Site is live at `https://pianohouseproject.org` (Vercel).
+See `docs/editing.md` for the canonical map. All visible copy lives in `content/`: pages are MDX (`home.mdx`, `connect.mdx`, `about.mdx`, `projects/*.mdx`) and site-wide strings (title, description, footer tagline, nav labels) are in `content/site.ts`. Site is live at `https://pianohouseproject.org` (Vercel).
 
 ## Next steps
 
-- Consolidate all editable copy into `content/` MDX. Move home hero, `/connect` intro, and the footer tagline out of TSX into MDX files so editors only ever touch `content/`.
 - Consider adding `@tailwindcss/typography`-friendly `prose` modifiers if project pages start growing headings, lists, or block elements (currently just paragraphs).
 - Add Vercel preview-env vars (Turso/Resend) once branching workflow starts. Production-only is intentional for alpha.
 - Tune the home hero `object-position` if a future photo's framing wants a different crop than `object-right`.

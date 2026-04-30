@@ -2,8 +2,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { projects } from "@/lib/projects";
 import { StatusBadge } from "@/components/status-badge";
+import Home, { metadata as homeMetadata } from "@/content/home.mdx";
 
-export default function Home() {
+type HomeMeta = { title: string };
+const homeMeta = homeMetadata as HomeMeta;
+
+export default function HomePage() {
   return (
     <>
       <section className="relative isolate overflow-hidden border-b border-neutral-100">
@@ -25,13 +29,11 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-6 py-24 sm:py-32">
           <div className="max-w-xl">
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              Piano House Project
+              {homeMeta.title}
             </h1>
-            <p className="mt-4 text-lg text-neutral-700">
-              An evolving exploration of the brave new world of AI and
-              vibe-coding — tools, experiments, and things we&rsquo;re building
-              together to learn, explore, and have fun. Have a look around.
-            </p>
+            <div className="mt-4 text-lg text-neutral-700">
+              <Home />
+            </div>
           </div>
         </div>
       </section>

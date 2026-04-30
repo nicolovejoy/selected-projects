@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
+import { site } from "@/content/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,20 +23,20 @@ const newsreader = Newsreader({
 import { Nav, Footer } from "@/components/nav";
 
 export const metadata: Metadata = {
-  title: "Piano House Project",
-  description: "Explorations in AI and vibe-coding.",
+  title: site.title,
+  description: site.description,
   metadataBase: new URL("https://pianohouseproject.org"),
   openGraph: {
-    title: "Piano House Project",
-    description: "Explorations in AI and vibe-coding.",
+    title: site.title,
+    description: site.description,
     url: "https://pianohouseproject.org",
-    siteName: "Piano House Project",
+    siteName: site.title,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Piano House Project",
-    description: "Explorations in AI and vibe-coding.",
+    title: site.title,
+    description: site.description,
   },
 };
 
