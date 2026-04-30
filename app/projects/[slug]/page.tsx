@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, getProjectBody, projects } from "@/lib/projects";
+import { StatusBadge } from "@/components/status-badge";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -17,7 +18,7 @@ export default async function ProjectPage({
   if (!project || !Body) notFound();
 
   return (
-    <article className="mx-auto max-w-3xl px-6 py-16">
+    <div className="mx-auto max-w-3xl px-6 py-16">
       <Link href="/" className="text-sm text-neutral-500 hover:text-neutral-900">
         ← All projects
       </Link>
@@ -25,16 +26,14 @@ export default async function ProjectPage({
       <header className="mt-8 border-b border-neutral-200 pb-6">
         <div className="flex items-baseline justify-between">
           <h1 className="text-3xl font-semibold tracking-tight">{project.name}</h1>
-          <span className="text-xs uppercase tracking-wider text-neutral-500">
-            {project.status}
-          </span>
+          <StatusBadge status={project.status} />
         </div>
         <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
       </header>
 
-      <div className="prose prose-neutral mt-8 max-w-none [&_p]:mt-4 [&_p:first-child]:mt-0">
+      <article className="prose prose-stone prose-lg mt-8 max-w-none">
         <Body />
-      </div>
+      </article>
 
       <div className="mt-10 flex flex-wrap gap-3">
         {project.url && (
@@ -54,6 +53,6 @@ export default async function ProjectPage({
           Get in touch about this
         </Link>
       </div>
-    </article>
+    </div>
   );
 }

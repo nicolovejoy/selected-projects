@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,11 +12,31 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  style: ["normal", "italic"],
+});
+
 import { Nav, Footer } from "@/components/nav";
 
 export const metadata: Metadata = {
   title: "Piano House",
   description: "A workshop of small projects.",
+  metadataBase: new URL("https://pianohouseproject.org"),
+  openGraph: {
+    title: "Piano House",
+    description: "A workshop of small projects.",
+    url: "https://pianohouseproject.org",
+    siteName: "Piano House",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Piano House",
+    description: "A workshop of small projects.",
+  },
 };
 
 export default function RootLayout({
@@ -27,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${newsreader.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-neutral-900">
         <Nav />

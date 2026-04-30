@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { projects } from "@/lib/projects";
+import { StatusBadge } from "@/components/status-badge";
 
 export default function Home() {
   return (
@@ -27,9 +28,7 @@ export default function Home() {
               >
                 <div className="flex items-baseline justify-between">
                   <h3 className="text-lg font-medium">{p.name}</h3>
-                  <span className="text-xs uppercase tracking-wider text-neutral-500">
-                    {p.status}
-                  </span>
+                  <StatusBadge status={p.status} />
                 </div>
                 <p className="mt-2 text-sm text-neutral-600">{p.tagline}</p>
               </Link>
