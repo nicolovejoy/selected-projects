@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Piano House — explorations in AI and vibe-coding.";
+export const alt = "Piano House Project — explorations in AI and vibe-coding.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -55,13 +55,16 @@ export default function OGImage() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
-              fontSize: 132,
+              display: "flex",
+              flexDirection: "column",
+              fontSize: 128,
               fontWeight: 600,
               letterSpacing: -4,
-              lineHeight: 1,
+              lineHeight: 0.95,
             }}
           >
-            Piano House
+            <span>Piano House</span>
+            <span>Project</span>
           </div>
           <div
             style={{

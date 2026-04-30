@@ -18,7 +18,7 @@ export function Nav() {
     <header className="border-b border-neutral-200">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
         <Link href="/" className="font-medium tracking-tight">
-          Piano House
+          Piano House Project
         </Link>
         <ul className="flex gap-6 text-sm text-neutral-600">
           <li><Link href="/" className="hover:text-neutral-900">Projects</Link></li>
@@ -34,7 +34,7 @@ export function Footer() {
   return (
     <footer className="mt-24 border-t border-neutral-200">
       <div className="mx-auto flex max-w-5xl flex-col items-start gap-2 px-6 py-8 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
-        <span>Piano House — explorations in AI and vibe-coding.</span>
+        <span>Piano House Project — explorations in AI and vibe-coding.</span>
         <span className="font-mono text-[11px] text-neutral-400">
           Built {builtAt} PT{buildInfo.commit && <> · {buildInfo.commit}</>}
         </span>

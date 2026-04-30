@@ -33,7 +33,7 @@ export async function sendConnectNotification(p: ConnectEmailPayload): Promise<v
     throw new Error("CONNECT_FROM_EMAIL and CONNECT_TO_EMAIL must be set");
   }
 
-  const subject = `Piano House — ${p.name} (${p.project})`;
+  const subject = `Piano House Project — ${p.name} (${p.project})`;
   const lines: string[] = [
     `From: ${p.name} <${p.email}>`,
     `Project: ${p.project}`,

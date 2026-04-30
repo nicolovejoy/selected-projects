@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { ConnectForm } from "./form";
 
 export const metadata = {
-  title: "Connect — Piano House",
+  title: "Connect — Piano House Project",
 };
 
 export default function ConnectPage() {

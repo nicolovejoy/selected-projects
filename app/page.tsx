@@ -25,7 +25,7 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-6 py-24 sm:py-32">
           <div className="max-w-xl">
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-              Piano House
+              Piano House Project
             </h1>
             <p className="mt-4 text-lg text-neutral-700">
               An evolving exploration of the brave new world of AI and

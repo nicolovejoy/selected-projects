@@ -22,19 +22,19 @@ const newsreader = Newsreader({
 import { Nav, Footer } from "@/components/nav";
 
 export const metadata: Metadata = {
-  title: "Piano House",
+  title: "Piano House Project",
   description: "Explorations in AI and vibe-coding.",
   metadataBase: new URL("https://pianohouseproject.org"),
   openGraph: {
-    title: "Piano House",
+    title: "Piano House Project",
     description: "Explorations in AI and vibe-coding.",
     url: "https://pianohouseproject.org",
-    siteName: "Piano House",
+    siteName: "Piano House Project",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Piano House",
+    title: "Piano House Project",
     description: "Explorations in AI and vibe-coding.",
   },
 };

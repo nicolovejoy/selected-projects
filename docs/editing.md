@@ -19,7 +19,7 @@ To add a new project: drop a new `.mdx` file here, then add an import line to `l
 
 These are still TSX files (small enough that they don't warrant MDX yet — easy to migrate later if you want):
 
-- `app/page.tsx` — home hero: the "Piano House" headline and the one-paragraph intro under it.
+- `app/page.tsx` — home hero: the "Piano House Project" headline and the one-paragraph intro under it.
 - `app/connect/page.tsx` — the heading and the line above the connect form.
 - `components/nav.tsx` — header nav labels (Projects / About / Connect) and the footer line.
 - `app/layout.tsx` — site `<title>` and meta `description`. These show up in browser tabs, Google results, and shared link previews.
