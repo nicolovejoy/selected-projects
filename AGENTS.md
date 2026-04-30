@@ -20,6 +20,9 @@ See `docs/editing.md` for the canonical map. All visible copy lives in `content/
 
 ## Next steps
 
-- Consider adding `@tailwindcss/typography`-friendly `prose` modifiers if project pages start growing headings, lists, or block elements (currently just paragraphs).
+- **Email — finish wiring**: `nico@pianohouseproject.org` and `nico@ibuild4you.com` receive via iCloud+ Custom Domain (Cloudflare DNS, Apple-managed records). Still TODO: verify the domain in Resend, **merge** Resend's SPF into the existing iCloud SPF TXT (one record only — `v=spf1 include:icloud.com include:_spf.resend.com ~all`), then update `CONNECT_TO_EMAIL` and `CONNECT_FROM_EMAIL` in Vercel env vars. Test connect form on prod once verified.
+- **Project screenshots**: scaffold ready (`image?` field on ProjectMeta, render under header, compress script handles nested slugs). Drop files at `assets/originals/projects/<slug>.<ext>`, run `node scripts/compress-image.mjs projects/<slug>`, add `image: "/projects/<slug>.jpg"` to each MDX.
+- **Tidy `content/projects/prompt-lab.mdx`** — only project not yet reviewed in the copy pass.
+- Consider adding `@tailwindcss/typography`-friendly `prose` modifiers if project pages start growing headings, lists, or block elements.
 - Add Vercel preview-env vars (Turso/Resend) once branching workflow starts. Production-only is intentional for alpha.
-- Tune the home hero `object-position` if a future photo's framing wants a different crop than `object-right`.
+- Tune the home hero `object-position` if a future photo's framing wants a different crop.
