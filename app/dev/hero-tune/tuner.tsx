@@ -1,8 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { type HeroFade, heroGradient } from "@/content/heroes";
+
+declare global {
+  interface Window {
+    EyeDropper?: new () => {
+      open: (options?: { signal?: AbortSignal }) => Promise<{ sRGBHex: string }>;
+    };
+  }
+}
 
 type Props = {
   heroes: Record<string, HeroFade>;
@@ -31,6 +39,8 @@ export function Tuner({ heroes }: Props) {
   midStop: ${fade.midStop},
   endStop: ${fade.endStop},
   objectPosition: ${JSON.stringify(fade.objectPosition)},
+  titleColor: ${JSON.stringify(fade.titleColor)},
+  subtitleColor: ${JSON.stringify(fade.subtitleColor)},
 },`;
 
   async function copy() {
@@ -81,10 +91,13 @@ export function Tuner({ heroes }: Props) {
         </div>
         <div className="px-6 py-24 sm:py-32">
           <div className="max-w-xl">
-            <h2 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+            <h2
+              className="text-4xl font-semibold tracking-tight sm:text-5xl"
+              style={{ color: fade.titleColor }}
+            >
               Piano House Project
             </h2>
-            <p className="mt-4 text-lg text-neutral-700">
+            <p className="mt-4 text-lg" style={{ color: fade.subtitleColor }}>
               An evolving exploration of the brave new world of AI and
               vibe-coding — tools, experiments, and things we&rsquo;re building
               together to learn, explore, and have fun. Have a look around.
@@ -125,6 +138,18 @@ export function Tuner({ heroes }: Props) {
           min={0}
           max={100}
           onChange={(v) => update("endStop", v)}
+        />
+        <ColorPicker
+          label="titleColor"
+          help="headline text"
+          value={fade.titleColor}
+          onChange={(v) => update("titleColor", v)}
+        />
+        <ColorPicker
+          label="subtitleColor"
+          help="paragraph text"
+          value={fade.subtitleColor}
+          onChange={(v) => update("subtitleColor", v)}
         />
         <label className="flex flex-col gap-1 text-sm sm:col-span-2">
           <span className="font-mono">
@@ -192,6 +217,71 @@ function Slider({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
       />
+    </label>
+  );
+}
+
+function ColorPicker({
+  label,
+  help,
+  value,
+  onChange,
+}: {
+  label: string;
+  help: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [eyedropperSupported, setEyedropperSupported] = useState(false);
+  const [picking, setPicking] = useState(false);
+
+  useEffect(() => {
+    setEyedropperSupported(typeof window !== "undefined" && "EyeDropper" in window);
+  }, []);
+
+  async function pickFromPage() {
+    if (!window.EyeDropper) return;
+    setPicking(true);
+    try {
+      const result = await new window.EyeDropper().open();
+      onChange(result.sRGBHex);
+    } catch {
+      // user pressed Esc — ignore
+    } finally {
+      setPicking(false);
+    }
+  }
+
+  return (
+    <label className="flex flex-col gap-1 text-sm">
+      <span className="font-mono">
+        {label}:{" "}
+        <span className="font-sans text-neutral-500">— {help}</span>
+      </span>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-9 w-12 cursor-pointer rounded border border-neutral-300"
+        />
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-28 rounded border border-neutral-300 px-2 py-1 font-mono"
+        />
+        {eyedropperSupported && (
+          <button
+            type="button"
+            onClick={pickFromPage}
+            disabled={picking}
+            className="rounded border border-neutral-300 px-2 py-1 text-xs hover:border-neutral-500 disabled:opacity-50"
+          >
+            {picking ? "Picking…" : "Pick from page"}
+          </button>
+        )}
+      </div>
     </label>
   );
 }

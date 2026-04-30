@@ -4,6 +4,8 @@ export type HeroFade = {
   midStop: number;
   endStop: number;
   objectPosition: string;
+  titleColor: string;
+  subtitleColor: string;
 };
 
 export const heroes = {
@@ -13,6 +15,8 @@ export const heroes = {
     midStop: 45,
     endStop: 85,
     objectPosition: "right",
+    titleColor: "#171717",
+    subtitleColor: "#404040",
   },
 } satisfies Record<string, HeroFade>;
 

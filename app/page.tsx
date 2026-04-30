@@ -32,10 +32,13 @@ export default function HomePage() {
 
         <div className="mx-auto max-w-5xl px-6 py-24 sm:py-32">
           <div className="max-w-xl">
-            <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
+            <h1
+              className="text-4xl font-semibold tracking-tight sm:text-5xl"
+              style={{ color: fade.titleColor }}
+            >
               {homeMeta.title}
             </h1>
-            <div className="mt-4 text-lg text-neutral-700">
+            <div className="mt-4 text-lg" style={{ color: fade.subtitleColor }}>
               <Home />
             </div>
           </div>
