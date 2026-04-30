@@ -1,11 +1,11 @@
 export const site = {
-  title: "Piano House Project",
-  description: "Explorations in AI and vibe-coding.",
+  title: "the piano house project",
+  description: "explorations in AI and vibe-coding.",
   footerTagline:
-    "Piano House Project — explorations in AI and vibe-coding.",
+    "the piano house project — explorations in AI and vibe-coding.",
   navLabels: {
-    projects: "Projects",
-    about: "About",
-    connect: "Connect",
+    projects: "projects",
+    about: "about",
+    connect: "connect",
   },
 };

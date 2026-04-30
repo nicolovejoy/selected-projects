@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getProject, getProjectBody, projects } from "@/lib/projects";
 import { StatusBadge } from "@/components/status-badge";
@@ -30,6 +31,17 @@ export default async function ProjectPage({
         </div>
         <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
       </header>
+
+      {project.image && (
+        <Image
+          src={project.image}
+          alt={`${project.name} screenshot`}
+          width={1600}
+          height={1000}
+          sizes="(min-width: 768px) 768px, 100vw"
+          className="mt-8 h-auto w-full rounded-lg border border-neutral-200"
+        />
+      )}
 
       <article className="prose prose-stone prose-lg mt-8 max-w-none">
         <Body />

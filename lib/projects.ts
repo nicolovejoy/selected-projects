@@ -13,6 +13,7 @@ export type ProjectMeta = {
   status: ProjectStatus;
   url?: string;
   github?: string;
+  image?: string;
 };
 
 export type Project = ProjectMeta & { slug: string };

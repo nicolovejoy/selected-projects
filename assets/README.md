@@ -8,18 +8,26 @@ Local-only working copies of high-resolution image sources. Nothing in `original
 assets/
 ├── README.md                       (committed)
 └── originals/                      (gitignored)
-    └── <slug>.<ext>                drop high-res sources here
+    ├── <slug>.<ext>                hero / general images
+    └── projects/
+        └── <slug>.<ext>            project screenshots
 ```
 
 Common extensions accepted: `jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `tif`, `tiff`, `avif`.
 
-## Workflow
+## Add or replace an image
 
-1. Drop the high-res source at `assets/originals/<slug>.<ext>`.
+1. Drop the high-res source at `assets/originals/<slug>.<ext>` (or `assets/originals/projects/<slug>.<ext>` for project screenshots).
 2. Compress and write the web copy:
 
    ```
    node scripts/compress-image.mjs <slug>
+   ```
+
+   For a project screenshot, pass the subpath:
+
+   ```
+   node scripts/compress-image.mjs projects/musicforge
    ```
 
    Defaults: 2000px wide, JPEG quality 85. Override with positional args:
@@ -28,7 +36,31 @@ Common extensions accepted: `jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `tif`,
    node scripts/compress-image.mjs <slug> 1600 80
    ```
 
-3. The script writes `public/<slug>.jpg`. Commit that.
+3. The script writes `public/<slug>.jpg` (creating subdirectories as needed). Commit that.
+
+## Use the image on a page
+
+### Home hero
+
+The home hero is driven by `content/heroes.ts`:
+
+- Add a `<slug>: { ... }` entry to the `heroes` map with sensible defaults (`startOpacity: 70, midOpacity: 40, midStop: 45, endStop: 85, objectPosition: "right", titleColor: "#171717", subtitleColor: "#404040"`).
+- Set `homeHero` to that slug to make it the active hero.
+- Run `npm run dev` and open `http://localhost:3000/dev/hero-tune` to drag sliders, eyedrop colors, and copy the tuned values back into `heroes.ts`. The tuner 404s in production.
+
+### Project screenshot
+
+Add an `image` field to the project's MDX frontmatter:
+
+```mdx
+export const metadata = {
+  name: "MusicForge",
+  ...
+  image: "/projects/musicforge.jpg",
+};
+```
+
+The `/projects/<slug>` page will render it under the header, above the prose.
 
 ## Naming
 

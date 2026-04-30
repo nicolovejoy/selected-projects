@@ -11,12 +11,12 @@ export type HeroFade = {
 export const heroes = {
   sunset: {
     startOpacity: 70,
-    midOpacity: 40,
-    midStop: 45,
-    endStop: 85,
+    midOpacity: 55,
+    midStop: 56,
+    endStop: 98,
     objectPosition: "right",
-    titleColor: "#171717",
-    subtitleColor: "#404040",
+    titleColor: "#e9a398",
+    subtitleColor: "#485056",
   },
 } satisfies Record<string, HeroFade>;
 
