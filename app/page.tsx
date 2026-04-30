@@ -6,7 +6,7 @@ import { StatusBadge } from "@/components/status-badge";
 export default function Home() {
   return (
     <>
-      <section className="relative isolate overflow-hidden">
+      <section className="relative isolate overflow-hidden border-b border-neutral-100">
         <div className="absolute inset-0 -z-10">
           <Image
             src="/piano-house.jpg"
@@ -14,20 +14,16 @@ export default function Home() {
             fill
             priority
             sizes="100vw"
-            className="object-cover opacity-25"
+            className="object-cover object-right"
           />
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-r from-white via-white/85 to-white/40"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white"
+            className="absolute inset-0 bg-gradient-to-r from-white from-40% via-white/85 via-65% to-transparent"
           />
         </div>
 
         <div className="mx-auto max-w-5xl px-6 py-24 sm:py-32">
-          <div className="max-w-2xl">
+          <div className="max-w-xl">
             <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
               Piano House
             </h1>
@@ -39,7 +35,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-5xl px-6 pb-16">
+      <section className="mx-auto max-w-5xl px-6 py-16">
         <h2 className="text-sm font-medium uppercase tracking-wider text-neutral-500">
           Projects
         </h2>
@@ -48,7 +44,7 @@ export default function Home() {
             <li key={p.slug}>
               <Link
                 href={`/projects/${p.slug}`}
-                className="block rounded-lg border border-neutral-200 bg-white/70 p-6 backdrop-blur-sm transition hover:border-neutral-400"
+                className="block rounded-lg border border-neutral-200 p-6 transition hover:border-neutral-400"
               >
                 <div className="flex items-baseline justify-between">
                   <h3 className="text-lg font-medium">{p.name}</h3>
