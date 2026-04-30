@@ -1,4 +1,17 @@
 import Link from "next/link";
+import buildInfo from "@/lib/build-info.json";
+
+const builtAt = new Date(buildInfo.built_at)
+  .toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  })
+  .replace(/AM/, "am")
+  .replace(/PM/, "pm");
 
 export function Nav() {
   return (
@@ -7,11 +20,17 @@ export function Nav() {
         <Link href="/" className="font-medium tracking-tight">
           Piano House
         </Link>
-        <ul className="flex gap-6 text-sm text-neutral-600">
-          <li><Link href="/" className="hover:text-neutral-900">Projects</Link></li>
-          <li><Link href="/about" className="hover:text-neutral-900">About</Link></li>
-          <li><Link href="/connect" className="hover:text-neutral-900">Connect</Link></li>
-        </ul>
+        <div className="flex items-center gap-6">
+          <ul className="flex gap-6 text-sm text-neutral-600">
+            <li><Link href="/" className="hover:text-neutral-900">Projects</Link></li>
+            <li><Link href="/about" className="hover:text-neutral-900">About</Link></li>
+            <li><Link href="/connect" className="hover:text-neutral-900">Connect</Link></li>
+          </ul>
+          <span className="hidden text-xs text-neutral-400 sm:inline">
+            Built {builtAt} PT
+            {buildInfo.commit && <> · {buildInfo.commit}</>}
+          </span>
+        </div>
       </nav>
     </header>
   );

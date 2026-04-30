@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/write-build-info.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/write-build-info.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "postinstall": "node scripts/write-build-info.mjs",
     "db:migrate": "node --env-file=.env.local scripts/migrate.mjs"
   },
   "dependencies": {
