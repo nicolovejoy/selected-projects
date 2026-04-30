@@ -18,8 +18,8 @@ export function Nav() {
   return (
     <header className="border-b border-neutral-200">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <Link href="/" className="font-medium tracking-tight">
-          {site.title}
+        <Link href="/" className="font-normal tracking-tight">
+          the <span className="font-bold">piano house</span> project
         </Link>
         <ul className="flex gap-6 text-sm text-neutral-600">
           <li><Link href="/" className="hover:text-neutral-900">{site.navLabels.projects}</Link></li>

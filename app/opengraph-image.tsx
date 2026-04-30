@@ -5,11 +5,22 @@ export const alt = site.footerTagline;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const lastSpace = site.title.lastIndexOf(" ");
-const ogTitleTop = lastSpace === -1 ? site.title : site.title.slice(0, lastSpace);
-const ogTitleBottom = lastSpace === -1 ? "" : site.title.slice(lastSpace + 1);
+async function loadGoogleFont(family: string, weight: number) {
+  const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
+    family,
+  )}:wght@${weight}&display=swap`;
+  const css = await (await fetch(url)).text();
+  const match = css.match(/src: url\((.+?)\) format\(/);
+  if (!match) throw new Error(`Font load failed: ${family} ${weight}`);
+  return await (await fetch(match[1])).arrayBuffer();
+}
 
-export default function OGImage() {
+export default async function OGImage() {
+  const [regular, bold] = await Promise.all([
+    loadGoogleFont("Geist", 400),
+    loadGoogleFont("Geist", 700),
+  ]);
+
   return new ImageResponse(
     (
       <div
@@ -22,7 +33,7 @@ export default function OGImage() {
           padding: "80px 96px",
           background: "#ffffff",
           color: "#171717",
-          fontFamily: "Georgia, serif",
+          fontFamily: "Geist, sans-serif",
         }}
       >
         <div
@@ -33,7 +44,6 @@ export default function OGImage() {
             fontSize: 24,
             color: "#525252",
             letterSpacing: 1,
-            fontFamily: "system-ui, sans-serif",
           }}
         >
           <div
@@ -41,17 +51,59 @@ export default function OGImage() {
               width: 36,
               height: 36,
               background: "#171717",
-              color: "white",
+              borderRadius: 6,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 18,
-              fontWeight: 700,
-              borderRadius: 6,
-              fontFamily: "system-ui, sans-serif",
             }}
           >
-            PH
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M 5 12 L 16 4 L 27 12"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+              <line
+                x1="5"
+                y1="12"
+                x2="5"
+                y2="28"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <line
+                x1="27"
+                y1="12"
+                x2="27"
+                y2="28"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <line
+                x1="5"
+                y1="28"
+                x2="27"
+                y2="28"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <rect x="9" y="20" width="2" height="6" fill="white" />
+              <rect x="13" y="20" width="2" height="6" fill="white" />
+              <rect x="17" y="20" width="2" height="6" fill="white" />
+              <rect x="21" y="20" width="2" height="6" fill="white" />
+            </svg>
           </div>
           <span>pianohouseproject.org</span>
         </div>
@@ -60,15 +112,17 @@ export default function OGImage() {
           <div
             style={{
               display: "flex",
-              flexDirection: "column",
-              fontSize: 128,
-              fontWeight: 600,
-              letterSpacing: -4,
-              lineHeight: 0.95,
+              alignItems: "baseline",
+              gap: 24,
+              fontSize: 100,
+              letterSpacing: -3,
+              lineHeight: 1,
             }}
           >
-            <span>{ogTitleTop}</span>
-            <span>{ogTitleBottom}</span>
+            <div>the</div>
+            <div style={{ fontWeight: 700 }}>piano</div>
+            <div style={{ fontWeight: 700 }}>house</div>
+            <div>project</div>
           </div>
           <div
             style={{
@@ -83,6 +137,12 @@ export default function OGImage() {
         </div>
       </div>
     ),
-    size,
+    {
+      ...size,
+      fonts: [
+        { name: "Geist", data: regular, weight: 400 },
+        { name: "Geist", data: bold, weight: 700 },
+      ],
+    },
   );
 }
