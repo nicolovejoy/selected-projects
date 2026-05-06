@@ -23,11 +23,11 @@ type Entry = { meta: ProjectMeta; Body: MDXContent };
 
 const entries: Record<string, Entry> = {
   musicforge: { meta: musicforgeMeta as ProjectMeta, Body: musicforge },
-  ibuild4you: { meta: ibuild4youMeta as ProjectMeta, Body: ibuild4you },
   prntd: { meta: prntdMeta as ProjectMeta, Body: prntd },
-  lojong: { meta: lojongMeta as ProjectMeta, Body: lojong },
-  "prompt-lab": { meta: promptLabMeta as ProjectMeta, Body: promptLab },
   rocksculpture: { meta: rocksculptureMeta as ProjectMeta, Body: rocksculpture },
+  ibuild4you: { meta: ibuild4youMeta as ProjectMeta, Body: ibuild4you },
+  "prompt-lab": { meta: promptLabMeta as ProjectMeta, Body: promptLab },
+  lojong: { meta: lojongMeta as ProjectMeta, Body: lojong },
 };
 
 export const projects: Project[] = Object.entries(entries).map(([slug, e]) => ({
