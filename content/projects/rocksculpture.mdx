@@ -1,0 +1,12 @@
+export const metadata = {
+  name: "Rock Sculpture",
+  tagline:
+    "Photos of the lovely sculpture by Stephen Rock, installed at the end of 2025.",
+  status: "live",
+  url: "https://rocksculpture.pianohouseproject.org",
+};
+
+A single-page site honoring an unnamed sculpture by Stephen Rock, installed on 12/30/2025.
+
+Photos live in a Cloudflare R2 bucket fronted by Cloudflare's CDN, so each image is cached at an edge near the viewer rather than fetched from an iCloud share that wants to hand back a manifest and stream originals from Apple. Traffic here is low enough that the caching benefit is mostly theoretical now, but it was a fun experiment and made a real difference early on, when the page was getting passed around and loading the same dozen photos for a stream of first-time visitors.
+

@@ -4,6 +4,7 @@ import ibuild4you, { metadata as ibuild4youMeta } from "@/content/projects/ibuil
 import prntd, { metadata as prntdMeta } from "@/content/projects/prntd.mdx";
 import lojong, { metadata as lojongMeta } from "@/content/projects/lojong.mdx";
 import promptLab, { metadata as promptLabMeta } from "@/content/projects/prompt-lab.mdx";
+import rocksculpture, { metadata as rocksculptureMeta } from "@/content/projects/rocksculpture.mdx";
 
 export type ProjectStatus = "live" | "beta" | "alpha" | "demo" | "concept";
 
@@ -26,6 +27,7 @@ const entries: Record<string, Entry> = {
   prntd: { meta: prntdMeta as ProjectMeta, Body: prntd },
   lojong: { meta: lojongMeta as ProjectMeta, Body: lojong },
   "prompt-lab": { meta: promptLabMeta as ProjectMeta, Body: promptLab },
+  rocksculpture: { meta: rocksculptureMeta as ProjectMeta, Body: rocksculpture },
 };
 
 export const projects: Project[] = Object.entries(entries).map(([slug, e]) => ({
