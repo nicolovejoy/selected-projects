@@ -15,7 +15,12 @@ export type ProjectMeta = {
   url?: string;
   github?: string;
   image?: string;
+  historyKey?: string;
 };
+
+export function projectHistoryKey(p: { slug: string; historyKey?: string }): string {
+  return p.historyKey ?? p.slug;
+}
 
 export type Project = ProjectMeta & { slug: string };
 

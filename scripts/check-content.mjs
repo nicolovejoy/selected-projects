@@ -52,6 +52,12 @@ for (const file of projectFiles) {
       `${fullPath}: url "${meta.url}" must start with http(s)://`,
     );
   }
+  if (meta.historyKey !== undefined) {
+    expect(
+      typeof meta.historyKey === "string" && /^[\w-]+$/.test(meta.historyKey),
+      `${fullPath}: historyKey "${meta.historyKey}" must be a slug-like string`,
+    );
+  }
 }
 
 const projectsRegistry = readFileSync("lib/projects.ts", "utf8");

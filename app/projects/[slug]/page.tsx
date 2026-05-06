@@ -1,8 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getProject, getProjectBody, projects } from "@/lib/projects";
+import { getProject, getProjectBody, projectHistoryKey, projects } from "@/lib/projects";
+import { getProjectHistory } from "@/lib/history";
 import { StatusBadge } from "@/components/status-badge";
+import { Evolution } from "@/components/evolution";
+
+export const revalidate = 86400;
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -17,6 +21,8 @@ export default async function ProjectPage({
   const project = getProject(slug);
   const Body = getProjectBody(slug);
   if (!project || !Body) notFound();
+
+  const history = await getProjectHistory(projectHistoryKey(project));
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
@@ -46,6 +52,8 @@ export default async function ProjectPage({
       <article className="prose prose-stone prose-lg mt-8 max-w-none">
         <Body />
       </article>
+
+      <Evolution history={history} />
 
       <div className="mt-10 flex flex-wrap gap-3">
         {project.url && (
