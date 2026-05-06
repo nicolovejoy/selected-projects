@@ -90,7 +90,13 @@ export async function getProjectHistory(historyKey: string): Promise<ProjectHist
       totalSessions: Number(row?.n ?? 0),
     };
   } catch (err) {
+    if (isMissingTable(err)) return EMPTY;
     console.warn(`[history] read failed for ${historyKey}:`, err);
     return EMPTY;
   }
+}
+
+function isMissingTable(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err);
+  return /no such table:\s*public_(session_summaries|weekly_rollups)/.test(msg);
 }
