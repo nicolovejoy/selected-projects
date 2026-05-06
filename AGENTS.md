@@ -6,9 +6,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Sourcing project copy
 
-Before drafting taglines/descriptions for the five featured projects in `lib/projects.ts`, run `/ask` for each project to pull recent session summaries and weekly rollups from the prompt-history store. Those reflect current direction and active work; the in-repo READMEs often lag (or are still create-next-app boilerplate). Confirm copy with Nico before committing.
+Before drafting taglines/descriptions for the featured projects in `lib/projects.ts`, run `/ask` for each project to pull recent session summaries and weekly rollups from the prompt-history store. Those reflect current direction and active work; the in-repo READMEs often lag (or are still create-next-app boilerplate). Confirm copy with Nico before committing.
 
-Projects: musicforge, ibuild4you, prntd, lojong (repo: `~/src/am-i-an-ai`), prompt-lab.
+Projects (slug → repo if different): musicforge, prntd, rocksculpture (repo: `~/src/showcase`), ibuild4you, prompt-lab, lojong (repo: `~/src/am-i-an-ai`). MDX files set an explicit `historyKey` when slug ≠ repo dir name.
 
 ## Where editable text lives
 
@@ -20,9 +20,8 @@ See `docs/editing.md` for the canonical map. All visible copy lives in `content/
 
 ## Next steps
 
+- **Evolution section — visual review**: consumer side is shipped (`components/evolution.tsx`, `lib/history.ts`) and reads `public_session_summaries` + `public_weekly_rollups` from Turso, with 24h ISR on detail pages. As prompt-lab's producer rows land, eyeball the rendered output and iterate on the public-summary LLM prompt with the prompt-lab agent if tone needs adjustment.
 - **Email — finish wiring**: `nico@pianohouseproject.org` and `nico@ibuild4you.com` receive via iCloud+ Custom Domain (Cloudflare DNS, Apple-managed records). Still TODO: verify the domain in Resend, **merge** Resend's SPF into the existing iCloud SPF TXT (one record only — `v=spf1 include:icloud.com include:_spf.resend.com ~all`), then update `CONNECT_TO_EMAIL` and `CONNECT_FROM_EMAIL` in Vercel env vars. Test connect form on prod once verified.
 - **Project screenshots**: scaffold ready (`image?` field on ProjectMeta, render under header, compress script handles nested slugs). Drop files at `assets/originals/projects/<slug>.<ext>`, run `node scripts/compress-image.mjs projects/<slug>`, add `image: "/projects/<slug>.jpg"` to each MDX.
 - **Tidy `content/projects/prompt-lab.mdx`** — only project not yet reviewed in the copy pass.
-- Consider adding `@tailwindcss/typography`-friendly `prose` modifiers if project pages start growing headings, lists, or block elements.
 - Add Vercel preview-env vars (Turso/Resend) once branching workflow starts. Production-only is intentional for alpha.
-- Tune the home hero `object-position` if a future photo's framing wants a different crop.
