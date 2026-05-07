@@ -36,14 +36,16 @@ for (const file of projectFiles) {
       `${fullPath}: status "${meta.status}" not in {${[...ALLOWED_STATUS].join(", ")}}`,
     );
   }
-  if (meta.image !== undefined) {
+  for (const field of ["image", "cardImage"]) {
+    const value = meta[field];
+    if (value === undefined) continue;
     expect(
-      typeof meta.image === "string" && meta.image.startsWith("/"),
-      `${fullPath}: image "${meta.image}" must start with "/"`,
+      typeof value === "string" && value.startsWith("/"),
+      `${fullPath}: ${field} "${value}" must start with "/"`,
     );
-    if (typeof meta.image === "string") {
-      const imagePath = path.join("public", meta.image.replace(/^\//, ""));
-      expect(existsSync(imagePath), `${fullPath}: image "${meta.image}" not found at ${imagePath}`);
+    if (typeof value === "string") {
+      const imagePath = path.join("public", value.replace(/^\//, ""));
+      expect(existsSync(imagePath), `${fullPath}: ${field} "${value}" not found at ${imagePath}`);
     }
   }
   if (meta.url !== undefined) {

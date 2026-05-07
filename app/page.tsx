@@ -49,21 +49,39 @@ export default function HomePage() {
         <h2 className="text-sm font-medium tracking-wider text-neutral-500">
           projects
         </h2>
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-          {projects.map((p) => (
-            <li key={p.slug}>
-              <Link
-                href={`/projects/${p.slug}`}
-                className="block rounded-lg border border-neutral-200 p-6 transition hover:border-neutral-400"
-              >
-                <div className="flex items-baseline justify-between">
-                  <h3 className="text-lg font-medium">{p.name}</h3>
-                  <StatusBadge status={p.status} />
-                </div>
-                <p className="mt-2 text-sm text-neutral-600">{p.tagline}</p>
-              </Link>
-            </li>
-          ))}
+        <ul className="mt-6 grid gap-5 sm:grid-cols-2">
+          {projects.map((p) => {
+            const bg = p.cardImage;
+            return (
+              <li key={p.slug}>
+                <Link
+                  href={`/projects/${p.slug}`}
+                  className="group relative isolate flex h-64 flex-col justify-between overflow-hidden rounded-lg border border-neutral-200 p-8 transition hover:border-neutral-400"
+                >
+                  {bg && (
+                    <>
+                      <Image
+                        src={bg}
+                        alt=""
+                        fill
+                        sizes="(min-width: 640px) 50vw, 100vw"
+                        className="-z-10 object-cover transition group-hover:scale-[1.02]"
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 -z-10 bg-gradient-to-t from-white via-white/85 to-white/40"
+                      />
+                    </>
+                  )}
+                  <div className="flex items-baseline justify-between">
+                    <h3 className="text-xl font-medium">{p.name}</h3>
+                    <StatusBadge status={p.status} />
+                  </div>
+                  <p className="text-sm text-neutral-700">{p.tagline}</p>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </section>
     </>
