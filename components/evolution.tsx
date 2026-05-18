@@ -30,8 +30,12 @@ export function Evolution({ history }: { history: ProjectHistory }) {
       <h2 className="text-xl font-semibold tracking-tight">evolution</h2>
       {head && <p className="mt-2 text-sm text-neutral-600">{head}</p>}
 
+      <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-400">
+        ↳ from claude · auto-generated at each session handoff
+      </div>
+
       {hasWeekly && (
-        <ol className="mt-6 space-y-5">
+        <ol className="mt-4 space-y-5">
           {history.weekly.map((w) => (
             <li key={w.weekOf} className="border-l-2 border-neutral-200 pl-4">
               <div className="text-xs uppercase tracking-wide text-neutral-500">
@@ -42,20 +46,20 @@ export function Evolution({ history }: { history: ProjectHistory }) {
                   </span>
                 )}
               </div>
-              <p className="mt-1 text-neutral-800">{w.publicSummary}</p>
+              <p className="mt-1 italic text-neutral-500 leading-relaxed">{w.publicSummary}</p>
             </li>
           ))}
         </ol>
       )}
 
       {!hasWeekly && hasRecent && (
-        <ol className="mt-6 space-y-4">
+        <ol className="mt-4 space-y-4">
           {history.recent.map((s) => (
             <li key={s.sessionId} className="border-l-2 border-neutral-200 pl-4">
               <div className="text-xs uppercase tracking-wide text-neutral-500">
                 {formatRelative(s.startedAt)}
               </div>
-              <p className="mt-1 text-neutral-800">{s.publicSummary}</p>
+              <p className="mt-1 italic text-neutral-500 leading-relaxed">{s.publicSummary}</p>
             </li>
           ))}
         </ol>
