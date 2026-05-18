@@ -1,5 +1,3 @@
-import { createClient, type Client } from "@libsql/client";
-
 export type WeeklyRollup = {
   weekOf: string;
   publicSummary: string;
@@ -27,76 +25,58 @@ const EMPTY: ProjectHistory = {
   totalSessions: 0,
 };
 
-let _client: Client | undefined;
-function client(): Client | undefined {
-  if (_client) return _client;
-  const url = process.env.HISTORY_TURSO_DATABASE_URL ?? process.env.TURSO_DATABASE_URL;
-  const authToken = process.env.HISTORY_TURSO_AUTH_TOKEN ?? process.env.TURSO_AUTH_TOKEN;
-  if (!url || !authToken) return undefined;
-  _client = createClient({ url, authToken });
-  return _client;
-}
+const API_BASE =
+  process.env.PROMPT_LAB_API_BASE ?? "https://anomatom.com";
+
+type ApiResponse = {
+  project: string;
+  sessions?: Array<{ session_id: number; started_at: string; public_summary: string }>;
+  rollups?: Array<{
+    week_of: string;
+    public_summary: string;
+    session_count: number;
+    commit_count: number;
+  }>;
+  first_activity_at?: string | null;
+  last_activity_at?: string | null;
+  total_sessions?: number;
+};
 
 export async function getProjectHistory(historyKey: string): Promise<ProjectHistory> {
-  const c = client();
-  if (!c) return EMPTY;
+  const url = `${API_BASE}/api/public_history?project=${encodeURIComponent(historyKey)}&limit=5`;
 
   try {
-    const [weeklyRes, recentRes] = await Promise.all([
-      c.execute({
-        sql: `SELECT week_of, public_summary, session_count, commit_count
-              FROM public_weekly_rollups
-              WHERE project = ? AND public_summary IS NOT NULL AND public_summary != ''
-              ORDER BY week_of DESC
-              LIMIT 6`,
-        args: [historyKey],
-      }),
-      c.execute({
-        sql: `SELECT session_id, started_at, public_summary
-              FROM public_session_summaries
-              WHERE project = ? AND public_summary IS NOT NULL AND public_summary != ''
-              ORDER BY started_at DESC
-              LIMIT 5`,
-        args: [historyKey],
-      }),
-    ]);
+    const res = await fetch(url, { next: { revalidate: 3600 } });
+    if (res.status === 404) return EMPTY;
+    if (!res.ok) {
+      console.warn(`[history] ${url} → ${res.status}`);
+      return EMPTY;
+    }
 
-    const weekly: WeeklyRollup[] = weeklyRes.rows.map((r) => ({
-      weekOf: String(r.week_of),
-      publicSummary: String(r.public_summary),
-      sessionCount: Number(r.session_count ?? 0),
-      commitCount: Number(r.commit_count ?? 0),
+    const data = (await res.json()) as ApiResponse;
+
+    const weekly: WeeklyRollup[] = (data.rollups ?? []).slice(0, 6).map((r) => ({
+      weekOf: r.week_of,
+      publicSummary: r.public_summary,
+      sessionCount: r.session_count ?? 0,
+      commitCount: r.commit_count ?? 0,
     }));
 
-    const recent: SessionSummary[] = recentRes.rows.map((r) => ({
-      sessionId: Number(r.session_id),
-      startedAt: String(r.started_at),
-      publicSummary: String(r.public_summary),
+    const recent: SessionSummary[] = (data.sessions ?? []).map((s) => ({
+      sessionId: s.session_id,
+      startedAt: s.started_at,
+      publicSummary: s.public_summary,
     }));
-
-    const totals = await c.execute({
-      sql: `SELECT MIN(started_at) AS first_at, MAX(started_at) AS last_at, COUNT(*) AS n
-            FROM public_session_summaries
-            WHERE project = ?`,
-      args: [historyKey],
-    });
-    const row = totals.rows[0];
 
     return {
       weekly,
       recent,
-      firstActivityAt: row?.first_at ? String(row.first_at) : undefined,
-      lastActivityAt: row?.last_at ? String(row.last_at) : undefined,
-      totalSessions: Number(row?.n ?? 0),
+      firstActivityAt: data.first_activity_at ?? undefined,
+      lastActivityAt: data.last_activity_at ?? undefined,
+      totalSessions: data.total_sessions ?? 0,
     };
   } catch (err) {
-    if (isMissingTable(err)) return EMPTY;
-    console.warn(`[history] read failed for ${historyKey}:`, err);
+    console.warn(`[history] fetch failed for ${historyKey}:`, err);
     return EMPTY;
   }
-}
-
-function isMissingTable(err: unknown): boolean {
-  const msg = err instanceof Error ? err.message : String(err);
-  return /no such table:\s*public_(session_summaries|weekly_rollups)/.test(msg);
 }
