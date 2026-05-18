@@ -6,6 +6,7 @@ export const site = {
   navLabels: {
     projects: "projects",
     about: "about",
+    tenets: "tenets",
     connect: "connect",
   },
 };

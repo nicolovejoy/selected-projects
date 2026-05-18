@@ -24,6 +24,7 @@ export function Nav() {
         <ul className="flex gap-6 text-sm text-neutral-600">
           <li><Link href="/" className="hover:text-neutral-900">{site.navLabels.projects}</Link></li>
           <li><Link href="/about" className="hover:text-neutral-900">{site.navLabels.about}</Link></li>
+          <li><Link href="/tenets" className="hover:text-neutral-900">{site.navLabels.tenets}</Link></li>
           <li><Link href="/connect" className="hover:text-neutral-900">{site.navLabels.connect}</Link></li>
         </ul>
       </nav>
