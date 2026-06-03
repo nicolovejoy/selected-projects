@@ -26,7 +26,7 @@ const EMPTY: ProjectHistory = {
 };
 
 const API_BASE =
-  process.env.PROMPT_LAB_API_BASE ?? "https://anomatom.com";
+  process.env.PROMPT_LAB_API_BASE ?? "https://prompt-labs.org";
 
 type ApiResponse = {
   project: string;
