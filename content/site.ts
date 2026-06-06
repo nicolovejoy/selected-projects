@@ -8,5 +8,6 @@ export const site = {
     about: "about",
     tenets: "tenets",
     connect: "connect",
+    signIn: "sign in",
   },
 };

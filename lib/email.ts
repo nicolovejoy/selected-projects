@@ -57,3 +57,23 @@ export async function sendConnectNotification(p: ConnectEmailPayload): Promise<v
     text: lines.join("\n"),
   });
 }
+
+export async function sendMagicLink(opts: { email: string; url: string }): Promise<void> {
+  // Falls back to Resend's shared test sender until the domain is verified.
+  const from =
+    process.env.AUTH_FROM_EMAIL ??
+    "the piano house project <onboarding@resend.dev>";
+
+  await client().emails.send({
+    from,
+    to: opts.email,
+    subject: "Your sign-in link for the piano house project",
+    text: [
+      "Click to sign in — this link works once and expires in 15 minutes.",
+      "",
+      opts.url,
+      "",
+      "Didn't request this? Ignore it; nothing happens.",
+    ].join("\n"),
+  });
+}

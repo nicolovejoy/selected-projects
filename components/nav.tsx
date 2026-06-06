@@ -1,6 +1,8 @@
 import Link from "next/link";
 import buildInfo from "@/lib/build-info.json";
 import { site } from "@/content/site";
+import { MobileMenu } from "@/components/mobile-menu";
+import { getSessionUser } from "@/lib/auth";
 
 const builtAt = new Date(buildInfo.built_at)
   .toLocaleString("en-US", {
@@ -14,19 +16,55 @@ const builtAt = new Date(buildInfo.built_at)
   .replace(/AM/, "am")
   .replace(/PM/, "pm");
 
-export function Nav() {
+const links = [
+  { href: "/", label: site.navLabels.projects },
+  { href: "/about", label: site.navLabels.about },
+  { href: "/tenets", label: site.navLabels.tenets },
+  { href: "/connect", label: site.navLabels.connect },
+];
+
+export async function Nav() {
+  const user = await getSessionUser();
+
   return (
-    <header className="border-b border-neutral-200">
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <Link href="/" className="font-normal tracking-tight">
+    <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 backdrop-blur">
+      <nav className="relative mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <Link href="/" className="text-[15px] font-normal tracking-tight">
           the <span className="font-bold">piano house</span> project
         </Link>
-        <ul className="flex gap-6 text-sm text-neutral-600">
-          <li><Link href="/" className="hover:text-neutral-900">{site.navLabels.projects}</Link></li>
-          <li><Link href="/about" className="hover:text-neutral-900">{site.navLabels.about}</Link></li>
-          <li><Link href="/tenets" className="hover:text-neutral-900">{site.navLabels.tenets}</Link></li>
-          <li><Link href="/connect" className="hover:text-neutral-900">{site.navLabels.connect}</Link></li>
+
+        <ul className="hidden items-center gap-6 text-sm text-neutral-600 sm:flex">
+          {links.map((l) => (
+            <li key={l.href}>
+              <Link href={l.href} className="hover:text-neutral-900">
+                {l.label}
+              </Link>
+            </li>
+          ))}
+          {user ? (
+            <>
+              <li className="text-neutral-400">{user.name ?? user.email}</li>
+              <li>
+                <form action="/api/auth/signout" method="post">
+                  <button type="submit" className="hover:text-neutral-900">
+                    sign out
+                  </button>
+                </form>
+              </li>
+            </>
+          ) : (
+            <li>
+              <Link
+                href="/signin"
+                className="font-medium text-neutral-800 hover:text-neutral-950"
+              >
+                {site.navLabels.signIn}
+              </Link>
+            </li>
+          )}
         </ul>
+
+        <MobileMenu links={links} signInLabel={site.navLabels.signIn} user={user} />
       </nav>
     </header>
   );
