@@ -17,7 +17,7 @@ const builtAt = new Date(buildInfo.built_at)
   .replace(/PM/, "pm");
 
 const links = [
-  { href: "/", label: site.navLabels.projects },
+  { href: "/projects", label: site.navLabels.projects },
   { href: "/about", label: site.navLabels.about },
   { href: "/tenets", label: site.navLabels.tenets },
   { href: "/connect", label: site.navLabels.connect },
