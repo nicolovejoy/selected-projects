@@ -11,27 +11,31 @@ export type FeedEntry = {
 };
 
 /**
- * Cross-project feed: every project's weekly rollups, flattened and sorted
- * newest-first. Each project's history is fetched from the public API
- * (cached 1h via getProjectHistory's fetch revalidate).
+ * Cross-project feed: one entry per project — its most recent weekly rollup —
+ * sorted by that rollup's date, newest-first. Each project's history is fetched
+ * from the public API (cached 1h via getProjectHistory's fetch revalidate).
  */
 export async function getFeed(limit = 30): Promise<FeedEntry[]> {
   const perProject = await Promise.all(
     projects.map(async (p) => {
       const history = await getProjectHistory(projectHistoryKey(p));
-      return history.weekly.map((w) => ({
+      const latest = [...history.weekly].sort((a, b) =>
+        b.weekOf.localeCompare(a.weekOf),
+      )[0];
+      if (!latest) return null;
+      return {
         project: p.slug,
         projectName: p.name,
         status: p.status,
-        weekOf: w.weekOf,
-        summary: w.publicSummary,
-        sessionCount: w.sessionCount,
-      }));
+        weekOf: latest.weekOf,
+        summary: latest.publicSummary,
+        sessionCount: latest.sessionCount,
+      } satisfies FeedEntry;
     }),
   );
 
   return perProject
-    .flat()
+    .filter((e): e is FeedEntry => e !== null)
     .sort((a, b) => b.weekOf.localeCompare(a.weekOf))
     .slice(0, limit);
 }
