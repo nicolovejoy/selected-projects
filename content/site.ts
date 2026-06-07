@@ -7,6 +7,7 @@ export const site = {
     projects: "projects",
     about: "about",
     tenets: "tenets",
+    lessons: "lessons",
     connect: "connect",
   },
 };
