@@ -78,5 +78,26 @@ await db.execute(`
 `);
 await db.execute(`CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id)`);
 
+// --- community: follows + notes ---
+await db.execute(`
+  CREATE TABLE IF NOT EXISTS follows (
+    user_id TEXT NOT NULL REFERENCES users(id),
+    project TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (user_id, project)
+  )
+`);
+await db.execute(`
+  CREATE TABLE IF NOT EXISTS notes (
+    id TEXT PRIMARY KEY,
+    project TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES users(id),
+    body TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  )
+`);
+await db.execute(`CREATE INDEX IF NOT EXISTS idx_notes_project ON notes(project, created_at DESC)`);
+await db.execute(`CREATE INDEX IF NOT EXISTS idx_follows_project ON follows(project)`);
+
 console.log("✓ schema applied");
 process.exit(0);
