@@ -1,14 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getProject, getProjectBody, projectHistoryKey, projects } from "@/lib/projects";
 import { getProjectHistory } from "@/lib/history";
+import { getCommitActivity } from "@/lib/github";
 import { getSessionUser } from "@/lib/auth";
 import { getNotes, isFollowing } from "@/lib/community";
 import { StatusBadge } from "@/components/status-badge";
+import { ContributionCalendar } from "@/components/contribution-calendar";
 import { Evolution } from "@/components/evolution";
 import { FollowButton } from "./follow-button";
 import { Notes } from "./notes";
+
+async function CommitGraph({ github }: { github: string }) {
+  const weeks = await getCommitActivity(github);
+  if (!weeks) return null;
+  return <ContributionCalendar weeks={weeks} />;
+}
 
 export const revalidate = 86400;
 
@@ -44,6 +53,14 @@ export default async function ProjectPage({
         </div>
         <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
       </header>
+
+      {project.github && (
+        <Suspense
+          fallback={<div className="mt-8 h-[100px] animate-pulse rounded-lg bg-neutral-100" />}
+        >
+          <CommitGraph github={project.github} />
+        </Suspense>
+      )}
 
       {project.image && (
         <Image
