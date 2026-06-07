@@ -20,6 +20,7 @@ const links = [
   { href: "/projects", label: site.navLabels.projects },
   { href: "/about", label: site.navLabels.about },
   { href: "/tenets", label: site.navLabels.tenets },
+  { href: "/vibe-coding-lessons", label: site.navLabels.lessons },
   { href: "/connect", label: site.navLabels.connect },
 ];
 
