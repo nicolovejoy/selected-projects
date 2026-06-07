@@ -16,11 +16,9 @@ function repoPath(github: string): string {
 /**
  * Last-52-weeks commit activity for a repo, for the contribution calendar.
  *
- * Cached 1h via Next's data cache, so it's warm across all visitors after the
- * first view (and Next's link-prefetch on the home page warms it before a
- * detail page is even opened). Returns null on any miss — no token, rate
- * limit, private repo, or GitHub still computing stats (202) — so the caller
- * simply renders nothing and the page is unaffected.
+ * Returns null on any miss — no token, rate limit, private/missing repo, or
+ * GitHub still computing stats after retries — so the caller renders nothing
+ * and the page is unaffected.
  */
 export async function getCommitActivity(github: string): Promise<CommitWeek[] | null> {
   const token = process.env.GITHUB_TOKEN;
@@ -32,16 +30,23 @@ export async function getCommitActivity(github: string): Promise<CommitWeek[] | 
   };
   if (token) headers.Authorization = `Bearer ${token}`;
 
+  // GitHub computes commit_activity lazily: the first request for a repo can
+  // return 202 ("computing") and 200 a moment later. We use no-store so a 202
+  // is never cached, and retry briefly. Each detail-page view is then ~1 auth'd
+  // call — well within the 5000/hr token budget for a low-traffic site.
   try {
-    const res = await fetch(url, { headers, next: { revalidate: 3600 } });
-    // 202 = GitHub is still computing the stats cache; 204 = empty repo.
-    if (res.status === 202 || res.status === 204) return null;
-    if (!res.ok) {
-      console.warn(`[github] ${url} → ${res.status}`);
-      return null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const res = await fetch(url, { headers, cache: "no-store" });
+      if (res.status === 202) continue; // still computing — retry
+      if (res.status === 204) return null; // empty repo
+      if (!res.ok) {
+        console.warn(`[github] ${url} → ${res.status}`);
+        return null;
+      }
+      const data = (await res.json()) as CommitWeek[];
+      return Array.isArray(data) && data.length > 0 ? data : null;
     }
-    const data = (await res.json()) as CommitWeek[];
-    return Array.isArray(data) && data.length > 0 ? data : null;
+    return null; // still 202 after retries
   } catch (err) {
     console.warn(`[github] fetch failed for ${github}:`, err);
     return null;
