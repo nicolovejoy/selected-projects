@@ -34,10 +34,16 @@ export async function getCommitActivity(github: string): Promise<CommitWeek[] | 
   // return 202 ("computing") and 200 a moment later. We use no-store so a 202
   // is never cached, and retry briefly. Each detail-page view is then ~1 auth'd
   // call — well within the 5000/hr token budget for a low-traffic site.
+  const attempts = 4;
   try {
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < attempts; attempt++) {
       const res = await fetch(url, { headers, cache: "no-store" });
-      if (res.status === 202) continue; // still computing — retry
+      if (res.status === 202) {
+        // Still computing — wait, then retry. GitHub usually finishes within
+        // a few seconds; if not, the calendar self-heals on a later view.
+        if (attempt < attempts - 1) await new Promise((r) => setTimeout(r, 1000));
+        continue;
+      }
       if (res.status === 204) return null; // empty repo
       if (!res.ok) {
         console.warn(`[github] ${url} → ${res.status}`);
