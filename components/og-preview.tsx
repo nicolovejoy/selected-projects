@@ -20,7 +20,7 @@ export async function OgPreview({ project }: { project: Project }) {
       href={project.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group mt-8 block overflow-hidden rounded-xl border border-neutral-200 transition hover:border-neutral-400"
+      className="group mt-8 block max-w-sm overflow-hidden rounded-xl border border-neutral-200 transition hover:border-neutral-400"
     >
       {/* Plain <img>: arbitrary external domains, no next/image remotePatterns. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
