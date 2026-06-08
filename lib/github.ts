@@ -27,28 +27,60 @@ function ghHeaders(): Record<string, string> {
   return headers;
 }
 
+const DAY_MS = 86_400_000;
+const WEEKS = 52;
+
 /**
- * Throws on any miss so the unstable_cache wrapper never stores a failure:
- * a successful result is cached and stays stable, while a miss (rate limit,
- * private repo, or GitHub still computing stats after retries) falls through
- * and is retried on the next view. GitHub computes commit_activity lazily and
- * can return 202 ("computing") before 200, so we use no-store + a short retry.
+ * Build the 52-week calendar from the /commits list (default branch, last
+ * year), bucketed by day. We deliberately avoid stats/commit_activity: that
+ * endpoint returns 202 whenever GitHub is recomputing its stats cache, which
+ * made the calendar render intermittently. /commits returns 200 reliably.
+ *
+ * Throws on any miss so the unstable_cache wrapper never stores a failure;
+ * a success is cached and stays stable.
+ *
+ * Caveat: capped at 3 pages (300 commits). A repo with >300 commits in the
+ * last year will undercount its oldest weeks — fine for a recent-activity view.
  */
 async function fetchCommitActivity(github: string): Promise<CommitWeek[]> {
-  const url = `https://api.github.com/repos/${repoPath(github)}/stats/commit_activity`;
-  const attempts = 4;
-  for (let attempt = 0; attempt < attempts; attempt++) {
+  const since = new Date(Date.now() - (WEEKS * 7 + 6) * DAY_MS).toISOString();
+  const base = `https://api.github.com/repos/${repoPath(github)}/commits`;
+
+  const byDay = new Map<number, number>();
+  let found = 0;
+  for (let page = 1; page <= 3; page++) {
+    const url = `${base}?per_page=100&since=${since}&page=${page}`;
     const res = await fetch(url, { headers: ghHeaders(), cache: "no-store" });
-    if (res.status === 202) {
-      if (attempt < attempts - 1) await new Promise((r) => setTimeout(r, 1000));
-      continue;
+    if (!res.ok) throw new Error(`commits ${res.status}`);
+    const batch = (await res.json()) as Array<{ commit: { committer?: { date?: string } } }>;
+    for (const c of batch) {
+      const iso = c.commit?.committer?.date;
+      if (!iso) continue;
+      const dayKey = Math.floor(new Date(iso).getTime() / DAY_MS);
+      byDay.set(dayKey, (byDay.get(dayKey) ?? 0) + 1);
+      found++;
     }
-    if (!res.ok) throw new Error(`commit_activity ${res.status}`);
-    const data = (await res.json()) as CommitWeek[];
-    if (!Array.isArray(data) || data.length === 0) throw new Error("commit_activity empty");
-    return data;
+    if (batch.length < 100) break;
   }
-  throw new Error("commit_activity still computing (202)");
+  if (found === 0) throw new Error("no commits in the last year");
+
+  // Most recent Sunday, then 52 weeks back, as the grid origin.
+  const today = Math.floor(Date.now() / DAY_MS);
+  const todayDow = new Date(today * DAY_MS).getUTCDay(); // 0 = Sun
+  const gridStart = today - todayDow - (WEEKS - 1) * 7;
+
+  const weeks: CommitWeek[] = [];
+  for (let w = 0; w < WEEKS; w++) {
+    const days: number[] = [];
+    let total = 0;
+    for (let d = 0; d < 7; d++) {
+      const n = byDay.get(gridStart + w * 7 + d) ?? 0;
+      days.push(n);
+      total += n;
+    }
+    weeks.push({ week: (gridStart + w * 7) * DAY_MS / 1000, days, total });
+  }
+  return weeks;
 }
 
 /** Last-52-weeks commit activity for the contribution calendar, or null. */
