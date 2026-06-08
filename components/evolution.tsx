@@ -26,9 +26,8 @@ export function Evolution({ history }: { history: ProjectHistory }) {
   if (!head && !hasWeekly && !hasRecent) return null;
 
   return (
-    <section className="mt-12 border-t border-neutral-200 pt-8">
-      <h2 className="text-xl font-semibold tracking-tight">evolution</h2>
-      {head && <p className="mt-2 text-sm text-neutral-600">{head}</p>}
+    <>
+      {head && <p className="text-sm text-neutral-600">{head}</p>}
 
       <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-400">
         ↳ from claude · auto-generated at each session handoff
@@ -64,6 +63,6 @@ export function Evolution({ history }: { history: ProjectHistory }) {
           ))}
         </ol>
       )}
-    </section>
+    </>
   );
 }

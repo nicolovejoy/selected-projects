@@ -30,13 +30,11 @@ export function Notes({
   const [state, action, pending] = useActionState(postNote, initial);
 
   return (
-    <section className="mt-12 border-t border-neutral-200 pt-8">
-      <h2 className="text-xl font-semibold tracking-tight">notes</h2>
-
+    <>
       {signedIn ? (
         // key on notes.length so a successful post (which adds a note via
         // revalidate) remounts the form and clears the inputs.
-        <form key={notes.length} action={action} className="mt-4 space-y-2">
+        <form key={notes.length} action={action} className="space-y-2">
           <input type="hidden" name="project" value={project} />
           <input
             name="name"
@@ -63,7 +61,7 @@ export function Notes({
           </button>
         </form>
       ) : (
-        <p className="mt-4 text-sm text-neutral-500">
+        <p className="text-sm text-neutral-500">
           <Link
             href="/signin"
             className="underline underline-offset-4 hover:text-neutral-900"
@@ -89,6 +87,6 @@ export function Notes({
           </li>
         ))}
       </ul>
-    </section>
+    </>
   );
 }

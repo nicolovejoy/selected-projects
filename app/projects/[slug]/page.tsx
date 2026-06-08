@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getProject, getProjectBody, projectHistoryKey, projects } from "@/lib/projects";
@@ -9,6 +8,8 @@ import { getSessionUser } from "@/lib/auth";
 import { getNotes, isFollowing } from "@/lib/community";
 import { StatusBadge } from "@/components/status-badge";
 import { ContributionCalendar } from "@/components/contribution-calendar";
+import { CollapsibleSection } from "@/components/collapsible-section";
+import { OgPreview } from "@/components/og-preview";
 import { Evolution } from "@/components/evolution";
 import { FollowButton } from "./follow-button";
 import { Notes } from "./notes";
@@ -41,13 +42,27 @@ export default async function ProjectPage({
   const following = user ? await isFollowing(user.id, slug) : false;
   const repo = project.github ? await getPublicRepo(project.github) : null;
 
+  const hasEvolution =
+    history.totalSessions > 0 || history.weekly.length > 0 || history.recent.length > 0;
+
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
       <Link href="/" className="text-sm text-neutral-500 hover:text-neutral-900">
         ← All projects
       </Link>
 
-      <header className="mt-8 border-b border-neutral-200 pb-6">
+      {/* Live-site preview (OG card) — keeps the visual hook above the fold. */}
+      {project.url && (
+        <Suspense
+          fallback={
+            <div className="mt-8 aspect-[1200/630] w-full animate-pulse rounded-xl bg-neutral-100" />
+          }
+        >
+          <OgPreview project={project} />
+        </Suspense>
+      )}
+
+      <header className="mt-8">
         <div className="flex items-baseline justify-between">
           <h1 className="text-3xl font-semibold tracking-tight">{project.name}</h1>
           <StatusBadge status={project.status} />
@@ -79,32 +94,7 @@ export default async function ProjectPage({
         )}
       </header>
 
-      {project.image && (
-        <Image
-          src={project.image}
-          alt={`${project.name} screenshot`}
-          width={1600}
-          height={1000}
-          sizes="(min-width: 768px) 768px, 100vw"
-          className="mt-8 h-auto w-full rounded-lg border border-neutral-200"
-        />
-      )}
-
-      <article className="prose prose-stone prose-lg mt-8 max-w-none">
-        <Body />
-      </article>
-
-      <Evolution history={history} />
-
-      {project.github && (
-        <Suspense
-          fallback={<div className="mt-8 h-[100px] animate-pulse rounded-lg bg-neutral-100" />}
-        >
-          <CommitGraph github={project.github} />
-        </Suspense>
-      )}
-
-      <div className="mt-10 flex flex-wrap gap-3">
+      <div className="mt-4 flex flex-wrap gap-3">
         <FollowButton project={slug} following={following} signedIn={!!user} />
         <Link
           href={`/connect?project=${project.slug}`}
@@ -114,12 +104,33 @@ export default async function ProjectPage({
         </Link>
       </div>
 
-      <Notes
-        project={slug}
-        notes={notes}
-        currentName={user?.name ?? null}
-        signedIn={!!user}
-      />
+      <CollapsibleSection title="about" defaultOpen>
+        <article className="prose prose-stone prose-lg max-w-none">
+          <Body />
+        </article>
+      </CollapsibleSection>
+
+      {(hasEvolution || project.github) && (
+        <CollapsibleSection title="evolution">
+          {hasEvolution && <Evolution history={history} />}
+          {project.github && (
+            <Suspense
+              fallback={<div className="mt-8 h-[100px] animate-pulse rounded-lg bg-neutral-100" />}
+            >
+              <CommitGraph github={project.github} />
+            </Suspense>
+          )}
+        </CollapsibleSection>
+      )}
+
+      <CollapsibleSection title="notes">
+        <Notes
+          project={slug}
+          notes={notes}
+          currentName={user?.name ?? null}
+          signedIn={!!user}
+        />
+      </CollapsibleSection>
     </div>
   );
 }
