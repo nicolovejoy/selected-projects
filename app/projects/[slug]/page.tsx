@@ -51,57 +51,63 @@ export default async function ProjectPage({
         ← All projects
       </Link>
 
-      {/* Live-site preview (OG card) — keeps the visual hook above the fold. */}
-      {project.url && (
-        <Suspense
-          fallback={
-            <div className="mt-8 aspect-[1200/630] w-full animate-pulse rounded-xl bg-neutral-100" />
-          }
-        >
-          <OgPreview project={project} />
-        </Suspense>
-      )}
-
-      <header className="mt-8">
-        <div className="flex items-baseline justify-between">
-          <h1 className="text-3xl font-semibold tracking-tight">{project.name}</h1>
-          <StatusBadge status={project.status} />
-        </div>
-        <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
-        {(project.url || repo) && (
-          <div className="mt-4 flex flex-wrap gap-3">
-            {project.url && (
-              <a
-                href={project.url}
-                className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Visit site
-              </a>
-            )}
-            {repo && (
-              <a
-                href={repo.htmlUrl}
-                className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Code on GitHub
-              </a>
-            )}
+      {/* Above the fold: live-site preview card beside the title + actions. */}
+      <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
+        {project.url && (
+          <div className="shrink-0 sm:w-80">
+            <Suspense
+              fallback={
+                <div className="aspect-[1200/630] w-full animate-pulse rounded-xl bg-neutral-100" />
+              }
+            >
+              <OgPreview project={project} />
+            </Suspense>
           </div>
         )}
-      </header>
 
-      <div className="mt-4 flex flex-wrap gap-3">
-        <FollowButton project={slug} following={following} signedIn={!!user} />
-        <Link
-          href={`/connect?project=${project.slug}`}
-          className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
-        >
-          Get in touch about this
-        </Link>
+        <div className="min-w-0 flex-1">
+          <header>
+            <div className="flex items-baseline justify-between gap-3">
+              <h1 className="text-3xl font-semibold tracking-tight">{project.name}</h1>
+              <StatusBadge status={project.status} />
+            </div>
+            <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
+            {(project.url || repo) && (
+              <div className="mt-4 flex flex-wrap gap-3">
+                {project.url && (
+                  <a
+                    href={project.url}
+                    className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Visit site
+                  </a>
+                )}
+                {repo && (
+                  <a
+                    href={repo.htmlUrl}
+                    className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Code on GitHub
+                  </a>
+                )}
+              </div>
+            )}
+          </header>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <FollowButton project={slug} following={following} signedIn={!!user} />
+            <Link
+              href={`/connect?project=${project.slug}`}
+              className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
+            >
+              Get in touch about this
+            </Link>
+          </div>
+        </div>
       </div>
 
       <CollapsibleSection title="about" defaultOpen>
