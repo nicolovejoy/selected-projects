@@ -51,20 +51,8 @@ export default async function ProjectPage({
         ← All projects
       </Link>
 
-      {/* Above the fold: live-site preview card beside the title + actions. */}
+      {/* Above the fold: title + actions on the left, live-site preview on the right. */}
       <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
-        {project.url && (
-          <div className="shrink-0 sm:w-80">
-            <Suspense
-              fallback={
-                <div className="aspect-[1200/630] w-full animate-pulse rounded-xl bg-neutral-100" />
-              }
-            >
-              <OgPreview project={project} />
-            </Suspense>
-          </div>
-        )}
-
         <div className="min-w-0 flex-1">
           <header>
             <div className="flex items-baseline justify-between gap-3">
@@ -108,6 +96,18 @@ export default async function ProjectPage({
             </Link>
           </div>
         </div>
+
+        {project.url && (
+          <div className="shrink-0 sm:w-80">
+            <Suspense
+              fallback={
+                <div className="aspect-[1200/630] w-full animate-pulse rounded-xl bg-neutral-100" />
+              }
+            >
+              <OgPreview project={project} />
+            </Suspense>
+          </div>
+        )}
       </div>
 
       <CollapsibleSection title="about" defaultOpen>
