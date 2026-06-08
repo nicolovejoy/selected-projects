@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getProject, getProjectBody, projectHistoryKey, projects } from "@/lib/projects";
 import { getProjectHistory } from "@/lib/history";
-import { getCommitActivity } from "@/lib/github";
+import { getCommitActivity, getPublicRepo } from "@/lib/github";
 import { getSessionUser } from "@/lib/auth";
 import { getNotes, isFollowing } from "@/lib/community";
 import { StatusBadge } from "@/components/status-badge";
@@ -39,6 +39,7 @@ export default async function ProjectPage({
   const user = await getSessionUser();
   const notes = await getNotes(slug);
   const following = user ? await isFollowing(user.id, slug) : false;
+  const repo = project.github ? await getPublicRepo(project.github) : null;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
@@ -88,6 +89,16 @@ export default async function ProjectPage({
             rel="noopener noreferrer"
           >
             Visit site
+          </a>
+        )}
+        {repo && (
+          <a
+            href={repo.htmlUrl}
+            className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Code on GitHub
           </a>
         )}
         <FollowButton project={slug} following={following} signedIn={!!user} />
