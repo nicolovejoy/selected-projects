@@ -1,16 +1,28 @@
 import Link from "next/link";
 import Image from "next/image";
-import { projects } from "@/lib/projects";
+import { projects, projectHistoryKey } from "@/lib/projects";
+import { getProjectHistory } from "@/lib/history";
 import { StatusBadge } from "@/components/status-badge";
 
 export const metadata = { title: "projects" };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  // Sort by most recent work; projects with no history fall to the end.
+  const withActivity = await Promise.all(
+    projects.map(async (p) => ({
+      p,
+      last: (await getProjectHistory(projectHistoryKey(p))).lastActivityAt ?? "",
+    })),
+  );
+  const ordered = withActivity
+    .sort((a, b) => b.last.localeCompare(a.last))
+    .map((x) => x.p);
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
       <h1 className="text-3xl font-semibold tracking-tight">projects</h1>
       <ul className="mt-8 grid gap-5 sm:grid-cols-2">
-        {projects.map((p) => {
+        {ordered.map((p) => {
           const bg = p.cardImage;
           return (
             <li key={p.slug}>

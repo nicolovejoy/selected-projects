@@ -53,15 +53,31 @@ export default async function ProjectPage({
           <StatusBadge status={project.status} />
         </div>
         <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
+        {(project.url || repo) && (
+          <div className="mt-4 flex flex-wrap gap-3">
+            {project.url && (
+              <a
+                href={project.url}
+                className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit site
+              </a>
+            )}
+            {repo && (
+              <a
+                href={repo.htmlUrl}
+                className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Code on GitHub
+              </a>
+            )}
+          </div>
+        )}
       </header>
-
-      {project.github && (
-        <Suspense
-          fallback={<div className="mt-8 h-[100px] animate-pulse rounded-lg bg-neutral-100" />}
-        >
-          <CommitGraph github={project.github} />
-        </Suspense>
-      )}
 
       {project.image && (
         <Image
@@ -80,27 +96,15 @@ export default async function ProjectPage({
 
       <Evolution history={history} />
 
+      {project.github && (
+        <Suspense
+          fallback={<div className="mt-8 h-[100px] animate-pulse rounded-lg bg-neutral-100" />}
+        >
+          <CommitGraph github={project.github} />
+        </Suspense>
+      )}
+
       <div className="mt-10 flex flex-wrap gap-3">
-        {project.url && (
-          <a
-            href={project.url}
-            className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visit site
-          </a>
-        )}
-        {repo && (
-          <a
-            href={repo.htmlUrl}
-            className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Code on GitHub
-          </a>
-        )}
         <FollowButton project={slug} following={following} signedIn={!!user} />
         <Link
           href={`/connect?project=${project.slug}`}

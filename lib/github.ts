@@ -48,6 +48,8 @@ async function fetchCommitActivity(github: string): Promise<CommitWeek[]> {
 
   const byDay = new Map<number, number>();
   let found = 0;
+  let oldest = Infinity;
+  let capped = false;
   for (let page = 1; page <= 3; page++) {
     const url = `${base}?per_page=100&since=${since}&page=${page}`;
     const res = await fetch(url, { headers: ghHeaders(), cache: "no-store" });
@@ -58,27 +60,35 @@ async function fetchCommitActivity(github: string): Promise<CommitWeek[]> {
       if (!iso) continue;
       const dayKey = Math.floor(new Date(iso).getTime() / DAY_MS);
       byDay.set(dayKey, (byDay.get(dayKey) ?? 0) + 1);
+      if (dayKey < oldest) oldest = dayKey;
       found++;
     }
     if (batch.length < 100) break;
+    if (page === 3) capped = true; // more commits than we fetched
   }
   if (found === 0) throw new Error("no commits in the last year");
 
-  // Most recent Sunday, then 52 weeks back, as the grid origin.
+  // Grid runs from a start week to the current week. Normally the full 52
+  // weeks; for a busy repo whose history we capped, start at its oldest
+  // fetched commit instead, so we never show undercounted older weeks.
   const today = Math.floor(Date.now() / DAY_MS);
-  const todayDow = new Date(today * DAY_MS).getUTCDay(); // 0 = Sun
-  const gridStart = today - todayDow - (WEEKS - 1) * 7;
+  const currentWeekStart = today - new Date(today * DAY_MS).getUTCDay(); // Sunday
+  const fullStart = currentWeekStart - (WEEKS - 1) * 7;
+  const oldestWeekStart = oldest - new Date(oldest * DAY_MS).getUTCDay();
+  const gridStart = capped ? Math.max(fullStart, oldestWeekStart) : fullStart;
+  const numWeeks = Math.round((currentWeekStart - gridStart) / 7) + 1;
 
   const weeks: CommitWeek[] = [];
-  for (let w = 0; w < WEEKS; w++) {
+  for (let w = 0; w < numWeeks; w++) {
+    const weekStart = gridStart + w * 7;
     const days: number[] = [];
     let total = 0;
     for (let d = 0; d < 7; d++) {
-      const n = byDay.get(gridStart + w * 7 + d) ?? 0;
+      const n = byDay.get(weekStart + d) ?? 0;
       days.push(n);
       total += n;
     }
-    weeks.push({ week: (gridStart + w * 7) * DAY_MS / 1000, days, total });
+    weeks.push({ week: (weekStart * DAY_MS) / 1000, days, total });
   }
   return weeks;
 }
