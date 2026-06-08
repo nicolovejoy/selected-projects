@@ -26,16 +26,13 @@ This repo coordinates with `prompt-lab` (the producer of `public_session_summari
 
 **Done 2026-06-07 (this session):** UX overhaul live on main (feed-first home, magic-link auth, notes+follow, `/projects`, `/vibe-coding-lessons`, tenets). Terse-copy razor pass across all user-facing copy + new global rule in `~/.claude/CLAUDE.md` ("say only what's not obvious"). Home feed is now **one card per project** (latest rollup, newest-first). **GitHub contribution calendar** added to detail pages — built from the `/commits` API (NOT `stats/commit_activity`, which 202s intermittently and caused flicker), cached success-only via `unstable_cache`, truncated to fetched range for busy/capped repos. "Code on GitHub" link for public repos; "Visit site" moved into the header; calendar sits beside the evolution timeline; `/projects` sorted by most recent work. `GITHUB_TOKEN` set in Vercel prod+preview (classic no-scope = public only; **musicforge repo is private → 404 → hidden**; widen token scope to include private repos if wanted).
 
-**NEXT UP — detail-page redesign (PLANNED, not built; decided: preview = live-URL OG tags):**
+**Done 2026-06-08 (this session):** Built the detail-page redesign (commit `9151a49`). `lib/og.ts` `getOgPreview(url)` scrapes `og:image`/`og:title`/`og:description` from the live URL (AbortController 3s, normal UA, relative→absolute), `unstable_cache` daily, **throw-on-miss** (mirrors `lib/github.ts`); fallback og:image → project `image`/`cardImage` → null. `components/og-preview.tsx` = clickable card (plain `<img>`). `components/collapsible-section.tsx` = native `<details>`/`<summary>` (hidden marker, rotating chevron, no JS). `app/projects/[slug]/page.tsx` restructured: OG card (Suspense) → header → CTAs, then **about** (open) / **evolution** (collapsed, timeline+calendar) / **notes** (collapsed); stripped section chrome from `evolution.tsx` + `notes.tsx`. Verified in browser (OG card renders for sites with tags, renders nothing without).
 
-1. **OG preview card.** New `lib/og.ts`: `getOgPreview(url)` → `{ image, title, description } | null`.
-   - Server-side `fetch` the project's live URL HTML with a short timeout (AbortController ~3s) + a normal User-Agent; parse `og:image` / `og:title` / `og:description` (fallback `twitter:image`). Resolve relative image URLs against the page origin.
-   - Wrap in `unstable_cache` (revalidate daily), **success-only — throw on miss** so failures aren't cached (same pattern as `lib/github.ts`).
-   - Fallback chain: og:image → project `image`/`cardImage` → null (render nothing).
-   - New `components/og-preview.tsx`: clickable card (`<a href={project.url} target="_blank">`) with image + title. Use a plain `<img>` (arbitrary external domains) to skip `next/image` remotePatterns config.
-   - Render at the very top of `app/projects/[slug]/page.tsx` in `<Suspense>`, only when `project.url` set; likely replaces the separate `image` block.
-2. **Above-the-fold + expandable layout.** Restructure the detail page: above fold = OG card → name+status+tagline → Visit/GitHub. Collapse long content into native `<details>`/`<summary>` (no JS): **About** (MDX `<Body/>`, open by default), **Evolution** (timeline+calendar, collapsed), **Notes** (collapsed). Style `<summary>` as headers, hide default marker, add a chevron.
-3. **Per-project OG follow-up** ("make it look right"): set/verify `og:image` on each project site (prntd, ibuild4you, am-i-an-ai, musicforge, prompt-lab; this site already has `/opengraph-image`).
+**OG follow-up — set `og:image` on each project site so cards aren't blank (audited this session):**
+- ✅ Have it: pianohouseproject.org, prntd.org, amianai.com (lojong), rocksculpture.
+- ❌ **musicforge.org** — client-rendered SPA (curl returns only a `<div id="root">` shell, zero meta). Needs static `<meta>` tags in `index.html` `<head>` with an **absolute** og:image (SSR/runtime-injected won't be scraped). Prompt shared.
+- ❌ **ibuild4you.com** — real HTML, no OG tags. Just add them to `<head>`, absolute og:image. Prompt shared.
+- Cards fill in automatically (cache daily-revalidate / next deploy here) once those ship.
 
 **Still open (pre-existing):**
 - **Verify magic-link to a non-owner inbox** on prod — the only un-verified piece of auth. `https://www.pianohouseproject.org/signin`, expect sender `noreply@mail.pianohouseproject.org`.
