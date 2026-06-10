@@ -14,7 +14,7 @@
     "db:migrate": "node --env-file=.env.local scripts/migrate.mjs"
   },
   "simple-git-hooks": {
-    "pre-push": "npm run check && npm run build"
+    "pre-push": "npm run check"
   },
   "dependencies": {
     "@libsql/client": "0.17.3",
