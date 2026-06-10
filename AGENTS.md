@@ -28,9 +28,7 @@ This repo coordinates with `prompt-lab` (the producer of `public_session_summari
 
 **Done 2026-06-08 (this session — shipped + verified on prod):** Detail-page redesign. `lib/og.ts` `getOgPreview(url)` scrapes `og:image`/`og:title`/`og:description` from the live URL (AbortController 3s, normal UA, relative→absolute), `unstable_cache` daily, **throw-on-miss** (mirrors `lib/github.ts`); fallback og:image → project `image`/`cardImage` → null. `components/og-preview.tsx` = clickable card (plain `<img>`, fills its column). `components/collapsible-section.tsx` = native `<details>`/`<summary>` (hidden marker, rotating chevron, no JS). `app/projects/[slug]/page.tsx`: **above-the-fold two-column header** — title+status+tagline+CTAs (Visit/GitHub, Follow, Get-in-touch) on the **left**, compact `sm:w-80` preview card on the **right** (`flex-col` stacks on mobile); then **about** (open) / **evolution** (collapsed, timeline+calendar) / **notes** (collapsed); stripped section chrome from `evolution.tsx`+`notes.tsx`. Also: terse-copy razor on `prompt-lab.mdx` (last project), display name → `PianoHouseProject.org`. Card size/layout iterated live with Nico (capped → two-column → title-left/card-right).
 
-**OG follow-up — `og:image` per project site so cards aren't blank:**
-- ✅ Have it (card renders): pianohouseproject.org, prntd.org, amianai.com (lojong), rocksculpture, **musicforge.org** (SPA — shipped static tags in index.html).
-- ❌ **ibuild4you.com** — still no OG tags; add to `<head>` with an absolute og:image. Prompt shared; their repo. Card fills in automatically once shipped (cache daily-revalidate / next deploy here).
+**OG follow-up — done 2026-06-09:** all six project sites ship `og:image` (ibuild4you was last; verified live). Cards fill in via daily cache revalidation.
 
 **Still open (pre-existing):**
 - **Verify magic-link to a non-owner inbox** on prod — the only un-verified piece of auth. `https://www.pianohouseproject.org/signin`, expect sender `noreply@mail.pianohouseproject.org`.
