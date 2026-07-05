@@ -55,6 +55,17 @@ export function MobileMenu({
                 </Link>
               </li>
             ))}
+            <li>
+              <a
+                href="https://github.com/nicolovejoy/selected-projects"
+                target="_blank"
+                rel="noopener"
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-2 py-2 hover:bg-neutral-100"
+              >
+                github ↗
+              </a>
+            </li>
             <li className="mt-1 border-t border-neutral-100 pt-2">
               {user ? (
                 <>
