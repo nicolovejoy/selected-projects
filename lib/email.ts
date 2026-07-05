@@ -58,6 +58,31 @@ export async function sendConnectNotification(p: ConnectEmailPayload): Promise<v
   });
 }
 
+export async function sendNoteAlert(p: {
+  project: string;
+  author: string;
+  authorEmail: string;
+  body: string;
+}): Promise<void> {
+  const from = process.env.CONNECT_FROM_EMAIL;
+  const to = process.env.CONNECT_TO_EMAIL;
+  if (!from || !to) {
+    throw new Error("CONNECT_FROM_EMAIL and CONNECT_TO_EMAIL must be set");
+  }
+
+  await client().emails.send({
+    from,
+    to,
+    subject: `New note on ${p.project} — ${p.author}`,
+    text: [
+      `Author: ${p.author} <${p.authorEmail}>`,
+      `Project: https://pianohouseproject.org/projects/${p.project}`,
+      "",
+      p.body,
+    ].join("\n"),
+  });
+}
+
 export async function sendMagicLink(opts: { email: string; url: string }): Promise<void> {
   // Falls back to Resend's shared test sender until the domain is verified.
   const from =

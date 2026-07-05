@@ -65,9 +65,17 @@ await db.execute(`
     token_hash TEXT PRIMARY KEY,
     email TEXT NOT NULL,
     expires_at TEXT NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    created_at TEXT NOT NULL DEFAULT (datetime('now')),
+    ip TEXT
   )
 `);
+{
+  const cols = await db.execute(`PRAGMA table_info(magic_tokens)`);
+  if (!cols.rows.some((r) => r.name === "ip")) {
+    await db.execute(`ALTER TABLE magic_tokens ADD COLUMN ip TEXT`);
+    console.log("  + added magic_tokens.ip");
+  }
+}
 await db.execute(`
   CREATE TABLE IF NOT EXISTS sessions (
     id TEXT PRIMARY KEY,

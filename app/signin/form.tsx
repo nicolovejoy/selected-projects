@@ -32,6 +32,15 @@ export function SignInForm() {
       </p>
 
       <form action={action} className="mt-6">
+        {/* Honeypot — humans never see or fill this; the action fakes success if it's set. */}
+        <input
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden"
+        />
         <label htmlFor="email" className="sr-only">
           Email
         </label>

@@ -2,8 +2,15 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { postNote, type NoteFormState } from "./actions";
-import type { Note } from "@/lib/community";
+import { deleteNoteAction, postNote, type NoteFormState } from "./actions";
+
+export type NoteView = {
+  id: string;
+  body: string;
+  createdAt: string;
+  author: string;
+  canDelete: boolean;
+};
 
 const initial: NoteFormState = { ok: false };
 
@@ -23,7 +30,7 @@ export function Notes({
   signedIn,
 }: {
   project: string;
-  notes: Note[];
+  notes: NoteView[];
   currentName: string | null;
   signedIn: boolean;
 }) {
@@ -80,6 +87,18 @@ export function Notes({
           <li key={n.id} className="border-l-2 border-neutral-200 pl-4">
             <div className="text-xs text-neutral-500">
               {n.author} · {formatDate(n.createdAt)}
+              {n.canDelete && (
+                <form action={deleteNoteAction} className="inline">
+                  <input type="hidden" name="project" value={project} />
+                  <input type="hidden" name="noteId" value={n.id} />
+                  <button
+                    type="submit"
+                    className="ml-2 text-neutral-400 underline underline-offset-2 hover:text-red-600"
+                  >
+                    delete
+                  </button>
+                </form>
+              )}
             </div>
             <p className="mt-1 whitespace-pre-wrap text-[15px] leading-relaxed text-neutral-800">
               {n.body}

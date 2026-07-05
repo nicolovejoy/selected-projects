@@ -1,9 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, isAdmin } from "@/lib/auth";
 import { projects } from "@/lib/projects";
-import { addNote, setUserName, toggleFollow } from "@/lib/community";
+import {
+  addNote,
+  countRecentNotes,
+  deleteNote,
+  setUserName,
+  toggleFollow,
+} from "@/lib/community";
+import { sendNoteAlert } from "@/lib/email";
+
+const MAX_NOTES_PER_HOUR = 5;
 
 function validProject(slug: string): boolean {
   return projects.some((p) => p.slug === slug);
@@ -30,6 +39,9 @@ export async function postNote(
   }
 
   try {
+    if ((await countRecentNotes(user.id)) >= MAX_NOTES_PER_HOUR) {
+      return { ok: false, error: "That's a lot of notes at once — try again in an hour." };
+    }
     if (name) await setUserName(user.id, name);
     await addNote(user.id, project, body);
   } catch (err) {
@@ -37,8 +49,35 @@ export async function postNote(
     return { ok: false, error: "Couldn't post that. Try again in a minute?" };
   }
 
+  // Moderation alert; a failed send must never block the note.
+  try {
+    await sendNoteAlert({
+      project,
+      author: name || user.name || "anonymous",
+      authorEmail: user.email,
+      body,
+    });
+  } catch (err) {
+    console.error("[community] note alert failed", err);
+  }
+
   revalidatePath(`/projects/${project}`);
   return { ok: true };
+}
+
+export async function deleteNoteAction(formData: FormData): Promise<void> {
+  const user = await getSessionUser();
+  if (!user) return;
+  const project = String(formData.get("project") ?? "");
+  if (!validProject(project)) return;
+  const noteId = String(formData.get("noteId") ?? "");
+  if (!noteId) return;
+  try {
+    const removed = await deleteNote(noteId, { userId: user.id, admin: isAdmin(user) });
+    if (removed) revalidatePath(`/projects/${project}`);
+  } catch (err) {
+    console.error("[community] deleteNoteAction failed", err);
+  }
 }
 
 export async function followAction(formData: FormData): Promise<void> {

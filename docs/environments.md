@@ -4,7 +4,7 @@ Three tiers. The rule: **only production talks to the production database.** Loc
 
 | Tier | Deploy | Database | Email |
 |---|---|---|---|
-| Local | `npm run dev` | `file:dev.db` (gitignored SQLite) | real Resend key — sends real mail |
+| Local | `npm run dev` | `file:dev.db` (gitignored SQLite) | magic links log to console; connect/note alerts still send via Resend |
 | Preview | Vercel preview deploys | Turso `pianohouse-preview` | real Resend key — sends real mail |
 | Production | Vercel production | Turso prod DB | real Resend key |
 
@@ -37,11 +37,12 @@ Done:
 
 1. Local dev isolated to `file:dev.db` (2026-07-04).
 2. Preview isolated to `pianohouse-preview` DB; preview `AUTH_FROM_EMAIL` un-pinned from a deleted branch so magic links work on previews (2026-07-04).
+3. Dev email safety — local dev logs magic links to the console and never calls Resend for them (2026-07-05).
+4. Note moderation — email alert to `CONNECT_TO_EMAIL` on every new note; `ADMIN_EMAIL` (env var, all tiers) grants delete-any-note; authors can delete their own (2026-07-05).
+5. Sign-in anti-bot — honeypot field on the form (fakes success), rate limits via `magic_tokens`: 3 links per email + 10 per IP per 15 min, and 5 notes per user per hour (2026-07-05).
 
 Next, in rough order of value:
 
-3. **Dev email safety** — in local dev, log magic links to the console instead of sending via Resend (kills the "real emails from dev" wart and removes the inbox round-trip from the dev loop).
-4. **Seed script** — `scripts/seed-dev.mjs` with a test user + a few notes/follows so dev.db isn't empty.
-5. **Prod backup habit** — `turso db shell <prod> .dump > backup.sql` before any schema migration; Turso point-in-time restore covers the rest.
-6. **Preview email split** — separate Resend key (or at least a distinct from-address) for preview, so preview sends are distinguishable and revocable.
-7. **Note moderation** — the main remaining prod exposure isn't testing, it's strangers: any signed-in user can post public notes. Email alert on new note + owner delete control.
+6. **Seed script** — `scripts/seed-dev.mjs` with a test user + a few notes/follows so dev.db isn't empty.
+7. **Prod backup habit** — `turso db shell <prod> .dump > backup.sql` before any schema migration; Turso point-in-time restore covers the rest.
+8. **Preview email split** — separate Resend key (or at least a distinct from-address) for preview, so preview sends are distinguishable and revocable.

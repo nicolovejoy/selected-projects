@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getProject, getProjectBody, projectHistoryKey, projects } from "@/lib/projects";
 import { getProjectHistory } from "@/lib/history";
 import { getCommitActivity, getPublicRepo } from "@/lib/github";
-import { getSessionUser } from "@/lib/auth";
+import { getSessionUser, isAdmin } from "@/lib/auth";
 import { getNotes, isFollowing } from "@/lib/community";
 import { StatusBadge } from "@/components/status-badge";
 import { ContributionCalendar } from "@/components/contribution-calendar";
@@ -38,7 +38,12 @@ export default async function ProjectPage({
 
   const history = await getProjectHistory(projectHistoryKey(project));
   const user = await getSessionUser();
-  const notes = await getNotes(slug);
+  const admin = isAdmin(user);
+  // Strip authorId before it crosses to the client; delete rights resolve here.
+  const notes = (await getNotes(slug)).map(({ authorId, ...n }) => ({
+    ...n,
+    canDelete: admin || (!!user && authorId === user.id),
+  }));
   const following = user ? await isFollowing(user.id, slug) : false;
   const repo = project.github ? await getPublicRepo(project.github) : null;
 

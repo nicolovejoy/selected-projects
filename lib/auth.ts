@@ -20,15 +20,37 @@ function isoIn(ms: number): string {
 
 export type SessionUser = { id: string; email: string; name: string | null };
 
+/** Site admin (moderation rights) = the signed-in user matching ADMIN_EMAIL. */
+export function isAdmin(user: SessionUser | null): boolean {
+  const admin = process.env.ADMIN_EMAIL?.toLowerCase();
+  return !!user && !!admin && user.email.toLowerCase() === admin;
+}
+
 // ---- magic tokens (raw token emailed; only its hash is stored) ----
 
-export async function createMagicToken(email: string): Promise<string> {
+export async function createMagicToken(email: string, ip: string | null): Promise<string> {
   const token = randomToken();
   await db().execute({
-    sql: `INSERT INTO magic_tokens (token_hash, email, expires_at) VALUES (?, ?, ?)`,
-    args: [sha256(token), email.toLowerCase(), isoIn(MAGIC_TTL_MS)],
+    sql: `INSERT INTO magic_tokens (token_hash, email, expires_at, ip) VALUES (?, ?, ?, ?)`,
+    args: [sha256(token), email.toLowerCase(), isoIn(MAGIC_TTL_MS), ip],
   });
   return token;
+}
+
+/** Tokens minted in the last 15 minutes, for rate limiting sign-in requests. */
+export async function countRecentMagicTokens(
+  email: string,
+  ip: string | null,
+): Promise<{ byEmail: number; byIp: number }> {
+  const res = await db().execute({
+    sql: `SELECT COALESCE(SUM(email = ?), 0) AS by_email,
+                 COALESCE(SUM(ip = ?), 0) AS by_ip
+            FROM magic_tokens
+           WHERE created_at > datetime('now', '-15 minutes')`,
+    args: [email.toLowerCase(), ip ?? ""],
+  });
+  const row = res.rows[0];
+  return { byEmail: Number(row?.by_email ?? 0), byIp: Number(row?.by_ip ?? 0) };
 }
 
 /** Single-use: the token is deleted on lookup regardless of validity. */
