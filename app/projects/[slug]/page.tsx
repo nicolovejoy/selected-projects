@@ -67,7 +67,7 @@ export default async function ProjectPage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <Link href="/projects" className="text-sm text-neutral-500 hover:text-neutral-900">
+      <Link href="/" className="text-sm text-neutral-500 hover:text-neutral-900">
         ← All projects
       </Link>
 

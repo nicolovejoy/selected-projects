@@ -35,10 +35,10 @@ export default async function HomePage() {
             <div className="mt-4 rounded-xl border border-neutral-200 bg-white p-7 text-center">
               <h2 className="font-serif text-xl tracking-tight">Like what you see?</h2>
               <Link
-                href="/projects"
+                href="/connect"
                 className="mt-5 block w-full rounded-lg bg-neutral-900 px-4 py-3 text-sm font-medium text-white hover:bg-neutral-700"
               >
-                Browse all projects
+                Get in touch
               </Link>
               {!user && (
                 <Link

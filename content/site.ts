@@ -4,7 +4,6 @@ export const site = {
   footerTagline:
     "the piano house project — experiments with Claude Code; learning the tooling is the point.",
   navLabels: {
-    projects: "projects",
     about: "about",
     tenets: "tenets",
     lessons: "lessons",
