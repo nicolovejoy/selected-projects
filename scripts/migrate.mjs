@@ -2,12 +2,12 @@ import { createClient } from "@libsql/client";
 
 const url = process.env.TURSO_DATABASE_URL;
 const authToken = process.env.TURSO_AUTH_TOKEN;
-if (!url || !authToken) {
-  console.error("TURSO_DATABASE_URL and TURSO_AUTH_TOKEN must be set");
+if (!url || (!authToken && !url.startsWith("file:"))) {
+  console.error("TURSO_DATABASE_URL must be set (TURSO_AUTH_TOKEN too, unless file:)");
   process.exit(1);
 }
 
-const db = createClient({ url, authToken });
+const db = createClient(authToken ? { url, authToken } : { url });
 
 await db.execute(`
   CREATE TABLE IF NOT EXISTS connect_submissions (

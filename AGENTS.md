@@ -18,6 +18,10 @@ See `docs/editing.md` for the canonical map. All visible copy lives in `content/
 
 This repo coordinates with `prompt-lab` (the producer of `public_session_summaries` / `public_weekly_rollups`) via an append-only shared file at `~/src/.handoff/selected-projects-prompt-lab.md`. **Read it at session start** alongside `/readup`. New cross-repo asks (bug reports about the public tables, schema changes, expected-behavior clarifications) go there as a new entry under `## Active`. When an entry is acted on, move it under `## Archived` with a one-line outcome. See the file's own header for the entry format. Cross-repo GitHub issues remain valid for anything the public web should see; the handoff file is for working-state coordination.
 
+## Environments
+
+See `docs/environments.md`. Local dev uses `file:dev.db` (init: `npm run db:migrate`); preview deploys use the `pianohouse-preview` Turso DB; only production touches the prod DB (`pianohouse`). Prod smoke tests use plus-addressed accounts (`nlovejoy+<label>@me.com`), cleaned up after.
+
 ## Local checks
 
 `npm run check` validates content/ — project frontmatter, status enum, image references, hero registry, `homeHero` resolution. A `simple-git-hooks` pre-push runs `check` + `next build` automatically; bypass with `SKIP_SIMPLE_GIT_HOOKS=1 git push` if you really need to.
@@ -32,7 +36,8 @@ This repo coordinates with `prompt-lab` (the producer of `public_session_summari
 
 **Done 2026-06-13 (this session):** Issue #4 closed — `/vibe-coding-lessons` gated behind auth. `app/projects/[slug]/page.tsx` pattern reused: `app/vibe-coding-lessons/page.tsx` now `await getSessionUser()` → signed-in renders full `<Lessons/>`; anonymous gets a teaser (real `MachineNote` attribution w/ `/tenets` link + the one-line version + sign-in CTA card). Single content file unchanged = source of truth; teaser duplicates ~2 short strings (accepted). Verified all three on prod: anonymous teaser, signed-in full, and **single-use magic-link** (reusing a consumed link → "expired or used"). Also replied to prompt-lab's public-table audit in the cross-repo handoff file: manifest = **7 `historyKey`s** (not slugs — `showcase`/`am-i-an-ai` would be mis-purged), both tables consumed per-project, frozen-is-fine, purge approved incl. byside.
 
+**Done 2026-07-04 (this session):** Non-owner magic-link verified on prod via Playwright (`nlovejoy+stranger@me.com` — signed in, gated lessons unlocked; test user deleted after). Environment isolation shipped: local dev → `file:dev.db` (token-less `file:` support in `lib/db.ts`/`migrate.mjs`, `.env.tpl` defaults to it), preview deploys → new `pianohouse-preview` Turso DB, prod TURSO vars re-scoped Production-only with fresh tokens (old 1Password token still valid). Fixed preview `AUTH_FROM_EMAIL` pinned to a deleted branch (preview magic links were broken). Wrote `docs/environments.md` incl. hardening roadmap. **Gotcha:** `vercel env rm NAME preview` deletes the whole var across ALL environments, not just one target.
+
 **Still open (pre-existing):**
-- **Verify magic-link to a _non-owner_ inbox** on prod — owner inbox + single-use now confirmed (06-13); only the stranger-can-sign-in case is untested. `https://www.pianohouseproject.org/signin`, expect sender `noreply@mail.pianohouseproject.org`.
-- **Auth follow-ups (not built):** Google OAuth + account-linking; follower email digest (Resend); note moderation.
+- **Auth follow-ups (not built),** agreed order: note moderation → follower email digest (Resend) → Google OAuth + account-linking. Next hardening steps in `docs/environments.md` (dev email-to-console first).
 - **Project imagery** — `image`/`cardImage` wired, none set; mostly moot now OG cards render. Drop file at `assets/originals/projects/<slug>.<ext>`, run `node scripts/compress-image.mjs projects/<slug>`, add to MDX.

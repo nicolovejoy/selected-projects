@@ -34,6 +34,12 @@ yarn-error.log*
 .env*
 !.env.tpl
 
+# local dev database
+dev.db*
+
+# playwright mcp session snapshots
+.playwright-mcp/
+
 # vercel
 .vercel
 
