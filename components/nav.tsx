@@ -51,10 +51,10 @@ export async function Nav() {
           ))}
           <li>
             <a
-              href="https://github.com/nicolovejoy/selected-projects"
+              href="https://github.com/nicolovejoy"
               target="_blank"
               rel="noopener"
-              aria-label="This site's code on GitHub"
+              aria-label="Nico on GitHub"
               className="block hover:text-neutral-900"
             >
               <GitHubMark className="size-4" />

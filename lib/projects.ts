@@ -3,6 +3,8 @@ import musicforge, { metadata as musicforgeMeta } from "@/content/projects/music
 import ibuild4you, { metadata as ibuild4youMeta } from "@/content/projects/ibuild4you.mdx";
 import prntd, { metadata as prntdMeta } from "@/content/projects/prntd.mdx";
 import promptLab, { metadata as promptLabMeta } from "@/content/projects/prompt-lab.mdx";
+import recountly, { metadata as recountlyMeta } from "@/content/projects/recountly.mdx";
+import splitRecording, { metadata as splitRecordingMeta } from "@/content/projects/split-recording.mdx";
 import rocksculpture, { metadata as rocksculptureMeta } from "@/content/projects/rocksculpture.mdx";
 import selectedProjects, { metadata as selectedProjectsMeta } from "@/content/projects/selected-projects.mdx";
 
@@ -33,6 +35,8 @@ const entries: Record<string, Entry> = {
   rocksculpture: { meta: rocksculptureMeta as ProjectMeta, Body: rocksculpture },
   ibuild4you: { meta: ibuild4youMeta as ProjectMeta, Body: ibuild4you },
   "prompt-lab": { meta: promptLabMeta as ProjectMeta, Body: promptLab },
+  recountly: { meta: recountlyMeta as ProjectMeta, Body: recountly },
+  "split-recording": { meta: splitRecordingMeta as ProjectMeta, Body: splitRecording },
   "selected-projects": { meta: selectedProjectsMeta as ProjectMeta, Body: selectedProjects },
 };
 

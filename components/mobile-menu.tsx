@@ -57,7 +57,7 @@ export function MobileMenu({
             ))}
             <li>
               <a
-                href="https://github.com/nicolovejoy/selected-projects"
+                href="https://github.com/nicolovejoy"
                 target="_blank"
                 rel="noopener"
                 onClick={() => setOpen(false)}
