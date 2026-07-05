@@ -18,7 +18,15 @@ export function MobileMenu({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="sm:hidden">
+    <div className="flex items-center gap-2 sm:hidden">
+      {user && (
+        <span
+          aria-hidden
+          className="flex size-6 items-center justify-center rounded-full bg-neutral-900 text-[11px] font-semibold text-white"
+        >
+          {(user.name ?? user.email)[0].toUpperCase()}
+        </span>
+      )}
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -50,8 +58,16 @@ export function MobileMenu({
             <li className="mt-1 border-t border-neutral-100 pt-2">
               {user ? (
                 <>
-                  <div className="px-2 py-1 text-xs text-neutral-400">
-                    {user.name ?? user.email}
+                  <div className="flex items-center gap-2 px-2 py-1">
+                    <span
+                      aria-hidden
+                      className="flex size-6 items-center justify-center rounded-full bg-neutral-900 text-[11px] font-semibold text-white"
+                    >
+                      {(user.name ?? user.email)[0].toUpperCase()}
+                    </span>
+                    <span className="truncate text-sm font-medium text-neutral-800">
+                      {user.name ?? user.email}
+                    </span>
                   </div>
                   <form action="/api/auth/signout" method="post">
                     <button

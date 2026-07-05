@@ -44,7 +44,17 @@ export async function Nav() {
           ))}
           {user ? (
             <>
-              <li className="text-neutral-400">{user.name ?? user.email}</li>
+              <li className="flex items-center gap-2 rounded-full border border-neutral-200 bg-neutral-50 py-1 pl-1 pr-3">
+                <span
+                  aria-hidden
+                  className="flex size-6 items-center justify-center rounded-full bg-neutral-900 text-[11px] font-semibold text-white"
+                >
+                  {(user.name ?? user.email)[0].toUpperCase()}
+                </span>
+                <span className="max-w-[10rem] truncate font-medium text-neutral-800">
+                  {user.name ?? user.email}
+                </span>
+              </li>
               <li>
                 <form action="/api/auth/signout" method="post">
                   <button type="submit" className="hover:text-neutral-900">
