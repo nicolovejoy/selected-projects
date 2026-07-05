@@ -22,7 +22,7 @@ export default async function SignInPage({
 
   return (
     <div className="min-h-[80dvh] bg-neutral-50">
-      <main className="mx-auto flex max-w-sm flex-col px-5 pt-16 pb-20">
+      <div className="mx-auto flex max-w-sm flex-col px-5 pt-16 pb-20">
         {errorMessage && (
           <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             {errorMessage}
@@ -33,7 +33,7 @@ export default async function SignInPage({
           Signing in lets you follow projects and join the conversation. We only
           store your email — see the tenets for how we treat it.
         </p>
-      </main>
+      </div>
     </div>
   );
 }

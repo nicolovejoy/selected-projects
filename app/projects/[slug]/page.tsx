@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getProject, getProjectBody, projectHistoryKey, projects } from "@/lib/projects";
+import { site } from "@/content/site";
 import { getProjectHistory } from "@/lib/history";
 import { getCommitActivity, getPublicRepo } from "@/lib/github";
 import { getSessionUser, isAdmin } from "@/lib/auth";
@@ -24,6 +25,20 @@ export const revalidate = 86400;
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const project = getProject(slug);
+  if (!project) return {};
+  return {
+    title: `${project.name} — ${site.title}`,
+    description: project.tagline,
+  };
 }
 
 export default async function ProjectPage({
@@ -52,7 +67,7 @@ export default async function ProjectPage({
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <Link href="/" className="text-sm text-neutral-500 hover:text-neutral-900">
+      <Link href="/projects" className="text-sm text-neutral-500 hover:text-neutral-900">
         ← All projects
       </Link>
 

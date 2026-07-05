@@ -141,7 +141,7 @@ function Honeypot() {
       }}
     >
       <label>
-        Website
+        If you are human, leave this field empty
         <input type="text" name="website" tabIndex={-1} autoComplete="off" />
       </label>
     </div>

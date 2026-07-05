@@ -10,7 +10,7 @@ export default async function HomePage() {
 
   return (
     <div className="bg-neutral-50">
-      <main className="mx-auto max-w-xl px-5 pb-20">
+      <div className="mx-auto max-w-xl px-5 pb-20">
         <section className="pt-9 pb-6">
           <h1 className="font-serif text-4xl leading-tight tracking-tight">
             What&rsquo;s cooking
@@ -51,7 +51,7 @@ export default async function HomePage() {
             </div>
           </>
         )}
-      </main>
+      </div>
     </div>
   );
 }
