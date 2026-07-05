@@ -1,8 +1,8 @@
 export const site = {
   title: "the piano house project",
-  description: "explorations in AI and vibe-coding.",
+  description: "experimental projects built with Claude Code — learning the tooling is the point.",
   footerTagline:
-    "the piano house project — explorations in AI and vibe-coding.",
+    "the piano house project — experiments with Claude Code; learning the tooling is the point.",
   navLabels: {
     projects: "projects",
     about: "about",
