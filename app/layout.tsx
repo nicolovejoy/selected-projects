@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { site } from "@/content/site";
 
@@ -54,6 +55,7 @@ export default function RootLayout({
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />
+        <Script src="https://prompt-labs.org/beacon.js" strategy="afterInteractive" />
       </body>
     </html>
   );
