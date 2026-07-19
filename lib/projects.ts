@@ -56,6 +56,18 @@ export const projects: Project[] = Object.entries(entries).map(([slug, e]) => ({
   ...e.meta,
 }));
 
+export function isCategory(value: string): value is ProjectCategory {
+  return categories.some((c) => c.key === value);
+}
+
+export function categoryLabel(key: ProjectCategory): string {
+  return categories.find((c) => c.key === key)!.label;
+}
+
+export function projectsInCategory(key: ProjectCategory): Project[] {
+  return projects.filter((p) => p.category === key);
+}
+
 export function getProject(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);
 }

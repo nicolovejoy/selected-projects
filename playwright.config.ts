@@ -20,8 +20,11 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
+    // A production build, not `next dev`: Next refuses to run two dev servers in
+    // one directory, so dev-mode e2e would fail whenever someone has the app
+    // running. This also tests what actually ships.
     command:
-      "mkdir -p .playwright && node scripts/migrate.mjs && node scripts/seed-dev.mjs && npm run dev -- --port " +
+      "mkdir -p .playwright && node scripts/migrate.mjs && node scripts/seed-dev.mjs && next build && next start --port " +
       PORT,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,

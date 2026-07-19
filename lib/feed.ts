@@ -20,6 +20,8 @@ export type FeedEntry = {
   weekOf: string | null;
   summary: string | null;
   sessionCount: number | null;
+  /** Sessions per week, oldest→newest, for the activity sparkline. Empty when unpublished. */
+  spark: number[];
 };
 
 export type FeedGroup = { key: ProjectCategory; label: string; entries: FeedEntry[] };
@@ -41,6 +43,9 @@ async function toEntry(p: (typeof projects)[number]): Promise<FeedEntry> {
     weekOf: latest?.weekOf ?? null,
     summary: latest?.publicSummary ?? null,
     sessionCount: latest?.sessionCount ?? null,
+    spark: [...history.weekly]
+      .sort((a, b) => a.weekOf.localeCompare(b.weekOf))
+      .map((w) => w.sessionCount),
   };
 }
 
