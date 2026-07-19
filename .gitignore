@@ -40,6 +40,11 @@ dev.db*
 # playwright mcp session snapshots
 .playwright-mcp/
 
+# playwright e2e artifacts + disposable test DB
+/test-results/
+/playwright-report/
+/.playwright/
+
 # vercel
 .vercel
 
