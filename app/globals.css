@@ -1,10 +1,130 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* Make the `dark:` variant track the same switch as the token ramp below:
+   system preference (unless opted out via [data-theme="light"]) OR an explicit
+   [data-theme="dark"]. Keeps `dark:prose-invert` and other `dark:` utilities in
+   lockstep with the CSS-var flip, and makes a future manual toggle work fully. */
+@custom-variant dark {
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+  &:where(:root[data-theme="dark"] *) {
+    @slot;
+  }
+}
+
+/* ── Token layer ────────────────────────────────────────────────────────────
+   A hueless neutral ramp exposed as CSS custom properties. The light values are
+   byte-identical to Tailwind's default neutral scale, so every existing
+   `*-neutral-*` / `*-white` utility renders unchanged; dark mode flips the ramp
+   in place (see below). The named semantic tokens are the vocabulary shared
+   verbatim with the recordings catalog (recordings.pianohouseproject.org). */
+:root {
+  --n-0: #ffffff;
+  --n-50: #fafafa;
+  --n-100: #f5f5f5;
+  --n-200: #e5e5e5;
+  --n-300: #d4d4d4;
+  --n-400: #a3a3a3;
+  --n-500: #737373;
+  --n-600: #525252;
+  --n-700: #404040;
+  --n-800: #262626;
+  --n-900: #171717;
+  --n-950: #0a0a0a;
+  --n-1000: #000000;
+
+  --surface: var(--n-0);
+  --surface-tint: var(--n-50);
+  --surface-muted: var(--n-100);
+  --border: var(--n-200);
+  --border-hover: var(--n-300);
+  --text: var(--n-900);
+  --text-muted: var(--n-600);
+  --text-faint: var(--n-400);
+  --accent-invert: var(--n-900);
+  --accent-invert-fg: var(--n-0);
+
+  /* GitHub-style contribution calendar empty cell (levels 1–4 keep their hue). */
+  --cal-empty: #ebedf0;
+}
+
+/* Dark ramp — hueless inversion (surfaces darken, text lightens). Applied on
+   system preference, and again on an explicit [data-theme="dark"] so a future
+   manual toggle already drives the whole neutral system for free.
+   [data-theme="light"] opts out of the system-preference branch. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --n-0: #0a0a0a;
+    --n-50: #171717;
+    --n-100: #212121;
+    --n-200: #2e2e2e;
+    --n-300: #404040;
+    --n-400: #737373;
+    --n-500: #8f8f8f;
+    --n-600: #a3a3a3;
+    --n-700: #c8c8c8;
+    --n-800: #d4d4d4;
+    --n-900: #ededed;
+    --n-950: #fafafa;
+    --n-1000: #ffffff;
+    --cal-empty: #1c1c1c;
+  }
+}
+
+:root[data-theme="dark"] {
+  --n-0: #0a0a0a;
+  --n-50: #171717;
+  --n-100: #212121;
+  --n-200: #2e2e2e;
+  --n-300: #404040;
+  --n-400: #737373;
+  --n-500: #8f8f8f;
+  --n-600: #a3a3a3;
+  --n-700: #c8c8c8;
+  --n-800: #d4d4d4;
+  --n-900: #ededed;
+  --n-950: #fafafa;
+  --n-1000: #ffffff;
+  --cal-empty: #1c1c1c;
+}
+
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-newsreader);
+
+  /* Neutral ramp → the flipping vars, so existing utility classes
+     (bg-white, border-neutral-200, text-neutral-600, bg-neutral-900, …)
+     become token-driven and dark-aware with no per-component churn. */
+  --color-white: var(--n-0);
+  --color-black: var(--n-1000);
+  --color-neutral-50: var(--n-50);
+  --color-neutral-100: var(--n-100);
+  --color-neutral-200: var(--n-200);
+  --color-neutral-300: var(--n-300);
+  --color-neutral-400: var(--n-400);
+  --color-neutral-500: var(--n-500);
+  --color-neutral-600: var(--n-600);
+  --color-neutral-700: var(--n-700);
+  --color-neutral-800: var(--n-800);
+  --color-neutral-900: var(--n-900);
+  --color-neutral-950: var(--n-950);
+
+  /* Named tokens exposed as utilities (bg-surface, border-border, text-muted…). */
+  --color-surface: var(--surface);
+  --color-surface-tint: var(--surface-tint);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-fg: var(--text);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
+  --color-invert: var(--accent-invert);
+  --color-invert-fg: var(--accent-invert-fg);
 }
 
 body {
@@ -18,4 +138,28 @@ body {
 .prose p {
   font-size: 1.0625rem;
   line-height: 1.7;
+}
+
+/* Shared focus ring — a11y baseline, same spec as the recordings catalog. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Mono micro-label — the uppercase caption idiom shared with the catalog.
+   In @layer components so per-site utility overrides (size/color) still win. */
+@layer components {
+  .mono-label {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--text-faint);
+  }
 }
