@@ -23,6 +23,9 @@
    in place (see below). The named semantic tokens are the vocabulary shared
    verbatim with the recordings catalog (recordings.pianohouseproject.org). */
 :root {
+  /* Let native UI (form controls, scrollbars, select popups) follow the ramp. */
+  color-scheme: light dark;
+
   --n-0: #ffffff;
   --n-50: #fafafa;
   --n-100: #f5f5f5;
@@ -75,7 +78,12 @@
   }
 }
 
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
 :root[data-theme="dark"] {
+  color-scheme: dark;
   --n-0: #0a0a0a;
   --n-50: #171717;
   --n-100: #212121;
