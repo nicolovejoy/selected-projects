@@ -38,15 +38,19 @@ export function FeedCard({ entry }: { entry: FeedEntry }) {
           <span className={`size-1.5 rounded-full ${statusDot[entry.status]}`} aria-hidden />
           {entry.project}
         </span>
-        <span className="shrink-0 text-xs text-neutral-400">
-          week of {weekLabel(entry.weekOf)}
-        </span>
+        {entry.weekOf && (
+          <span className="shrink-0 text-xs text-neutral-400">
+            week of {weekLabel(entry.weekOf)}
+          </span>
+        )}
       </div>
 
       <div className="mt-3 flex items-start gap-4">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-neutral-900">{entry.tagline}</p>
-          <p className="mt-2 text-[15px] leading-relaxed text-neutral-700">{entry.summary}</p>
+          {entry.summary && (
+            <p className="mt-2 text-[15px] leading-relaxed text-neutral-700">{entry.summary}</p>
+          )}
         </div>
         {entry.image && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -60,9 +64,13 @@ export function FeedCard({ entry }: { entry: FeedEntry }) {
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3">
-        <span className="mono-label">
-          ↳ from claude · {entry.sessionCount} session{entry.sessionCount === 1 ? "" : "s"}
-        </span>
+        {entry.sessionCount === null ? (
+          <span />
+        ) : (
+          <span className="mono-label">
+            ↳ from claude · {entry.sessionCount} session{entry.sessionCount === 1 ? "" : "s"}
+          </span>
+        )}
         {entry.url && (
           <a
             href={entry.url}

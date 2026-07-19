@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { getSessionUser } from "@/lib/auth";
-import { getFeed } from "@/lib/feed";
+import { getGroupedFeed } from "@/lib/feed";
 import { FeedCard } from "@/components/feed-card";
 import Home from "@/content/home.mdx";
 
 export default async function HomePage() {
   const user = await getSessionUser();
-  const feed = await getFeed(30);
+  const groups = await getGroupedFeed();
 
   return (
     <div className="bg-neutral-50">
@@ -20,17 +20,22 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {feed.length === 0 ? (
+        {groups.length === 0 ? (
           <p className="text-sm text-neutral-400">
-            Nothing in the feed yet — history is still syncing.
+            Nothing here yet — history is still syncing.
           </p>
         ) : (
           <>
-            <ul className="space-y-3">
-              {feed.map((e, i) => (
-                <FeedCard key={`${e.project}-${e.weekOf}-${i}`} entry={e} />
-              ))}
-            </ul>
+            {groups.map((g) => (
+              <section key={g.key} className="mb-8">
+                <h2 className="mono-label mb-3">{g.label}</h2>
+                <ul className="space-y-3">
+                  {g.entries.map((e) => (
+                    <FeedCard key={e.project} entry={e} />
+                  ))}
+                </ul>
+              </section>
+            ))}
 
             <div className="mt-4 rounded-xl border border-neutral-200 bg-white p-7 text-center">
               <h2 className="font-serif text-xl tracking-tight">Like what you see?</h2>
