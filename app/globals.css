@@ -51,8 +51,12 @@
   --accent-invert: var(--n-900);
   --accent-invert-fg: var(--n-0);
 
-  /* GitHub-style contribution calendar empty cell (levels 1–4 keep their hue). */
-  --cal-empty: #ebedf0;
+  /* GitHub-style contribution calendar ramp (empty → busiest). */
+  --cal-0: #ebedf0;
+  --cal-1: #9be9a8;
+  --cal-2: #40c463;
+  --cal-3: #30a14e;
+  --cal-4: #216e39;
 }
 
 /* Dark ramp — hueless inversion (surfaces darken, text lightens). Applied on
@@ -74,7 +78,11 @@
     --n-900: #ededed;
     --n-950: #fafafa;
     --n-1000: #ffffff;
-    --cal-empty: #1c1c1c;
+    --cal-0: #1c1c1c;
+    --cal-1: #0e4429;
+    --cal-2: #006d32;
+    --cal-3: #26a641;
+    --cal-4: #39d353;
   }
 }
 
@@ -97,7 +105,11 @@
   --n-900: #ededed;
   --n-950: #fafafa;
   --n-1000: #ffffff;
-  --cal-empty: #1c1c1c;
+  --cal-0: #1c1c1c;
+  --cal-1: #0e4429;
+  --cal-2: #006d32;
+  --cal-3: #26a641;
+  --cal-4: #39d353;
 }
 
 @theme inline {
@@ -148,7 +160,11 @@ body {
   line-height: 1.7;
 }
 
-/* Shared focus ring — a11y baseline, same spec as the recordings catalog. */
+/* Shared focus ring — a11y baseline, same spec as the recordings catalog.
+   Uses --text rather than currentColor: the ring is drawn outside the element,
+   so it has to contrast with the *page*, not the element it surrounds. On the
+   invert-primary buttons currentColor is the near-black button label, which
+   vanished against the dark surface behind it. */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -156,7 +172,7 @@ textarea:focus-visible,
 select:focus-visible,
 summary:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid currentColor;
+  outline: 2px solid var(--text);
   outline-offset: 2px;
 }
 

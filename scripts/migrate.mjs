@@ -7,6 +7,15 @@ if (!url || (!authToken && !url.startsWith("file:"))) {
   process.exit(1);
 }
 
+// Remote DBs (preview/prod) need an explicit opt-in — .env.local is easy to
+// leave pointed at Turso, and an unintended migrate there is a real risk.
+const isLocal = url.startsWith("file:");
+if (!isLocal && !process.argv.includes("--remote")) {
+  console.error(`refusing to migrate ${url} without --remote`);
+  process.exit(1);
+}
+console.log(`→ ${url}`);
+
 const db = createClient(authToken ? { url, authToken } : { url });
 
 await db.execute(`

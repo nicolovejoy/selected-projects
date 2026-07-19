@@ -52,3 +52,6 @@ next-env.d.ts
 
 # image originals — local only, compressed copies live in public/
 /assets/originals/
+
+# Stray agent/browser screenshots at repo root (real images live in public/)
+/*.png

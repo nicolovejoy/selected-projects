@@ -11,7 +11,8 @@
     "lint": "eslint",
     "check": "node scripts/check-content.mjs",
     "postinstall": "node scripts/write-build-info.mjs && simple-git-hooks 2>/dev/null || true",
-    "db:migrate": "node --env-file=.env.local scripts/migrate.mjs"
+    "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
+    "db:seed": "node --env-file=.env.local scripts/seed-dev.mjs"
   },
   "simple-git-hooks": {
     "pre-push": "npm run check"
