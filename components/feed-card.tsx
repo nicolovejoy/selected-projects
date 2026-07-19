@@ -34,7 +34,7 @@ export function FeedCard({ entry }: { entry: FeedEntry }) {
       />
 
       <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-neutral-600">
+        <span className="mono-label inline-flex items-center gap-1.5 text-[11px] text-neutral-600">
           <span className={`size-1.5 rounded-full ${statusDot[entry.status]}`} aria-hidden />
           {entry.project}
         </span>
@@ -60,7 +60,7 @@ export function FeedCard({ entry }: { entry: FeedEntry }) {
       </div>
 
       <div className="mt-3 flex items-center justify-between gap-3">
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-neutral-400">
+        <span className="mono-label">
           ↳ from claude · {entry.sessionCount} session{entry.sessionCount === 1 ? "" : "s"}
         </span>
         {entry.url && (

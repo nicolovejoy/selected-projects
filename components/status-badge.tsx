@@ -1,10 +1,12 @@
 import type { ProjectStatus } from "@/lib/projects";
 
+// Dots stay -500 (readable on both themes); the label text lifts to -400 in
+// dark so the saturated -700 shades don't sink into the dark surface.
 const styles: Record<ProjectStatus, { dot: string; text: string }> = {
-  live: { dot: "bg-emerald-500", text: "text-emerald-700" },
-  beta: { dot: "bg-sky-500", text: "text-sky-700" },
-  alpha: { dot: "bg-amber-500", text: "text-amber-700" },
-  demo: { dot: "bg-violet-500", text: "text-violet-700" },
+  live: { dot: "bg-emerald-500", text: "text-emerald-700 dark:text-emerald-400" },
+  beta: { dot: "bg-sky-500", text: "text-sky-700 dark:text-sky-400" },
+  alpha: { dot: "bg-amber-500", text: "text-amber-700 dark:text-amber-400" },
+  demo: { dot: "bg-violet-500", text: "text-violet-700 dark:text-violet-400" },
   concept: { dot: "bg-neutral-400", text: "text-neutral-500" },
 };
 

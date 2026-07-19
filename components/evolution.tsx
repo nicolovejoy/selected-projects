@@ -29,7 +29,7 @@ export function Evolution({ history }: { history: ProjectHistory }) {
     <>
       {head && <p className="text-sm text-neutral-600">{head}</p>}
 
-      <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-neutral-400">
+      <div className="mono-label mt-4">
         ↳ from claude · auto-generated at each session handoff
       </div>
 
