@@ -29,6 +29,7 @@ export default defineConfig({
     env: {
       TURSO_DATABASE_URL: E2E_DB,
       TURSO_AUTH_TOKEN: "",
+      NO_OPEN: "1",
     },
   },
 });
