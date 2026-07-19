@@ -3,6 +3,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 
 const ALLOWED_STATUS = new Set(["live", "beta", "alpha", "demo", "concept"]);
+const ALLOWED_CATEGORY = new Set(["music", "art", "products", "tools"]);
 const errors = [];
 const expect = (cond, msg) => {
   if (!cond) errors.push(msg);
@@ -34,6 +35,16 @@ for (const file of projectFiles) {
     expect(
       ALLOWED_STATUS.has(meta.status),
       `${fullPath}: status "${meta.status}" not in {${[...ALLOWED_STATUS].join(", ")}}`,
+    );
+  }
+  expect(
+    typeof meta.category === "string" && meta.category,
+    `${fullPath}: missing metadata.category`,
+  );
+  if (meta.category) {
+    expect(
+      ALLOWED_CATEGORY.has(meta.category),
+      `${fullPath}: category "${meta.category}" not in {${[...ALLOWED_CATEGORY].join(", ")}}`,
     );
   }
   for (const field of ["image", "cardImage"]) {

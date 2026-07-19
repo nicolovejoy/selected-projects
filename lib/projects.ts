@@ -10,10 +10,21 @@ import selectedProjects, { metadata as selectedProjectsMeta } from "@/content/pr
 
 export type ProjectStatus = "live" | "beta" | "alpha" | "demo" | "concept";
 
+export type ProjectCategory = "music" | "art" | "products" | "tools";
+
+/** Display order of the category sections. Tools last — it's the layer underneath. */
+export const categories: { key: ProjectCategory; label: string }[] = [
+  { key: "music", label: "Music" },
+  { key: "art", label: "Art" },
+  { key: "products", label: "Products" },
+  { key: "tools", label: "Tools" },
+];
+
 export type ProjectMeta = {
   name: string;
   tagline: string;
   status: ProjectStatus;
+  category: ProjectCategory;
   url?: string;
   github?: string;
   image?: string;
@@ -44,6 +55,18 @@ export const projects: Project[] = Object.entries(entries).map(([slug, e]) => ({
   slug,
   ...e.meta,
 }));
+
+export function isCategory(value: string): value is ProjectCategory {
+  return categories.some((c) => c.key === value);
+}
+
+export function categoryLabel(key: ProjectCategory): string {
+  return categories.find((c) => c.key === key)!.label;
+}
+
+export function projectsInCategory(key: ProjectCategory): Project[] {
+  return projects.filter((p) => p.category === key);
+}
 
 export function getProject(slug: string): Project | undefined {
   return projects.find((p) => p.slug === slug);

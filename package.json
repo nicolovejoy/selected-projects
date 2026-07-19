@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "predev": "node scripts/write-build-info.mjs",
-    "dev": "next dev",
+    "dev": "node scripts/open-browser.mjs & next dev",
     "prebuild": "node scripts/write-build-info.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "check": "node scripts/check-content.mjs",
     "postinstall": "node scripts/write-build-info.mjs && simple-git-hooks 2>/dev/null || true",
+    "test:e2e": "playwright test",
     "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
     "db:seed": "node --env-file=.env.local scripts/seed-dev.mjs"
   },
@@ -30,6 +31,7 @@
     "resend": "6.12.2"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
