@@ -1,7 +1,8 @@
 import type { CommitWeek } from "@/lib/github";
 
-// GitHub's 5-level green scale.
-const LEVELS = ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"];
+// GitHub's 5-level green scale. Level 0 (empty) is a token so it darkens in
+// dark mode; the four green levels keep their hue in both themes.
+const LEVELS = ["var(--cal-empty)", "#9be9a8", "#40c463", "#30a14e", "#216e39"];
 
 function level(n: number): number {
   if (n <= 0) return 0;

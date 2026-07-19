@@ -131,7 +131,7 @@ export default async function ProjectPage({
       </div>
 
       <CollapsibleSection title="about" defaultOpen>
-        <article className="prose prose-stone prose-lg max-w-none">
+        <article className="prose prose-stone dark:prose-invert prose-lg max-w-none">
           <Body />
         </article>
       </CollapsibleSection>
