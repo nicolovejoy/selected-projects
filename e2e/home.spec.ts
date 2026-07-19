@@ -25,6 +25,14 @@ test("all four quadrants fit an iPhone screen without scrolling", async ({ page 
     expect(box!.y + box!.height, `${label} tile should end above the fold`).toBeLessThanOrEqual(844);
   }
 
+  // Stacked single-column on a phone, so names have room and don't truncate.
+  const truncated = await page.evaluate(() =>
+    [...document.querySelectorAll("main li span.font-medium")].some(
+      (el) => el.scrollWidth > el.clientWidth + 1,
+    ),
+  );
+  expect(truncated, "project names should not be cut off on a phone").toBe(false);
+
   const scrollable = await page.evaluate(
     () => document.documentElement.scrollHeight > window.innerHeight + 1,
   );

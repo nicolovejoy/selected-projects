@@ -10,11 +10,13 @@ export default async function HomePage() {
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col px-5 pb-4">
-      <section className="pt-5 pb-3">
-        <h1 className="font-serif text-3xl leading-tight tracking-tight sm:text-4xl">
+      <section className="pt-4 pb-3">
+        <h1 className="font-serif text-2xl leading-tight tracking-tight sm:text-3xl lg:text-4xl">
           What&rsquo;s cooking
         </h1>
-        <div className="mt-2 line-clamp-2 text-[15px] leading-relaxed text-neutral-500 sm:line-clamp-none">
+        {/* Hidden on phones: the four tiles + heading exactly fill an iPhone screen,
+            and this paragraph is the one element that pushes it into scrolling. */}
+        <div className="mt-2 text-[15px] leading-relaxed text-neutral-500 max-sm:hidden">
           <Home />
         </div>
       </section>
@@ -22,9 +24,10 @@ export default async function HomePage() {
       {groups.length === 0 ? (
         <p className="text-sm text-neutral-400">Nothing here yet — history is still syncing.</p>
       ) : (
-        // Two columns at every width so all four quadrants stay on one screen,
-        // phone included. Equal-height rows keep the grid reading as a grid.
-        <div className="grid grid-cols-2 gap-3 [grid-auto-rows:minmax(0,1fr)]">
+        // Single column on phones so project names aren't truncated; a true 2x2
+        // from sm up. All four stay on one screen either way. The min-height at
+        // lg stops the grid collapsing into a strip on a tall desktop window.
+        <div className="grid grid-cols-1 gap-2 sm:gap-3 [grid-auto-rows:minmax(0,1fr)] sm:grid-cols-2 lg:min-h-[58vh]">
           {groups.map((g) => (
             <CategoryTile key={g.key} group={g} />
           ))}

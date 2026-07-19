@@ -12,9 +12,9 @@ const statusDot: Record<ProjectStatus, string> = {
 };
 
 /**
- * One quadrant of the home grid. Shows up to three projects: name + activity
- * sparkline everywhere, plus a two-line summary only once there's room for it,
- * so all four tiles still fit a phone screen without scrolling.
+ * One quadrant of the home grid. Every project in the category gets a row with
+ * an activity sparkline; a supporting line (the latest rollup summary, or the
+ * tagline when nothing is published) appears from md up, where there's room.
  */
 export function CategoryTile({ group }: { group: FeedGroup }) {
   const top = group.entries.slice(0, 3);
@@ -23,30 +23,31 @@ export function CategoryTile({ group }: { group: FeedGroup }) {
   return (
     <Link
       href={`/${group.key}`}
-      className="group flex flex-col rounded-xl border border-neutral-200 bg-white p-4 transition hover:border-neutral-400 sm:p-5"
+      className="group flex flex-col rounded-xl border border-neutral-200 bg-white p-3.5 transition hover:border-neutral-400 sm:p-5"
     >
       <h2 className="mono-label">{group.label}</h2>
 
-      <ul className="mt-3 flex-1 space-y-2 sm:space-y-3">
+      <ul className="mt-2.5 flex-1 space-y-2 sm:space-y-4">
         {top.map((e) => (
           <li key={e.project}>
             <div className="flex items-center gap-2">
-              <span className={`size-1.5 shrink-0 rounded-full ${statusDot[e.status]}`} aria-hidden />
-              <span className="truncate text-[13px] font-medium text-neutral-900 sm:text-sm">
-                {e.projectName}
-              </span>
+              <span
+                className={`size-1.5 shrink-0 rounded-full ${statusDot[e.status]}`}
+                aria-hidden
+              />
+              <span className="text-sm font-medium text-neutral-900">{e.projectName}</span>
               <Sparkline values={e.spark} className="ml-auto" />
             </div>
-            {e.summary && (
-              <p className="mt-1 hidden pl-3.5 text-xs leading-snug text-neutral-500 lg:line-clamp-2">
-                {e.summary}
-              </p>
-            )}
+            {/* max-md:hidden rather than `hidden md:…` — line-clamp sets its own
+                display and won't reliably override display:none at equal specificity. */}
+            <p className="mt-1 pl-3.5 text-xs leading-snug text-neutral-500 max-md:hidden md:line-clamp-2">
+              {e.summary ?? e.tagline}
+            </p>
           </li>
         ))}
       </ul>
 
-      <p className="mono-label mt-3 group-hover:text-neutral-600">
+      <p className="mono-label mt-3 max-sm:hidden group-hover:text-neutral-600">
         {rest > 0 ? `+${rest} more →` : "view →"}
       </p>
     </Link>
