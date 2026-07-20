@@ -40,9 +40,14 @@ Common extensions accepted: `jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `tif`,
 
 ## Use the image on a page
 
-### Home hero
+### Home hero — currently unused
 
-The home hero is driven by `content/heroes.ts`:
+**Nothing in production renders a hero.** `app/page.tsx` has been the four-quadrant
+category grid since 2026-07-19 and never imports `content/heroes.ts`. The tuner and
+the registry below still work, and `npm run check` still validates them, but the
+output goes nowhere. Read this section as dormant, not live. See AGENTS.md "Still open".
+
+The hero is driven by `content/heroes.ts`:
 
 - Add a `<slug>: { ... }` entry to the `heroes` map with sensible defaults (`startOpacity: 70, midOpacity: 40, midStop: 45, endStop: 85, objectPosition: "right", titleColor: "#171717", subtitleColor: "#404040"`).
 - Set `homeHero` to that slug to make it the active hero.
@@ -60,7 +65,10 @@ export const metadata = {
 };
 ```
 
-The `/projects/<slug>` page will render it under the header, above the prose.
+This is a *fallback*, not a screenshot slot. `components/og-preview.tsx` resolves the
+detail page's preview card as `scraped og:image → project.image → project.cardImage`,
+so `image` is only reached when the live site ships no `og:image`. All six project
+sites currently do, which is why no MDX file sets `image` today.
 
 ## Naming
 

@@ -6,14 +6,15 @@ All visible copy lives in `content/`. Pages and layout chrome import from there 
 
 `content/site.ts` — small strings that appear in chrome:
 
-- `title` — site name (browser tab, header link, footer tagline, OG image).
-- `description` — one-line description (meta description, OG, Twitter card, OG image).
-- `footerTagline` — full footer line ("Piano House Project — explorations in AI and vibe-coding.").
-- `navLabels` — header nav labels (`projects`, `about`, `connect`).
+- `title` — site name (browser tab, header link).
+- `tagline` — terse form, drawn as type on the OG card. Not a meta description; the list form makes a poor search snippet.
+- `description` — prose form, for `<meta name="description">` and the text beneath social cards. Deliberately a different string from `tagline`.
+- `footerTagline` — full footer line ("the piano house project — music, art, products, and tools.").
+- `navLabels` — header nav labels (`about`, `tenets`, `lessons`, `connect`, `signIn`).
 
 ## Standalone pages
 
-`content/home.mdx` — home hero. `metadata.title` is the H1; the body is the intro paragraph below it.
+`content/home.mdx` — the intro paragraph under the "What's cooking" heading. Only the body is used; `metadata.title` is exported but unread (the H1 is hardcoded in `app/page.tsx`). The paragraph is hidden on phones — it's the one element that pushes the four category tiles into scrolling.
 
 `content/connect.mdx` — `/connect` page. `metadata.title` is the H1; the body is the line above the connect form.
 
@@ -44,8 +45,10 @@ Open http://localhost:3000. Most content edits hot-reload without a restart.
 
 ## How to deploy an edit
 
-Commit and push to `main`. Vercel auto-deploys to https://pianohouseproject.org within ~2 minutes.
+Commit and push to `main`. Vercel auto-deploys to https://pianohouseproject.org, usually within ~2 minutes — though a deploy has sat in "Initializing" for 10+ before clearing on its own.
+
+Stage explicit paths, not `-A` — `git add -A` once swept a stray agent screenshot into a commit.
 
 ```
-git add -A && git commit -m "Update <whatever>" && git push
+git add content/ && git commit -m "Update <whatever>" && git push
 ```
