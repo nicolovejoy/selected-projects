@@ -40,18 +40,10 @@ Common extensions accepted: `jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `tif`,
 
 ## Use the image on a page
 
-### Home hero — currently unused
-
-**Nothing in production renders a hero.** `app/page.tsx` has been the four-quadrant
-category grid since 2026-07-19 and never imports `content/heroes.ts`. The tuner and
-the registry below still work, and `npm run check` still validates them, but the
-output goes nowhere. Read this section as dormant, not live. See AGENTS.md "Still open".
-
-The hero is driven by `content/heroes.ts`:
-
-- Add a `<slug>: { ... }` entry to the `heroes` map with sensible defaults (`startOpacity: 70, midOpacity: 40, midStop: 45, endStop: 85, objectPosition: "right", titleColor: "#171717", subtitleColor: "#404040"`).
-- Set `homeHero` to that slug to make it the active hero.
-- Run `npm run dev` and open `http://localhost:3000/dev/hero-tune` to drag sliders, eyedrop colors, and copy the tuned values back into `heroes.ts`. The tuner 404s in production.
+> **The home hero is gone.** `app/page.tsx` became the four-quadrant category grid
+> in PR #9 (2026-07-19) and stopped rendering a hero; the registry, the
+> `/dev/hero-tune` tuner, and `public/sunset.jpg` were deleted in `81a4eaa`'s
+> follow-up once that was confirmed. Recover from git history if a hero returns.
 
 ### Project screenshot
 

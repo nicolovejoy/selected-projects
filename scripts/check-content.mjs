@@ -82,35 +82,11 @@ for (const file of projectFiles) {
   );
 }
 
-const heroesSource = readFileSync("content/heroes.ts", "utf8");
-const heroesBlock = heroesSource.match(/export const heroes = (\{[\s\S]*?\n\}) satisfies/);
-let heroSlugs = [];
-if (!heroesBlock) {
-  errors.push("content/heroes.ts: could not parse `heroes` export");
-} else {
-  heroSlugs = [...heroesBlock[1].matchAll(/^\s{2}(["']?)([\w-]+)\1:\s*\{/gm)].map((m) => m[2]);
-  for (const slug of heroSlugs) {
-    const imagePath = path.join("public", `${slug}.jpg`);
-    expect(existsSync(imagePath), `content/heroes.ts: hero "${slug}" has no image at ${imagePath}`);
-  }
-}
-
-const homeHeroMatch = heroesSource.match(/export const homeHero[^=]*=\s*"([^"]+)"/);
-if (!homeHeroMatch) {
-  errors.push("content/heroes.ts: could not parse `homeHero` export");
-} else {
-  const homeHero = homeHeroMatch[1];
-  expect(
-    heroSlugs.includes(homeHero),
-    `content/heroes.ts: homeHero "${homeHero}" is not a key in heroes`,
-  );
-}
-
 if (errors.length) {
   console.error(`✗ Content check failed (${errors.length} error${errors.length === 1 ? "" : "s"}):`);
   for (const e of errors) console.error(`  ${e}`);
   process.exit(1);
 }
 console.log(
-  `✓ Content check passed — ${projectFiles.length} project${projectFiles.length === 1 ? "" : "s"}, ${heroSlugs.length} hero${heroSlugs.length === 1 ? "" : "es"}.`,
+  `✓ Content check passed — ${projectFiles.length} project${projectFiles.length === 1 ? "" : "s"}.`,
 );

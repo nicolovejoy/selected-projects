@@ -6,7 +6,7 @@ Source for https://pianohouseproject.org — the piano house project, this site.
 
 ```bash
 npm run dev      # http://localhost:3000
-npm run check    # validate content/ (frontmatter, image refs, heroes)
+npm run check    # validate content/ (frontmatter, status/category enums, project imports)
 npm run build
 ```
 
