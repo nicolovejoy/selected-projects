@@ -109,20 +109,28 @@ export default async function OGImage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
+          {/* Spaces are baked into the spans rather than expressed as `gap`,
+              which Satori rendered unevenly. flexShrink/nowrap are load-bearing:
+              without them Satori wraps "piano house" onto two lines. */}
           <div
             style={{
               display: "flex",
               alignItems: "baseline",
-              gap: 24,
-              fontSize: 100,
-              letterSpacing: -3,
+              flexWrap: "nowrap",
+              fontSize: 90,
+              letterSpacing: -2,
               lineHeight: 1,
             }}
           >
-            <div>the</div>
-            <div style={{ fontWeight: 700 }}>piano</div>
-            <div style={{ fontWeight: 700 }}>house</div>
-            <div>project</div>
+            <span style={{ flexShrink: 0, whiteSpace: "nowrap" }}>the&nbsp;</span>
+            <span
+              style={{ fontWeight: 700, flexShrink: 0, whiteSpace: "nowrap" }}
+            >
+              piano house
+            </span>
+            <span style={{ flexShrink: 0, whiteSpace: "nowrap" }}>
+              &nbsp;project
+            </span>
           </div>
           <div
             style={{
@@ -132,7 +140,7 @@ export default async function OGImage() {
               lineHeight: 1.3,
             }}
           >
-            {site.description}
+            {site.tagline}
           </div>
         </div>
       </div>

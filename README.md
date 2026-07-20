@@ -1,6 +1,6 @@
 # selected-projects
 
-Source for https://pianohouseproject.org — the Piano House Project's home on the web. A showcase of projects, built with Next.js (App Router) and MDX.
+Source for https://pianohouseproject.org — the piano house project, this site. One project inside the Piano House Project, the umbrella for all of Nico's work. Built with Next.js (App Router) and MDX.
 
 ## Develop
 
