@@ -47,7 +47,10 @@
   --border-hover: var(--n-300);
   --text: var(--n-900);
   --text-muted: var(--n-600);
-  --text-faint: var(--n-400);
+  /* --n-500 clears WCAG AA (≥4.5:1) on the surface in both themes — 4.7:1 light,
+     6.1:1 dark. --n-400 (the old value) was sub-threshold at 2.5:1 light. Still
+     reads as the quietest step below --text-muted; "faint" without being unusable. */
+  --text-faint: var(--n-500);
   --accent-invert: var(--n-900);
   --accent-invert-fg: var(--n-0);
 
