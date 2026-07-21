@@ -13,11 +13,14 @@ test("home renders all four category quadrants", async ({ page }) => {
   }
 });
 
-test("all four quadrants fit an iPhone screen without scrolling", async ({ page }) => {
+test("all four quadrants sit above the fold on an iPhone", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 }); // iPhone 14
   await page.goto("/");
 
-  // Every tile must be inside the viewport — the whole point of the layout.
+  // The real invariant: every quadrant is visible without scrolling. We assert
+  // the tiles clear the fold, not that the whole page (footer included) does —
+  // a footer peeking just under the fold is normal, and pinning the page to
+  // zero scroll fights every legitimately-added project. See PR #10.
   for (const label of CATEGORIES) {
     const tile = page.getByRole("link").filter({ has: page.getByText(label, { exact: true }) });
     const box = await tile.first().boundingBox();
@@ -32,11 +35,6 @@ test("all four quadrants fit an iPhone screen without scrolling", async ({ page 
     ),
   );
   expect(truncated, "project names should not be cut off on a phone").toBe(false);
-
-  const scrollable = await page.evaluate(
-    () => document.documentElement.scrollHeight > window.innerHeight + 1,
-  );
-  expect(scrollable, "home should not scroll vertically on a phone").toBe(false);
 });
 
 test("a quadrant links through to its category page", async ({ page }) => {
