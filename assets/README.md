@@ -9,9 +9,13 @@ assets/
 ├── README.md                       (committed)
 └── originals/                      (gitignored)
     ├── <slug>.<ext>                hero / general images
-    └── projects/
-        └── <slug>.<ext>            project screenshots
+    ├── projects/
+    │   └── <slug>.<ext>            project screenshots (legacy `image` field)
+    └── cards/
+        └── <slug>.<ext>            curated card images (`cardImage` field)
 ```
+
+Web-ready copies land at `public/<slug>.jpg`, `public/projects/<slug>.jpg`, and `public/cards/<slug>.jpg` respectively — same subpath, mirrored from `originals/` into `public/`.
 
 Common extensions accepted: `jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `tif`, `tiff`, `avif`.
 
@@ -45,22 +49,35 @@ Common extensions accepted: `jpg`, `jpeg`, `png`, `heic`, `heif`, `webp`, `tif`,
 > `/dev/hero-tune` tuner, and `public/sunset.jpg` were deleted in `81a4eaa`'s
 > follow-up once that was confirmed. Recover from git history if a hero returns.
 
-### Project screenshot
+### Curated card image
 
-Add an `image` field to the project's MDX frontmatter:
+For a project whose live site has no useful `og:image` (private repo, no public
+URL, or a scrape that isn't worth showing), drop a curated shot at
+`public/cards/<slug>.<ext>` and reference it as `cardImage` in the project's MDX
+frontmatter:
 
 ```mdx
 export const metadata = {
   name: "MusicForge",
   ...
-  image: "/projects/musicforge.jpg",
+  cardImage: "/cards/musicforge.jpg",
 };
 ```
 
-This is a *fallback*, not a screenshot slot. `components/og-preview.tsx` resolves the
-detail page's preview card as `scraped og:image → project.image → project.cardImage`,
-so `image` is only reached when the live site ships no `og:image`. All six project
-sites currently do, which is why no MDX file sets `image` today.
+Source and compress the same way as any other image, using the `cards/` subpath:
+
+```
+node scripts/compress-image.mjs cards/musicforge
+```
+
+Target 1200×630 (the OG aspect ratio both the feed cards and the detail-page
+preview crop to).
+
+`cardImage` always wins. Card image precedence, resolved in `lib/feed.ts` and
+`components/og-preview.tsx`: **`cardImage` (curated) → scraped `og:image` (live
+site) → `image` (legacy fallback) → nothing rendered.** `image` predates
+`cardImage` and is only reached when neither of the first two exists — no MDX
+file sets it today.
 
 ## Naming
 
