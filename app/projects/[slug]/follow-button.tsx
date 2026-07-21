@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { followAction } from "./actions";
 
+const actLink =
+  "font-mono text-[0.66rem] tracking-[0.08em] uppercase text-neutral-600 underline decoration-neutral-300 underline-offset-4 hover:text-neutral-900 hover:decoration-neutral-500";
+
 export function FollowButton({
   project,
   following,
@@ -14,27 +17,17 @@ export function FollowButton({
 }) {
   if (!signedIn) {
     return (
-      <Link
-        href="/signin"
-        className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
-      >
-        Follow along
+      <Link href="/signin" className={actLink}>
+        follow
       </Link>
     );
   }
 
   return (
-    <form action={followAction}>
+    <form action={followAction} className="contents">
       <input type="hidden" name="project" value={project} />
-      <button
-        type="submit"
-        className={
-          following
-            ? "rounded-md border border-neutral-900 bg-neutral-50 px-4 py-2 text-sm font-medium text-neutral-900"
-            : "rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
-        }
-      >
-        {following ? "Following ✓" : "Follow along"}
+      <button type="submit" className={following ? `${actLink} text-neutral-900` : actLink}>
+        {following ? "following ✓" : "follow"}
       </button>
     </form>
   );

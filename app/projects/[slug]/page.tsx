@@ -21,6 +21,17 @@ async function CommitGraph({ github }: { github: string }) {
   return <ContributionCalendar weeks={weeks} />;
 }
 
+function weekLabel(iso: string): string {
+  return new Date(iso.replace(" ", "T") + "Z").toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+const actLink =
+  "font-mono text-[0.66rem] tracking-[0.08em] uppercase text-neutral-600 underline decoration-neutral-300 underline-offset-4 hover:text-neutral-900 hover:decoration-neutral-500";
+
 export const revalidate = 86400;
 
 export function generateStaticParams() {
@@ -64,6 +75,8 @@ export default async function ProjectPage({
 
   const hasEvolution =
     history.totalSessions > 0 || history.weekly.length > 0 || history.recent.length > 0;
+  const latestWeek =
+    [...history.weekly].sort((a, b) => b.weekOf.localeCompare(a.weekOf))[0] ?? null;
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
@@ -75,46 +88,61 @@ export default async function ProjectPage({
       <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
         <div className="min-w-0 flex-1">
           <header>
-            <div className="flex items-baseline justify-between gap-3">
-              <h1 className="font-serif text-4xl leading-tight tracking-tight">{project.name}</h1>
+            <div className="flex items-center gap-2.5">
+              <span className="mono-label">{project.category}</span>
+              <span className="text-neutral-300" aria-hidden="true">
+                ·
+              </span>
               <StatusBadge status={project.status} />
             </div>
-            <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
-            {(project.url || repo) && (
-              <div className="mt-4 flex flex-wrap gap-3">
-                {project.url && (
-                  <a
-                    href={project.url}
-                    className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-white hover:bg-neutral-700"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Visit site
-                  </a>
-                )}
-                {repo && (
-                  <a
-                    href={repo.htmlUrl}
-                    className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Code on GitHub
-                  </a>
-                )}
+            <h1 className="mt-2 font-serif text-[2.75rem] leading-[1.05] tracking-[-0.02em] max-[560px]:text-[2.2rem]">
+              {project.name}
+            </h1>
+            <p className="mt-3 max-w-[46ch] font-serif text-xl italic text-neutral-600">
+              {project.tagline}
+            </p>
+
+            {latestWeek && (
+              <div className="mt-[18px] flex gap-7 border-t border-b border-neutral-200 py-3.5">
+                <div>
+                  <span className="mono-label block">latest</span>
+                  <span className="text-sm text-neutral-900">{weekLabel(latestWeek.weekOf)}</span>
+                </div>
+                <div>
+                  <span className="mono-label block">activity</span>
+                  <span className="text-sm text-neutral-900">
+                    {latestWeek.sessionCount} session{latestWeek.sessionCount === 1 ? "" : "s"}
+                  </span>
+                </div>
+                <div>
+                  <span className="mono-label block">source</span>
+                  <span className="text-sm text-neutral-900">↳ from claude</span>
+                </div>
               </div>
             )}
-          </header>
 
-          <div className="mt-4 flex flex-wrap gap-3">
-            <FollowButton project={slug} following={following} signedIn={!!user} />
-            <Link
-              href={`/connect?project=${project.slug}`}
-              className="rounded-md border border-neutral-300 px-4 py-2 text-sm hover:border-neutral-500"
-            >
-              Get in touch about this
-            </Link>
-          </div>
+            <div className="mt-[18px] flex flex-wrap items-center gap-4">
+              {project.url && (
+                <a
+                  href={project.url}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-invert bg-invert px-3 py-1.5 font-mono text-[0.66rem] tracking-[0.1em] text-invert-fg uppercase hover:border-[var(--n-700)] hover:bg-[var(--n-700)]"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Visit site ↗
+                </a>
+              )}
+              {repo && (
+                <a href={repo.htmlUrl} className={actLink} target="_blank" rel="noopener noreferrer">
+                  code on github ↗
+                </a>
+              )}
+              <FollowButton project={slug} following={following} signedIn={!!user} />
+              <Link href={`/connect?project=${project.slug}`} className={actLink}>
+                get in touch
+              </Link>
+            </div>
+          </header>
         </div>
 
         {project.url && (

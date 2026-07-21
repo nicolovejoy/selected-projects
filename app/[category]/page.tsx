@@ -41,7 +41,7 @@ export default async function CategoryPage({
 
       <h1 className="pt-4 pb-6 font-serif text-4xl leading-tight tracking-tight">{group.label}</h1>
 
-      <ul className="space-y-3">
+      <ul className="overflow-hidden rounded-xl border border-neutral-200 bg-white">
         {group.entries.map((e) => (
           <FeedCard key={e.project} entry={e} />
         ))}

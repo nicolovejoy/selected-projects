@@ -10,10 +10,14 @@ const styles: Record<ProjectStatus, { dot: string; text: string }> = {
   concept: { dot: "bg-neutral-400", text: "text-neutral-500" },
 };
 
+/** Colored dot + colored mono-cased label — the dot is the only hue left in
+ *  the family; everything else in the kicker/eyebrow rows stays hueless. */
 export function StatusBadge({ status }: { status: ProjectStatus }) {
   const s = styles[status];
   return (
-    <span className={`inline-flex items-center gap-1.5 text-xs uppercase tracking-wider ${s.text}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 font-mono text-[0.625rem] tracking-[0.12em] uppercase ${s.text}`}
+    >
       <span className={`size-1.5 rounded-full ${s.dot}`} aria-hidden="true" />
       {status}
     </span>

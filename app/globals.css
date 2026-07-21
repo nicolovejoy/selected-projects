@@ -148,6 +148,16 @@
   --color-faint: var(--text-faint);
   --color-invert: var(--accent-invert);
   --color-invert-fg: var(--accent-invert-fg);
+
+  /* Radius scale flattened ~80% for the #7 visual refresh: 12px card corners
+     and 8px control corners both collapse to a near-square 2px. Remapped at
+     the token layer so every existing `rounded-md/lg/xl` utility picks it up
+     with no component churn. `rounded-full` (status dots, avatars) is a
+     separate utility and is untouched by this scale. */
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
+  --radius-2xl: 2px;
 }
 
 body {
