@@ -71,6 +71,12 @@ for (const file of projectFiles) {
       `${fullPath}: historyKey "${meta.historyKey}" must be a slug-like string`,
     );
   }
+  if (meta.embed !== undefined) {
+    expect(typeof meta.embed === "boolean", `${fullPath}: embed must be a boolean`);
+    if (meta.embed) {
+      expect(!!meta.url, `${fullPath}: embed: true requires url`);
+    }
+  }
 }
 
 const projectsRegistry = readFileSync("lib/projects.ts", "utf8");

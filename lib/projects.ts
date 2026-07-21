@@ -31,6 +31,9 @@ export type ProjectMeta = {
   image?: string;
   cardImage?: string;
   historyKey?: string;
+  /** Opt-in to the split-pane live preview action on the detail page (#12).
+   * Requires `url` — validated in check-content.mjs. */
+  embed?: boolean;
 };
 
 export function projectHistoryKey(p: { slug: string; historyKey?: string }): string {
