@@ -1,0 +1,10 @@
+export const metadata = {
+  name: "Songscribe",
+  tagline: "Vocal in, structured lyric sheet out.",
+  status: "beta",
+  category: "music",
+};
+
+Feed it a vocal take and it returns a structured lyric sheet. Whisper transcribes the audio, then a model reads the word-level timing to infer the song's shape — verses, choruses, retakes, spoken asides — and marks any lines it isn't sure it heard. The output is BarStock, the lyrics-and-structure subset of [MusicForge](/projects/musicforge)'s chart format: a scaffold to add chords to there.
+
+A desktop app refines the chart through a chat back-and-forth, with transcription on OpenAI Whisper or a local model. Importing straight into MusicForge is a next step, not built yet.

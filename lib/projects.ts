@@ -5,6 +5,7 @@ import prntd, { metadata as prntdMeta } from "@/content/projects/prntd.mdx";
 import promptLab, { metadata as promptLabMeta } from "@/content/projects/prompt-lab.mdx";
 import recountly, { metadata as recountlyMeta } from "@/content/projects/recountly.mdx";
 import splitRecording, { metadata as splitRecordingMeta } from "@/content/projects/split-recording.mdx";
+import songscribe, { metadata as songscribeMeta } from "@/content/projects/songscribe.mdx";
 import rocksculpture, { metadata as rocksculptureMeta } from "@/content/projects/rocksculpture.mdx";
 import selectedProjects, { metadata as selectedProjectsMeta } from "@/content/projects/selected-projects.mdx";
 
@@ -48,6 +49,7 @@ const entries: Record<string, Entry> = {
   "prompt-lab": { meta: promptLabMeta as ProjectMeta, Body: promptLab },
   recountly: { meta: recountlyMeta as ProjectMeta, Body: recountly },
   "split-recording": { meta: splitRecordingMeta as ProjectMeta, Body: splitRecording },
+  songscribe: { meta: songscribeMeta as ProjectMeta, Body: songscribe },
   "selected-projects": { meta: selectedProjectsMeta as ProjectMeta, Body: selectedProjects },
 };
 
