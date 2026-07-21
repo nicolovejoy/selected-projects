@@ -13,6 +13,7 @@ import { CollapsibleSection } from "@/components/collapsible-section";
 import { OgPreview } from "@/components/og-preview";
 import { Evolution } from "@/components/evolution";
 import { FollowButton } from "./follow-button";
+import { LivePreviewLayout, LivePreviewTrigger } from "./live-preview";
 import { Notes } from "./notes";
 
 async function CommitGraph({ github }: { github: string }) {
@@ -72,20 +73,29 @@ export default async function ProjectPage({
   }));
   const following = user ? await isFollowing(user.id, slug) : false;
   const repo = project.github ? await getPublicRepo(project.github) : null;
+  // embed: true requires url (validated in check-content.mjs), so this is
+  // the "permitted" switch from issue #12.
+  const embedUrl = project.embed ? project.url : undefined;
 
   const hasEvolution =
     history.totalSessions > 0 || history.weekly.length > 0 || history.recent.length > 0;
   const latestWeek =
     [...history.weekly].sort((a, b) => b.weekOf.localeCompare(a.weekOf))[0] ?? null;
 
-  return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
+  const body = (
+    // @container: the header below reflows by *available* width, not viewport
+    // width — #12's split view squeezes this into a ~1/3-viewport column, and
+    // a viewport-based `sm:` breakpoint would still fire there and overlap
+    // the title with the preview card. @xl (36rem/576px, Tailwind's container
+    // query scale — narrower than its viewport scale) sits between the split
+    // column's ~400px and the full page's ~720px.
+    <div className="@container mx-auto max-w-3xl px-6 py-16">
       <Link href="/" className="text-sm text-neutral-500 hover:text-neutral-900">
         ← All projects
       </Link>
 
       {/* Above the fold: title + actions on the left, live-site preview on the right. */}
-      <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
+      <div className="mt-8 flex flex-col gap-6 @xl:flex-row @xl:items-start">
         <div className="min-w-0 flex-1">
           <header>
             <div className="flex items-center gap-2.5">
@@ -137,6 +147,7 @@ export default async function ProjectPage({
                   code on github ↗
                 </a>
               )}
+              {embedUrl && <LivePreviewTrigger url={embedUrl} />}
               <FollowButton project={slug} following={following} signedIn={!!user} />
               <Link href={`/connect?project=${project.slug}`} className={actLink}>
                 get in touch
@@ -146,7 +157,7 @@ export default async function ProjectPage({
         </div>
 
         {project.url && (
-          <div className="shrink-0 sm:w-80">
+          <div className="shrink-0 @xl:w-80">
             <Suspense
               fallback={
                 <div className="aspect-[1200/630] w-full animate-pulse rounded-xl bg-neutral-100" />
@@ -186,5 +197,12 @@ export default async function ProjectPage({
         />
       </CollapsibleSection>
     </div>
+  );
+
+  if (!embedUrl) return body;
+  return (
+    <LivePreviewLayout name={project.name} url={embedUrl}>
+      {body}
+    </LivePreviewLayout>
   );
 }
