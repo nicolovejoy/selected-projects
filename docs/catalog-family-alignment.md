@@ -24,7 +24,9 @@ reference: https://claude.ai/code/artifact/6d068ff1-7478-4218-a904-4125e0f1b72a
 - Serif display headings (Newsreader here; catalog embeds/falls back), sans body,
   mono micro-labels — a three-role type system.
 - Invert-primary as the single loud gesture (near-black button, flips in dark).
-- Hairline 1px borders, 12px card radius, hover lifts border color only.
+- Hairline 1px borders, 2px card radius (cut from 12px in the #7 visual
+  refresh — the family look is now near-square, ledger-like), hover lifts
+  border color / background tint only.
 - Wordmark lockup "the **piano house** …" (bold middle word); mono footer stamp.
 
 ## Legitimately different
