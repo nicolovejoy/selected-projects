@@ -22,7 +22,7 @@ All visible copy lives in `content/`. Pages and layout chrome import from there 
 
 ## Project content
 
-`content/projects/<slug>.mdx` — one file per project. Eight today: `musicforge.mdx`, `split-recording.mdx`, `rocksculpture.mdx`, `prntd.mdx`, `recountly.mdx`, `ibuild4you.mdx`, `prompt-lab.mdx`, `selected-projects.mdx`. Each has:
+`content/projects/<slug>.mdx` — one file per project. Nine today: `musicforge.mdx`, `split-recording.mdx`, `songscribe.mdx`, `rocksculpture.mdx`, `prntd.mdx`, `recountly.mdx`, `ibuild4you.mdx`, `prompt-lab.mdx`, `selected-projects.mdx`. Each has:
 
 - **Frontmatter** (`export const metadata = { ... }`) — the project's `name`, `tagline`, `status`, `category`, `url`, and `github` repo slug. Status must be one of `live`, `beta`, `alpha`, `demo`, `concept`; category one of `music`, `art`, `products`, `tools`. Category decides which section of the home page the project appears under; section order lives in `lib/projects.ts`. Optional `cardImage` sets a curated card image (`/cards/<slug>.jpg`, see `assets/README.md`) that overrides the live `og:image` scrape.
 - **Body** — the prose description shown on `/projects/<slug>`. Plain markdown. Paragraph breaks are blank lines.
