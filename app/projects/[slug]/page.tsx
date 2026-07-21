@@ -76,7 +76,7 @@ export default async function ProjectPage({
         <div className="min-w-0 flex-1">
           <header>
             <div className="flex items-baseline justify-between gap-3">
-              <h1 className="text-3xl font-semibold tracking-tight">{project.name}</h1>
+              <h1 className="font-serif text-4xl leading-tight tracking-tight">{project.name}</h1>
               <StatusBadge status={project.status} />
             </div>
             <p className="mt-2 text-lg text-neutral-600">{project.tagline}</p>
