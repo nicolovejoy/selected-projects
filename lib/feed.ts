@@ -15,6 +15,7 @@ export type FeedEntry = {
   category: ProjectCategory;
   tagline: string;
   url: string | null;
+  /** Precedence: curated cardImage > live OG scrape > legacy image field. */
   image: string | null;
   /** Null when no weekly rollup has been published — the card still renders. */
   weekOf: string | null;
@@ -39,7 +40,7 @@ async function toEntry(p: (typeof projects)[number]): Promise<FeedEntry> {
     category: p.category,
     tagline: p.tagline,
     url: p.url ?? null,
-    image: og?.image ?? p.cardImage ?? p.image ?? null,
+    image: p.cardImage ?? og?.image ?? p.image ?? null,
     weekOf: latest?.weekOf ?? null,
     summary: latest?.publicSummary ?? null,
     sessionCount: latest?.sessionCount ?? null,
