@@ -45,7 +45,9 @@ export function Evolution({ history }: { history: ProjectHistory }) {
                   </span>
                 )}
               </div>
-              <p className="mt-1 italic text-neutral-500 leading-relaxed">{w.publicSummary}</p>
+              {w.publicSummary && (
+                <p className="mt-1 italic text-neutral-500 leading-relaxed">{w.publicSummary}</p>
+              )}
             </li>
           ))}
         </ol>

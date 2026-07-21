@@ -1,6 +1,7 @@
 export type WeeklyRollup = {
   weekOf: string;
-  publicSummary: string;
+  /** Null for counts-only weeks — the prose is human-gated, the counts aren't. */
+  publicSummary: string | null;
   sessionCount: number;
   commitCount: number;
 };
@@ -33,7 +34,7 @@ type ApiResponse = {
   sessions?: Array<{ session_id: number; started_at: string; public_summary: string }>;
   rollups?: Array<{
     week_of: string;
-    public_summary: string;
+    public_summary: string | null;
     session_count: number;
     commit_count: number;
   }>;
@@ -57,7 +58,7 @@ export async function getProjectHistory(historyKey: string): Promise<ProjectHist
 
     const weekly: WeeklyRollup[] = (data.rollups ?? []).slice(0, 6).map((r) => ({
       weekOf: r.week_of,
-      publicSummary: r.public_summary,
+      publicSummary: r.public_summary ?? null,
       sessionCount: r.session_count ?? 0,
       commitCount: r.commit_count ?? 0,
     }));
