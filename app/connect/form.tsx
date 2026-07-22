@@ -7,7 +7,7 @@ import { projects } from "@/lib/projects";
 
 const initial: ConnectFormState = { ok: false };
 
-export function ConnectForm() {
+export function ConnectForm({ email }: { email: string | null }) {
   const search = useSearchParams();
   const presetProject = search.get("project") ?? "general";
   const [state, action, pending] = useActionState(submitConnect, initial);
@@ -22,8 +22,17 @@ export function ConnectForm() {
 
   return (
     <form action={action} className="mt-10 space-y-5">
-      <Field label="Name" name="name" required />
-      <Field label="Email" name="email" type="email" required />
+      {email ? (
+        <div>
+          <span className="mono-label block">from</span>
+          <span className="text-sm text-neutral-900">{email}</span>
+        </div>
+      ) : (
+        <>
+          <Field label="Name" name="name" required />
+          <Field label="Email" name="email" type="email" required />
+        </>
+      )}
 
       <div>
         <label className="block text-sm font-medium">Project</label>

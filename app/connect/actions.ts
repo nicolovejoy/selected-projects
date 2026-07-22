@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { projects } from "@/lib/projects";
 import { db } from "@/lib/db";
 import { sendConnectNotification } from "@/lib/email";
+import { getSessionUser } from "@/lib/auth";
 
 export type ConnectFormState = {
   ok: boolean;
@@ -41,15 +42,19 @@ export async function submitConnect(
     return { ok: true, message: "Thanks — we'll be in touch." };
   }
 
-  const name = String(formData.get("name") ?? "").trim();
-  const email = String(formData.get("email") ?? "").trim();
+  const sessionUser = await getSessionUser();
+  const name = sessionUser ? (sessionUser.name ?? "") : String(formData.get("name") ?? "").trim();
+  const email = sessionUser ? sessionUser.email : String(formData.get("email") ?? "").trim();
   const project = String(formData.get("project") ?? "general").trim();
   const intents = formData.getAll("intent").map(String);
   const message = String(formData.get("message") ?? "").trim();
   const links = String(formData.get("links") ?? "").trim() || null;
 
-  if (!name || !email || !message) {
-    return { ok: false, message: "Name, email, and message are required." };
+  if (!sessionUser && !name) {
+    return { ok: false, message: "Name is required." };
+  }
+  if (!email || !message) {
+    return { ok: false, message: "Email and message are required." };
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, message: "That email doesn't look right." };
