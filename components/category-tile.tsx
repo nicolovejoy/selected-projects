@@ -15,16 +15,22 @@ const statusDot: Record<ProjectStatus, string> = {
  * One quadrant of the home grid. Every project in the category gets a row with
  * an activity sparkline; a supporting line (the latest rollup summary, or the
  * tagline when nothing is published) appears from md up, where there's room.
+ *
+ * Project names link straight to their detail page; everywhere else on the tile
+ * is the category link, via the same overlay pattern as feed-card (links can't
+ * nest, so the tile link is an absolute-inset sibling under z-10 name links).
  */
 export function CategoryTile({ group }: { group: FeedGroup }) {
   const top = group.entries.slice(0, 3);
   const rest = group.entries.length - top.length;
 
   return (
-    <Link
-      href={`/${group.key}`}
-      className="group flex flex-col rounded-xl border border-neutral-200 bg-white p-3.5 transition hover:border-neutral-400 sm:p-5"
-    >
+    <div className="group relative flex flex-col rounded-xl border border-neutral-200 bg-white p-3.5 transition hover:border-neutral-400 sm:p-5">
+      <Link
+        href={`/${group.key}`}
+        aria-label={`${group.label} — view all`}
+        className="absolute inset-0 rounded-xl"
+      />
       <h2 className="mono-label">{group.label}</h2>
 
       <ul className="mt-2.5 flex-1 space-y-2 sm:space-y-4">
@@ -35,7 +41,12 @@ export function CategoryTile({ group }: { group: FeedGroup }) {
                 className={`size-1.5 shrink-0 rounded-full ${statusDot[e.status]}`}
                 aria-hidden
               />
-              <span className="text-sm font-medium text-neutral-900">{e.projectName}</span>
+              <Link
+                href={`/projects/${e.project}`}
+                className="relative z-10 text-sm font-medium text-neutral-900 underline-offset-2 hover:underline"
+              >
+                {e.projectName}
+              </Link>
               <Sparkline values={e.spark} className="ml-auto" />
             </div>
             {/* max-md:hidden rather than `hidden md:…` — line-clamp sets its own
@@ -50,6 +61,6 @@ export function CategoryTile({ group }: { group: FeedGroup }) {
       <p className="mono-label mt-3 max-sm:hidden group-hover:text-neutral-600">
         {rest > 0 ? `+${rest} more →` : "view →"}
       </p>
-    </Link>
+    </div>
   );
 }
