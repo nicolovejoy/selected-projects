@@ -40,11 +40,17 @@ const WEEKS = 52;
  * failure never throws out of it — it's cached briefly (`minutes`) instead
  * of caching nothing, and a success is cached for `hours`.
  *
+ * Both GitHub fetchers use `use cache: remote`: they only ever run at request
+ * time (after the cookie read on /projects/[slug]), where plain `use cache` is
+ * per-serverless-instance memory. Measured on prod 2026-09-25 with plain
+ * `use cache`: 6 page loads → 6 /repos + 18 /commits calls. Remote is shared
+ * across instances.
+ *
  * Caveat: capped at 3 pages (300 commits). A repo with >300 commits in the
  * last year will undercount its oldest weeks — fine for a recent-activity view.
  */
 async function fetchCommitActivity(github: string): Promise<CommitWeek[] | null> {
-  "use cache";
+  "use cache: remote";
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 3000);
@@ -121,7 +127,7 @@ export async function getCommitActivity(github: string): Promise<CommitWeek[] | 
 
 /** Cached by `github`; a private or missing repo is cached briefly as null, so we never link one publicly. */
 async function fetchPublicRepo(github: string): Promise<RepoInfo | null> {
-  "use cache";
+  "use cache: remote";
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 3000);
