@@ -1,33 +1,12 @@
-import { Suspense } from "react";
 import Link from "next/link";
-import { getSessionUser } from "@/lib/auth";
 import { getGroupedFeed } from "@/lib/feed";
 import { CategoryTile } from "@/components/category-tile";
 import Home from "@/content/home.mdx";
 
-// Fails the build if a future change reintroduces a blocking read on this route
-// (e.g. an uncached fetch or a cookie read outside Suspense) instead of failing silently.
-// `samples` models an anonymous visitor — see app/[category]/page.tsx for why both
-// routes need it (the root layout's Nav reads the session cookie too, not just
-// SignInLink); the signed-in path isn't covered by this check.
-// `samples` is undocumented under `prefetch: "static"` (instant.md types it only on
-// `'runtime'`, and cookie `value` as `string`) — works in 16.2.4 since the config
-// parser reads it regardless of mode, but that's version-dependent.
-export const unstable_instant = {
-  prefetch: "static",
-  samples: [{ cookies: [{ name: "ph_session", value: null }] }],
-};
-
-/** Isolated so getSessionUser()'s cookie read doesn't hold the feed out of the prerendered shell. */
-async function SignInLink() {
-  const user = await getSessionUser();
-  if (user) return null;
-  return (
-    <Link href="/signin" className="text-neutral-500 hover:text-neutral-800">
-      Sign in
-    </Link>
-  );
-}
+// No `unstable_instant` here, unlike app/[category]/page.tsx: this page is fully
+// static, and 16.2.4's validator then misreports the root layout's static metadata
+// as runtime data (E1085, "would have been entirely prerenderable") and fails the
+// build. scripts/nav-cost.mjs is the check for this route instead.
 
 export default async function HomePage() {
   const groups = await getGroupedFeed();
@@ -62,9 +41,6 @@ export default async function HomePage() {
         <Link href="/connect" className="font-medium text-neutral-800 hover:text-neutral-950">
           Get in touch
         </Link>
-        <Suspense fallback={null}>
-          <SignInLink />
-        </Suspense>
       </div>
     </div>
   );
