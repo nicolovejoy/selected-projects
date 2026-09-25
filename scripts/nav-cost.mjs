@@ -53,7 +53,10 @@ await leg("/about → home", home, BASE + "/");
 
 // A fresh load never starts at home, so the legs above never measure a truly
 // cold client nav to /. Load /about first, then click home from there.
+// This leg's "1 blocking" is the home SignInLink's own Suspense-streamed
+// request (app/page.tsx), not a blocking wait — accepted per AGENTS.md's
+// #19 remaining notes. No detection logic added; just labeling it correctly.
 await page.goto(BASE + "/about", { waitUntil: "networkidle" });
-await leg("/about (cold) → home", home, BASE + "/");
+await leg("/about (cold) → home [1 = streamed SignInLink, not blocking]", home, BASE + "/");
 
 await browser.close();

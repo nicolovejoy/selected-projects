@@ -7,8 +7,12 @@ import Home from "@/content/home.mdx";
 
 // Fails the build if a future change reintroduces a blocking read on this route
 // (e.g. an uncached fetch or a cookie read outside Suspense) instead of failing silently.
-// `samples` models an anonymous visitor (the root layout's Nav reads the session cookie too,
-// not just SignInLink) — the signed-in path isn't covered by this check.
+// `samples` models an anonymous visitor — see app/[category]/page.tsx for why both
+// routes need it (the root layout's Nav reads the session cookie too, not just
+// SignInLink); the signed-in path isn't covered by this check.
+// `samples` is undocumented under `prefetch: "static"` (instant.md types it only on
+// `'runtime'`, and cookie `value` as `string`) — works in 16.2.4 since the config
+// parser reads it regardless of mode, but that's version-dependent.
 export const unstable_instant = {
   prefetch: "static",
   samples: [{ cookies: [{ name: "ph_session", value: null }] }],

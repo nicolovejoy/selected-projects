@@ -11,6 +11,7 @@ import { site } from "@/content/site";
 // (e.g. an uncached fetch or a cookie read outside Suspense) instead of failing silently.
 // `samples` models an anonymous visitor on the "music" category (the root layout's Nav
 // reads the session cookie too) — the signed-in path isn't covered by this check.
+// `samples` here is outside the documented shape too — see app/page.tsx for detail.
 export const unstable_instant = {
   prefetch: "static",
   samples: [{ cookies: [{ name: "ph_session", value: null }], params: { category: "music" } }],

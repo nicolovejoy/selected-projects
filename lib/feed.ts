@@ -60,11 +60,12 @@ async function toEntry(p: (typeof projects)[number]): Promise<FeedEntry> {
  */
 export async function getGroupedFeed(): Promise<FeedGroup[]> {
   "use cache";
-  // Explicit outer lifetime: without it, one leaf's `minutes` failure (e.g. an
-  // OG scrape with no og:image) would propagate up and demote the whole feed
-  // into a dynamic hole. A leaf failure caught at fill time now persists at
-  // the feed level for up to an hour — an accepted tradeoff for keeping the
-  // feed in the prerendered shell.
+  // Explicit outer lifetime: recountly.org permanently lacks an og:image, so
+  // its OG scrape always fails and caches as `minutes` (1 min revalidate).
+  // Without this explicit `hours` override, that leaf's short lifetime would
+  // win at this level too, and the feed — plus the `/` and category shells
+  // that render it — would regenerate on nearly every request instead of
+  // staying in the prerendered shell for an hour.
   cacheLife("hours");
 
   const entries = await Promise.all(projects.map(toEntry));

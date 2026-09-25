@@ -46,10 +46,13 @@ const WEEKS = 52;
 async function fetchCommitActivity(github: string): Promise<CommitWeek[] | null> {
   "use cache";
 
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 3000);
   try {
-    // Date.now() here evaluates when the cache entry fills (build time for a
-    // prerendered entry), not per request — the `hours` lifetime below is
-    // what keeps this calendar window current.
+    // Date.now() here evaluates when the cache entry fills (this scope is
+    // never prerendered — it runs after the cookie read on /projects/[slug]),
+    // not per request — the `hours` lifetime below is what keeps this
+    // calendar window current after that.
     const since = new Date(Date.now() - (WEEKS * 7 + 6) * DAY_MS).toISOString();
     const base = `https://api.github.com/repos/${repoPath(github)}/commits`;
 
@@ -57,21 +60,25 @@ async function fetchCommitActivity(github: string): Promise<CommitWeek[] | null>
     let found = 0;
     let oldest = Infinity;
     let capped = false;
-    for (let page = 1; page <= 3; page++) {
-      const url = `${base}?per_page=100&since=${since}&page=${page}`;
-      const res = await fetch(url, { headers: ghHeaders() });
-      if (!res.ok) throw new Error(`commits ${res.status}`);
-      const batch = (await res.json()) as Array<{ commit: { committer?: { date?: string } } }>;
-      for (const c of batch) {
-        const iso = c.commit?.committer?.date;
-        if (!iso) continue;
-        const dayKey = Math.floor(new Date(iso).getTime() / DAY_MS);
-        byDay.set(dayKey, (byDay.get(dayKey) ?? 0) + 1);
-        if (dayKey < oldest) oldest = dayKey;
-        found++;
+    try {
+      for (let page = 1; page <= 3; page++) {
+        const url = `${base}?per_page=100&since=${since}&page=${page}`;
+        const res = await fetch(url, { headers: ghHeaders(), signal: ctrl.signal });
+        if (!res.ok) throw new Error(`commits ${res.status}`);
+        const batch = (await res.json()) as Array<{ commit: { committer?: { date?: string } } }>;
+        for (const c of batch) {
+          const iso = c.commit?.committer?.date;
+          if (!iso) continue;
+          const dayKey = Math.floor(new Date(iso).getTime() / DAY_MS);
+          byDay.set(dayKey, (byDay.get(dayKey) ?? 0) + 1);
+          if (dayKey < oldest) oldest = dayKey;
+          found++;
+        }
+        if (batch.length < 100) break;
+        if (page === 3) capped = true; // more commits than we fetched
       }
-      if (batch.length < 100) break;
-      if (page === 3) capped = true; // more commits than we fetched
+    } finally {
+      clearTimeout(timer);
     }
     if (found === 0) throw new Error("no commits in the last year");
 
@@ -116,10 +123,18 @@ export async function getCommitActivity(github: string): Promise<CommitWeek[] | 
 async function fetchPublicRepo(github: string): Promise<RepoInfo | null> {
   "use cache";
 
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 3000);
   try {
-    const res = await fetch(`https://api.github.com/repos/${repoPath(github)}`, {
-      headers: ghHeaders(),
-    });
+    let res: Response;
+    try {
+      res = await fetch(`https://api.github.com/repos/${repoPath(github)}`, {
+        headers: ghHeaders(),
+        signal: ctrl.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
     if (!res.ok) throw new Error(`repo ${res.status}`);
     const data = (await res.json()) as { html_url: string; private: boolean };
     if (data.private) throw new Error("repo private");

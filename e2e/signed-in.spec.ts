@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Locator } from "@playwright/test";
 import { SEED_USER, STORAGE_STATE } from "./auth";
 
 /**
@@ -7,6 +7,27 @@ import { SEED_USER, STORAGE_STATE } from "./auth";
  * which is exactly the half a static-shell/PPR restructure puts at risk. Each
  * pair is here so a change can't silently flip one state without failing.
  */
+
+/**
+ * A click that lands before hydration still works (these are real
+ * <form action={...}> submit buttons — a native form POST shows the new
+ * state on its own, whether or not refresh() ran), so a test that clicks
+ * immediately can pass even if refresh() is broken. React attaches its own
+ * internal props key (`__reactProps$...`) to a DOM node only once hydration
+ * wires up that node's event handlers, so polling for that key is a direct
+ * hydration signal rather than a timing proxy like networkidle.
+ */
+async function waitForHydration(locator: Locator): Promise<void> {
+  await locator.evaluate((el) => {
+    return new Promise<void>((resolve) => {
+      const check = () => {
+        if (Object.keys(el).some((k) => k.startsWith("__reactProps$"))) resolve();
+        else requestAnimationFrame(check);
+      };
+      check();
+    });
+  });
+}
 
 test.describe("signed in", () => {
   test.use({ storageState: STORAGE_STATE });
@@ -45,19 +66,71 @@ test.describe("signed in", () => {
     await page.goto("/projects/prntd");
     const button = page.getByRole("button", { name: "follow" });
     await expect(button).toBeVisible();
+    // Wait for hydration before the first click — see waitForHydration's doc
+    // comment: a pre-hydration click still flips the button via the native
+    // form POST, which would mask a broken refresh() call.
+    await waitForHydration(button);
 
-    // The button is a <form action={followAction}> submit button, so a
-    // pre-hydration click still works as a native form POST — no click-retry
-    // helper is needed here (unlike the bare <button> case in
-    // live-preview.spec.ts). We assert state after each click rather than
-    // retrying the click itself, so a slow hydration can't cause a double
-    // toggle that flips the state back.
-    await button.click();
-    const following = page.getByRole("button", { name: /following/ });
-    await expect(following).toBeVisible();
+    // We assert state after each click rather than retrying the click itself
+    // (unlike live-preview.spec.ts's bare-<button> case), so a slow hydration
+    // can't cause a double toggle that flips the state back.
+    try {
+      await button.click();
+      const following = page.getByRole("button", { name: /following/ });
+      await expect(following).toBeVisible();
 
-    await following.click();
-    await expect(page.getByRole("button", { name: "follow" })).toBeVisible();
+      await following.click();
+      await expect(page.getByRole("button", { name: "follow" })).toBeVisible();
+    } finally {
+      // Restore the unfollowed state even if an assertion above failed mid-toggle.
+      const stillFollowing = page.getByRole("button", { name: /following/ });
+      if (await stillFollowing.isVisible().catch(() => false)) {
+        await stillFollowing.click();
+        await expect(page.getByRole("button", { name: "follow" })).toBeVisible();
+      }
+    }
+  });
+
+  test("note post/delete round-trip updates without a manual reload", async ({ page }) => {
+    // songscribe: distinct from prntd/musicforge (used by the follow tests above)
+    // and from any other project a parallel test posts to, so this test can't
+    // collide with another under fullyParallel. Rate limit is 5 notes/hour/user
+    // (app/projects/[slug]/actions.ts) — this test posts exactly 1.
+    await page.goto("/projects/songscribe");
+    // "notes" is a native <details>/<summary> section, collapsed by default
+    // (only "about" defaults open) — expand it before touching the form.
+    await page.getByRole("heading", { name: "notes" }).click();
+
+    const body = `e2e note ${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const textarea = page.getByPlaceholder("Add a note…");
+    await expect(textarea).toBeVisible();
+    const postButton = page.getByRole("button", { name: "Post" });
+    await waitForHydration(postButton);
+
+    await textarea.fill(body);
+    await postButton.click();
+
+    const note = page.getByText(body, { exact: true });
+    try {
+      await expect(note).toBeVisible();
+
+      const noteItem = page.locator("li", { has: note });
+      const deleteButton = noteItem.getByRole("button", { name: "delete" });
+      await waitForHydration(deleteButton);
+      await deleteButton.click();
+      await expect(note).toHaveCount(0);
+    } finally {
+      // Cleanup: if the note is still there (e.g. the delete assertion
+      // above failed), remove it so it doesn't linger across runs.
+      if (await note.isVisible().catch(() => false)) {
+        const noteItem = page.locator("li", { has: note });
+        const deleteButton = noteItem.getByRole("button", { name: "delete" });
+        if (await deleteButton.isVisible().catch(() => false)) {
+          await deleteButton.click();
+          await expect(note).toHaveCount(0);
+        }
+      }
+    }
   });
 });
 
