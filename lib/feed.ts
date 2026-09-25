@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import {
   projects,
   projectHistoryKey,
@@ -58,6 +59,14 @@ async function toEntry(p: (typeof projects)[number]): Promise<FeedEntry> {
  * and rollup-less ones fall to the end in manifest order.
  */
 export async function getGroupedFeed(): Promise<FeedGroup[]> {
+  "use cache";
+  // Explicit outer lifetime: without it, one leaf's `minutes` failure (e.g. an
+  // OG scrape with no og:image) would propagate up and demote the whole feed
+  // into a dynamic hole. A leaf failure caught at fill time now persists at
+  // the feed level for up to an hour — an accepted tradeoff for keeping the
+  // feed in the prerendered shell.
+  cacheLife("hours");
+
   const entries = await Promise.all(projects.map(toEntry));
 
   return categories
