@@ -5,6 +5,15 @@ import { getGroupedFeed } from "@/lib/feed";
 import { CategoryTile } from "@/components/category-tile";
 import Home from "@/content/home.mdx";
 
+// Fails the build if a future change reintroduces a blocking read on this route
+// (e.g. an uncached fetch or a cookie read outside Suspense) instead of failing silently.
+// `samples` models an anonymous visitor (the root layout's Nav reads the session cookie too,
+// not just SignInLink) — the signed-in path isn't covered by this check.
+export const unstable_instant = {
+  prefetch: "static",
+  samples: [{ cookies: [{ name: "ph_session", value: null }] }],
+};
+
 /** Isolated so getSessionUser()'s cookie read doesn't hold the feed out of the prerendered shell. */
 async function SignInLink() {
   const user = await getSessionUser();
