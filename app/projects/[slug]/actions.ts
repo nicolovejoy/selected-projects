@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 import { getSessionUser, isAdmin } from "@/lib/auth";
 import { projects } from "@/lib/projects";
 import {
@@ -61,7 +61,11 @@ export async function postNote(
     console.error("[community] note alert failed", err);
   }
 
-  revalidatePath(`/projects/${project}`);
+  // Notes/follow state are read per request outside any 'use cache' scope, so
+  // there's nothing cached to invalidate here — revalidatePath would only purge
+  // the shared prerendered shell for every visitor. refresh() re-renders just
+  // the acting user's current route instead.
+  refresh();
   return { ok: true };
 }
 
@@ -74,7 +78,7 @@ export async function deleteNoteAction(formData: FormData): Promise<void> {
   if (!noteId) return;
   try {
     const removed = await deleteNote(noteId, { userId: user.id, admin: isAdmin(user) });
-    if (removed) revalidatePath(`/projects/${project}`);
+    if (removed) refresh();
   } catch (err) {
     console.error("[community] deleteNoteAction failed", err);
   }
@@ -87,7 +91,7 @@ export async function followAction(formData: FormData): Promise<void> {
   if (!validProject(project)) return;
   try {
     await toggleFollow(user.id, project);
-    revalidatePath(`/projects/${project}`);
+    refresh();
   } catch (err) {
     console.error("[community] followAction failed", err);
   }

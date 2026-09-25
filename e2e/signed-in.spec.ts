@@ -37,6 +37,28 @@ test.describe("signed in", () => {
     // seed-dev.mjs has seed-user-dev already following musicforge.
     await expect(page.getByRole("button", { name: /following/ })).toBeVisible();
   });
+
+  test("follow round-trip updates without a manual reload", async ({ page }) => {
+    // prntd, not musicforge: seed-user-dev doesn't follow it (seed-dev.mjs), and
+    // the suite runs fullyParallel, so this test can't share a project with the
+    // "already following" test above without racing its assertions.
+    await page.goto("/projects/prntd");
+    const button = page.getByRole("button", { name: "follow" });
+    await expect(button).toBeVisible();
+
+    // The button is a <form action={followAction}> submit button, so a
+    // pre-hydration click still works as a native form POST — no click-retry
+    // helper is needed here (unlike the bare <button> case in
+    // live-preview.spec.ts). We assert state after each click rather than
+    // retrying the click itself, so a slow hydration can't cause a double
+    // toggle that flips the state back.
+    await button.click();
+    const following = page.getByRole("button", { name: /following/ });
+    await expect(following).toBeVisible();
+
+    await following.click();
+    await expect(page.getByRole("button", { name: "follow" })).toBeVisible();
+  });
 });
 
 test.describe("signed out", () => {
