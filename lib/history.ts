@@ -1,3 +1,5 @@
+import { cacheLife } from "next/cache";
+
 export type WeeklyRollup = {
   weekOf: string;
   /** Null for counts-only weeks — the prose is human-gated, the counts aren't. */
@@ -43,14 +45,26 @@ type ApiResponse = {
   total_sessions?: number;
 };
 
+/**
+ * Cached by `historyKey`. The try/catch lives inside the cached scope so a
+ * failure never throws out of it: a 404 (no history yet) or any other miss
+ * is cached briefly as EMPTY (`minutes`), and a success — including a 404 —
+ * is cached for `hours`.
+ */
 export async function getProjectHistory(historyKey: string): Promise<ProjectHistory> {
+  "use cache";
+
   const url = `${API_BASE}/api/public_history?project=${encodeURIComponent(historyKey)}&limit=5`;
 
   try {
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (res.status === 404) return EMPTY;
+    const res = await fetch(url);
+    if (res.status === 404) {
+      cacheLife("hours");
+      return EMPTY;
+    }
     if (!res.ok) {
       console.warn(`[history] ${url} → ${res.status}`);
+      cacheLife("minutes");
       return EMPTY;
     }
 
@@ -69,6 +83,7 @@ export async function getProjectHistory(historyKey: string): Promise<ProjectHist
       publicSummary: s.public_summary,
     }));
 
+    cacheLife("hours");
     return {
       weekly,
       recent,
@@ -78,6 +93,7 @@ export async function getProjectHistory(historyKey: string): Promise<ProjectHist
     };
   } catch (err) {
     console.warn(`[history] fetch failed for ${historyKey}:`, err);
+    cacheLife("minutes");
     return EMPTY;
   }
 }

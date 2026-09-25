@@ -51,4 +51,9 @@ await leg("/music → home (back again)", () => page.goBack(), BASE + "/");
 await leg("home → /about", about, "**/about");
 await leg("/about → home", home, BASE + "/");
 
+// A fresh load never starts at home, so the legs above never measure a truly
+// cold client nav to /. Load /about first, then click home from there.
+await page.goto(BASE + "/about", { waitUntil: "networkidle" });
+await leg("/about (cold) → home", home, BASE + "/");
+
 await browser.close();

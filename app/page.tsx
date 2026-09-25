@@ -1,11 +1,14 @@
 import Link from "next/link";
-import { getSessionUser } from "@/lib/auth";
 import { getGroupedFeed } from "@/lib/feed";
 import { CategoryTile } from "@/components/category-tile";
 import Home from "@/content/home.mdx";
 
+// No `unstable_instant` here, unlike app/[category]/page.tsx: this page is fully
+// static, and 16.2.4's validator then misreports the root layout's static metadata
+// as runtime data (E1085, "would have been entirely prerenderable") and fails the
+// build. scripts/nav-cost.mjs is the check for this route instead.
+
 export default async function HomePage() {
-  const user = await getSessionUser();
   const groups = await getGroupedFeed();
 
   return (
@@ -38,11 +41,6 @@ export default async function HomePage() {
         <Link href="/connect" className="font-medium text-neutral-800 hover:text-neutral-950">
           Get in touch
         </Link>
-        {!user && (
-          <Link href="/signin" className="text-neutral-500 hover:text-neutral-800">
-            Sign in
-          </Link>
-        )}
       </div>
     </div>
   );

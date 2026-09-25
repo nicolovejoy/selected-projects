@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { cacheLife } from "next/cache";
 
 /** Open Graph preview scraped from a project's live URL. */
 export type OgPreview = {
@@ -37,52 +37,54 @@ function metaTag(html: string, ...props: string[]): string | undefined {
 }
 
 /**
- * Fetch the live page and parse its OG tags. Mirrors lib/github.ts: throws on
- * any miss so the unstable_cache wrapper never stores a failure — only a
- * successful preview is cached and stays stable.
+ * Fetch the live page and parse its OG tags, cached by `url`. The try/catch
+ * lives inside the cached scope so a failure never throws out of it — it's
+ * cached briefly (`minutes`) instead of caching nothing, and a success is
+ * cached for a day.
  */
-async function fetchOgPreview(url: string): Promise<OgPreview> {
+async function fetchOgPreview(url: string): Promise<OgPreview | null> {
+  "use cache";
+
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 3000);
-  let html: string;
   try {
-    const res = await fetch(url, {
-      headers: {
-        // A normal UA — some hosts gate OG tags behind a real browser agent.
-        "User-Agent":
-          "Mozilla/5.0 (compatible; PianoHouseBot/1.0; +https://pianohouseproject.org)",
-        Accept: "text/html",
-      },
-      signal: ctrl.signal,
-      cache: "no-store",
-    });
-    if (!res.ok) throw new Error(`og ${res.status}`);
-    html = await res.text();
-  } finally {
-    clearTimeout(timer);
+    let html: string;
+    try {
+      const res = await fetch(url, {
+        headers: {
+          // A normal UA — some hosts gate OG tags behind a real browser agent.
+          "User-Agent":
+            "Mozilla/5.0 (compatible; PianoHouseBot/1.0; +https://pianohouseproject.org)",
+          Accept: "text/html",
+        },
+        signal: ctrl.signal,
+      });
+      if (!res.ok) throw new Error(`og ${res.status}`);
+      html = await res.text();
+    } finally {
+      clearTimeout(timer);
+    }
+
+    // OG tags live in <head>; cap the scan so a huge body doesn't blow up regex.
+    const head = html.slice(0, 100_000);
+    const image = metaTag(head, "og:image", "twitter:image", "twitter:image:src");
+    if (!image) throw new Error("no og:image");
+
+    const preview: OgPreview = {
+      image: new URL(image, new URL(url).origin).toString(), // resolve relative paths
+      title: metaTag(head, "og:title", "twitter:title"),
+      description: metaTag(head, "og:description", "twitter:description"),
+    };
+    cacheLife("days");
+    return preview;
+  } catch (err) {
+    console.warn(`[og] ${url}: ${(err as Error).message}`);
+    cacheLife("minutes");
+    return null;
   }
-
-  // OG tags live in <head>; cap the scan so a huge body doesn't blow up regex.
-  const head = html.slice(0, 100_000);
-  const image = metaTag(head, "og:image", "twitter:image", "twitter:image:src");
-  if (!image) throw new Error("no og:image");
-
-  return {
-    image: new URL(image, new URL(url).origin).toString(), // resolve relative paths
-    title: metaTag(head, "og:title", "twitter:title"),
-    description: metaTag(head, "og:description", "twitter:description"),
-  };
 }
 
 /** Cached (daily) OG preview for a project's live URL, or null on any failure. */
 export async function getOgPreview(url: string): Promise<OgPreview | null> {
-  const cached = unstable_cache(() => fetchOgPreview(url), ["og-preview", url], {
-    revalidate: 86400,
-  });
-  try {
-    return await cached();
-  } catch (err) {
-    console.warn(`[og] ${url}: ${(err as Error).message}`);
-    return null;
-  }
+  return fetchOgPreview(url);
 }

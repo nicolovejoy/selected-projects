@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import {
   projects,
   projectHistoryKey,
@@ -58,6 +59,15 @@ async function toEntry(p: (typeof projects)[number]): Promise<FeedEntry> {
  * and rollup-less ones fall to the end in manifest order.
  */
 export async function getGroupedFeed(): Promise<FeedGroup[]> {
+  "use cache";
+  // Explicit outer lifetime: recountly.org permanently lacks an og:image, so
+  // its OG scrape always fails and caches as `minutes` (1 min revalidate).
+  // Without this explicit `hours` override, that leaf's short lifetime would
+  // win at this level too, and the feed — plus the `/` and category shells
+  // that render it — would regenerate on nearly every request instead of
+  // staying in the prerendered shell for an hour.
+  cacheLife("hours");
+
   const entries = await Promise.all(projects.map(toEntry));
 
   return categories
