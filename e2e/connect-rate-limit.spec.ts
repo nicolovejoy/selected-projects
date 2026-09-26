@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { test, expect, type Page } from "@playwright/test";
 import { createClient } from "@libsql/client";
 import { SEED_USER, STORAGE_STATE } from "./auth";
@@ -89,6 +90,32 @@ async function submit(
   }
 }
 
+async function insertRows(
+  ip: string,
+  count: number,
+  emailPrefix: string,
+): Promise<void> {
+  const db = createClient({ url: E2E_DB });
+  try {
+    for (let i = 0; i < count; i++) {
+      await db.execute({
+        sql: `INSERT INTO connect_submissions (id, name, email, project, message, ip)
+              VALUES (?, ?, ?, ?, ?, ?)`,
+        args: [
+          crypto.randomUUID(),
+          "E2E Filler",
+          `${emailPrefix}-${i}-${Date.now()}@e2e.test`,
+          "general",
+          `e2e ip-bucket filler ${i}`,
+          ip,
+        ],
+      });
+    }
+  } finally {
+    db.close();
+  }
+}
+
 test.describe("connect rate limit — signed in, email key", () => {
   test.use({ storageState: STORAGE_STATE });
 
@@ -100,6 +127,30 @@ test.describe("connect rate limit — signed in, email key", () => {
     }
 
     expect(await rowsFor(SEED_USER.email)).toBe(5);
+  });
+
+  test("signed-in submission is not dropped when the IP bucket is full", async ({ page }) => {
+    await cleanup();
+
+    // Submit once signed in to learn the local server's forwarded IP, the
+    // same way the signed-out spec derives it — don't hardcode '1::'.
+    const probeMessage = `e2e ip-bucket probe ${Date.now()}`;
+    await submit(page, { message: probeMessage });
+    const ip = await ipFor(SEED_USER.email);
+    if (ip === null) {
+      test.skip(true, "no forwarded IP on the local server — IP key can't be exercised");
+      return;
+    }
+
+    await cleanup();
+    await insertRows(ip, 10, "rl-ipfull");
+    expect(await countForIp(ip)).toBe(10);
+
+    const before = await rowsFor(SEED_USER.email);
+    await submit(page, { message: `e2e ip-bucket signed-in check ${Date.now()}` });
+    const after = await rowsFor(SEED_USER.email);
+
+    expect(after).toBe(before + 1);
   });
 });
 
