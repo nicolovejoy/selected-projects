@@ -42,6 +42,9 @@ export default defineConfig({
       TURSO_DATABASE_URL: E2E_DB,
       TURSO_AUTH_TOKEN: "",
       NO_OPEN: "1",
+      // .env.local carries the real Resend key; without this the note test
+      // emails a live moderation alert on every run.
+      EMAIL_DISABLED: "1",
     },
   },
 });
