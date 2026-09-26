@@ -5,11 +5,18 @@ import { projects } from "@/lib/projects";
 import { db } from "@/lib/db";
 import { sendConnectNotification } from "@/lib/email";
 import { getSessionUser } from "@/lib/auth";
+import {
+  countRecentConnects,
+  MAX_CONNECTS_PER_EMAIL_PER_HOUR,
+  MAX_CONNECTS_PER_IP_PER_HOUR,
+} from "@/lib/connect";
 
 export type ConnectFormState = {
   ok: boolean;
   message?: string;
 };
+
+const THANKS = "Thanks — we'll be in touch.";
 
 function truncateIp(raw: string | null): string | null {
   if (!raw) return null;
@@ -39,7 +46,7 @@ export async function submitConnect(
 ): Promise<ConnectFormState> {
   // Honeypot — bots fill this; humans don't see it. Pretend success and drop.
   if (String(formData.get("website") ?? "").length > 0) {
-    return { ok: true, message: "Thanks — we'll be in touch." };
+    return { ok: true, message: THANKS };
   }
 
   const sessionUser = await getSessionUser();
@@ -72,6 +79,21 @@ export async function submitConnect(
   const geoCountry = h.get("x-vercel-ip-country");
   const id = crypto.randomUUID();
 
+  // Rate limit — over either key, drop it silently like the honeypot. Signed-in
+  // users are keyed on their session email only; a shared network shouldn't
+  // block them. A failed check fails open: better a burst than a lost message.
+  try {
+    const recent = await countRecentConnects(email, ip);
+    const overEmail = recent.byEmail >= MAX_CONNECTS_PER_EMAIL_PER_HOUR;
+    const overIp = !sessionUser && recent.byIp >= MAX_CONNECTS_PER_IP_PER_HOUR;
+    if (overEmail || overIp) {
+      console.warn(`[connect] rate limited (${overEmail ? "email" : "ip"})`);
+      return { ok: true, message: THANKS };
+    }
+  } catch (err) {
+    console.error("[connect] rate check failed", err);
+  }
+
   try {
     await db().execute({
       sql: `INSERT INTO connect_submissions
@@ -97,5 +119,5 @@ export async function submitConnect(
     console.error("[connect] email send failed", err);
   }
 
-  return { ok: true, message: "Thanks — we'll be in touch." };
+  return { ok: true, message: THANKS };
 }
