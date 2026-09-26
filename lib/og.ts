@@ -41,9 +41,15 @@ function metaTag(html: string, ...props: string[]): string | undefined {
  * lives inside the cached scope so a failure never throws out of it — it's
  * cached briefly (`minutes`) instead of caching nothing, and a success is
  * cached for a day.
+ *
+ * `remote`, not plain `use cache`: on /projects/[slug] this runs at request
+ * time, where plain `use cache` is per-serverless-instance memory and missed on
+ * nearly every view (measured on prod 2026-09-25: 6 loads, 6 scrapes). The
+ * remote handler is shared across instances. Nested inside the feed's plain
+ * `use cache` is allowed (use-cache-remote.md, "Nesting rules").
  */
 async function fetchOgPreview(url: string): Promise<OgPreview | null> {
-  "use cache";
+  "use cache: remote";
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 3000);
