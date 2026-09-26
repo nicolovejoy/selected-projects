@@ -63,7 +63,10 @@ export async function submitConnect(
   if (!email || !message) {
     return { ok: false, message: "Email and message are required." };
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  // Signed-in users' session email was already validated at sign-in
+  // (app/signin/actions.ts) against this same regex — only re-check it for
+  // the signed-out form input.
+  if (!sessionUser && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, message: "That email doesn't look right." };
   }
   if (project !== "general" && !projects.some((p) => p.slug === project)) {
