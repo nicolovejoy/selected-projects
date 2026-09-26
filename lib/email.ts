@@ -3,6 +3,9 @@ import { Resend } from "resend";
 let _resend: Resend | undefined;
 
 function client(): Resend {
+  // e2e sets this so a test run never sends real mail; callers already treat a
+  // throw here as a failed send and carry on.
+  if (process.env.EMAIL_DISABLED === "1") throw new Error("email disabled (EMAIL_DISABLED=1)");
   if (!_resend) {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) throw new Error("RESEND_API_KEY must be set");
