@@ -1,0 +1,108 @@
+"use client";
+
+import { useActionState } from "react";
+import Link from "next/link";
+import { deleteNoteAction, postNote, type NoteFormState } from "./actions";
+import { strings } from "@/content/strings";
+import { formatDate, localePath, type Locale } from "@/lib/i18n";
+
+export type NoteView = {
+  id: string;
+  body: string;
+  createdAt: string;
+  author: string;
+  canDelete: boolean;
+};
+
+const initial: NoteFormState = { ok: false };
+
+export function Notes({
+  project,
+  notes,
+  currentName,
+  signedIn,
+  locale,
+}: {
+  project: string;
+  notes: NoteView[];
+  currentName: string | null;
+  signedIn: boolean;
+  locale: Locale;
+}) {
+  const t = strings[locale].notes;
+  const [state, action, pending] = useActionState(postNote, initial);
+
+  return (
+    <>
+      {signedIn ? (
+        // key on notes.length so a successful post (which adds a note via
+        // revalidate) remounts the form and clears the inputs.
+        <form key={notes.length} action={action} className="space-y-2">
+          <input type="hidden" name="project" value={project} />
+          <input type="hidden" name="locale" value={locale} />
+          <input
+            name="name"
+            defaultValue={currentName ?? ""}
+            placeholder={t.displayName}
+            maxLength={60}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
+          />
+          <textarea
+            name="body"
+            rows={3}
+            required
+            maxLength={2000}
+            placeholder={t.addNote}
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm"
+          />
+          {state.error && <p className="text-sm text-red-600">{state.error}</p>}
+          <button
+            type="submit"
+            disabled={pending}
+            className="rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-60"
+          >
+            {pending ? t.posting : t.post}
+          </button>
+        </form>
+      ) : (
+        <p className="text-sm text-neutral-500">
+          <Link
+            href={localePath(locale, "/signin")}
+            className="underline underline-offset-4 hover:text-neutral-900"
+          >
+            {t.signIn}
+          </Link>{" "}
+          {t.toJoin}
+        </p>
+      )}
+
+      <ul className="mt-8 space-y-5">
+        {notes.length === 0 && (
+          <li className="text-sm text-neutral-400">{t.empty}</li>
+        )}
+        {notes.map((n) => (
+          <li key={n.id} className="border-l-2 border-neutral-200 pl-4">
+            <div className="text-xs text-neutral-500">
+              {n.author} · {formatDate(n.createdAt, locale)}
+              {n.canDelete && (
+                <form action={deleteNoteAction} className="inline">
+                  <input type="hidden" name="project" value={project} />
+                  <input type="hidden" name="noteId" value={n.id} />
+                  <button
+                    type="submit"
+                    className="ml-2 text-neutral-400 underline underline-offset-2 hover:text-red-600"
+                  >
+                    {t.delete}
+                  </button>
+                </form>
+              )}
+            </div>
+            <p className="mt-1 whitespace-pre-wrap text-[15px] leading-relaxed text-neutral-800">
+              {n.body}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}

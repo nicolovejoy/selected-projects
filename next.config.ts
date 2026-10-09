@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   // hole. Replaces the old experimental.ppr flag. See #19.
   cacheComponents: true,
   experimental: {
+    // Two root layouts (app/(en), app/(fr)) leave no single layout for unmatched
+    // URLs to render inside; app/global-not-found.tsx supplies the site chrome.
+    globalNotFound: true,
     // Cookie-dynamic pages (nav reads getSessionUser()) default to 0s client
     // router cache, so every nav click refetches the full RSC payload. Cheap
     // interim win for #19; structural PPR/static-shell fix is separate.

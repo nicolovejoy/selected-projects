@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { FeedGroup } from "@/lib/feed";
 import { Sparkline } from "@/components/sparkline";
 import type { ProjectStatus } from "@/lib/projects";
+import { strings } from "@/content/strings";
+import { localePath, type Locale } from "@/lib/i18n";
 
 const statusDot: Record<ProjectStatus, string> = {
   live: "bg-emerald-500",
@@ -20,15 +22,16 @@ const statusDot: Record<ProjectStatus, string> = {
  * is the category link, via the same overlay pattern as feed-card (links can't
  * nest, so the tile link is an absolute-inset sibling under z-10 name links).
  */
-export function CategoryTile({ group }: { group: FeedGroup }) {
+export function CategoryTile({ group, locale }: { group: FeedGroup; locale: Locale }) {
+  const t = strings[locale].tile;
   const top = group.entries.slice(0, 3);
   const rest = group.entries.length - top.length;
 
   return (
     <div className="group relative flex flex-col rounded-xl border border-neutral-200 bg-white p-3.5 transition hover:border-neutral-400 sm:p-5">
       <Link
-        href={`/${group.key}`}
-        aria-label={`${group.label} — view all`}
+        href={localePath(locale, `/${group.key}`)}
+        aria-label={t.viewAllAria(group.label)}
         className="absolute inset-0 rounded-xl"
       />
       <h2 className="mono-label">{group.label}</h2>
@@ -42,7 +45,7 @@ export function CategoryTile({ group }: { group: FeedGroup }) {
                 aria-hidden
               />
               <Link
-                href={`/projects/${e.project}`}
+                href={localePath(locale, `/projects/${e.project}`)}
                 className="relative z-10 text-sm font-medium text-neutral-900 underline-offset-2 hover:underline"
               >
                 {e.projectName}
@@ -59,7 +62,7 @@ export function CategoryTile({ group }: { group: FeedGroup }) {
       </ul>
 
       <p className="mono-label mt-3 max-sm:hidden group-hover:text-neutral-600">
-        {rest > 0 ? `+${rest} more →` : "view →"}
+        {rest > 0 ? t.more(rest) : t.view}
       </p>
     </div>
   );

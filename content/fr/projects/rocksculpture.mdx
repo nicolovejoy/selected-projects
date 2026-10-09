@@ -1,0 +1,7 @@
+export const metadata = {
+  tagline: "Photos de la belle sculpture de Stephen Rock, installée fin 2025.",
+};
+
+Un site d'une seule page en hommage à une sculpture sans titre de Stephen Rock, installée le 30/12/2025.
+
+Les photos sont stockées dans un bucket Cloudflare R2 servi par le CDN de Cloudflare : chaque image est ainsi mise en cache sur un serveur périphérique proche du visiteur, au lieu d'être récupérée depuis un partage iCloud qui préfère renvoyer un manifeste et diffuser les originaux depuis les serveurs d'Apple. Le trafic est aujourd'hui assez faible pour que l'avantage du cache soit surtout théorique, mais c'était une expérience amusante, et elle a vraiment fait la différence au début, quand la page circulait de main en main et chargeait la même douzaine de photos pour un flot de nouveaux visiteurs.

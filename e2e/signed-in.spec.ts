@@ -95,7 +95,7 @@ test.describe("signed in", () => {
     // songscribe: distinct from prntd/musicforge (used by the follow tests above)
     // and from any other project a parallel test posts to, so this test can't
     // collide with another under fullyParallel. Rate limit is 5 notes/hour/user
-    // (app/projects/[slug]/actions.ts) — this test posts exactly 1.
+    // (components/project/actions.ts) — this test posts exactly 1.
     await page.goto("/projects/songscribe");
     // "notes" is a native <details>/<summary> section, collapsed by default
     // (only "about" defaults open) — expand it before touching the form.

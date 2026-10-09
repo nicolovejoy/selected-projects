@@ -12,7 +12,7 @@ Projects (slug → repo if different): musicforge, prntd, rocksculpture (repo: `
 
 ## Where editable text lives
 
-See `docs/editing.md` for the canonical map. All visible copy lives in `content/`: pages are MDX (`home.mdx`, `connect.mdx`, `about.mdx`, `projects/*.mdx`) and site-wide strings (title, description, footer tagline, nav labels) are in `content/site.ts`. Site is live at `https://pianohouseproject.org` (Vercel).
+See `docs/editing.md` for the canonical map. All visible copy lives in `content/`: pages are MDX (`home.mdx`, `connect.mdx`, `about.mdx`, `projects/*.mdx`) and short UI strings (title, description, nav, buttons, form errors) are in `content/strings.ts`. **The site is bilingual** — French mirrors every reader-facing route under `/fr`, with copy in `content/fr/` and the `fr` half of `strings.ts`. Any English copy change needs its French twin updated too. Site is live at `https://pianohouseproject.org` (Vercel).
 
 `site.tagline` and `site.description` are deliberately different strings: the tagline is the terse form drawn on the OG card, the description is the prose form for `<meta name="description">` and the text beneath social cards. Don't collapse them — the list form makes a poor search snippet.
 

@@ -1,4 +1,6 @@
 import type { ProjectStatus } from "@/lib/projects";
+import { strings } from "@/content/strings";
+import type { Locale } from "@/lib/i18n";
 
 // Dots stay -500 (readable on both themes); the label text lifts to -400 in
 // dark so the saturated -700 shades don't sink into the dark surface.
@@ -12,14 +14,14 @@ const styles: Record<ProjectStatus, { dot: string; text: string }> = {
 
 /** Colored dot + colored mono-cased label — the dot is the only hue left in
  *  the family; everything else in the kicker/eyebrow rows stays hueless. */
-export function StatusBadge({ status }: { status: ProjectStatus }) {
+export function StatusBadge({ status, locale = "en" }: { status: ProjectStatus; locale?: Locale }) {
   const s = styles[status];
   return (
     <span
       className={`inline-flex items-center gap-1.5 font-mono text-[0.625rem] tracking-[0.12em] uppercase ${s.text}`}
     >
       <span className={`size-1.5 rounded-full ${s.dot}`} aria-hidden="true" />
-      {status}
+      {strings[locale].status[status]}
     </span>
   );
 }

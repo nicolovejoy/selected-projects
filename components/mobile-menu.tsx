@@ -2,20 +2,24 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { strings } from "@/content/strings";
+import { LangSwitch } from "@/components/lang-switch";
+import { localePath, type Locale } from "@/lib/i18n";
 
 type LinkItem = { href: string; label: string };
 type MenuUser = { email: string; name: string | null } | null;
 
 export function MobileMenu({
+  locale,
   links,
-  signInLabel,
   user,
 }: {
+  locale: Locale;
   links: LinkItem[];
-  signInLabel: string;
   user: MenuUser;
 }) {
   const [open, setOpen] = useState(false);
+  const site = strings[locale].site;
 
   return (
     <div className="flex items-center gap-2 sm:hidden">
@@ -30,7 +34,7 @@ export function MobileMenu({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label="Menu"
+        aria-label={site.menu}
         aria-expanded={open}
         className="-mr-1 rounded-md p-2 text-neutral-600 hover:bg-neutral-100"
       >
@@ -66,6 +70,12 @@ export function MobileMenu({
                 github ↗
               </a>
             </li>
+            <li>
+              <LangSwitch
+                locale={locale}
+                className="block rounded-md px-2 py-2 font-mono text-xs tracking-[0.1em] hover:bg-neutral-100"
+              />
+            </li>
             <li className="mt-1 border-t border-neutral-100 pt-2">
               {user ? (
                 <>
@@ -85,17 +95,17 @@ export function MobileMenu({
                       type="submit"
                       className="block w-full rounded-md px-2 py-2 text-left font-medium hover:bg-neutral-100"
                     >
-                      sign out
+                      {site.signOut}
                     </button>
                   </form>
                 </>
               ) : (
                 <Link
-                  href="/signin"
+                  href={localePath(locale, "/signin")}
                   onClick={() => setOpen(false)}
                   className="block rounded-md px-2 py-2 font-medium hover:bg-neutral-100"
                 >
-                  {signInLabel}
+                  {site.navLabels.signIn}
                 </Link>
               )}
             </li>

@@ -1,0 +1,7 @@
+export const metadata = {
+  tagline: "Une prise vocale en entrée, une feuille de paroles structurée en sortie.",
+};
+
+Donnez-lui une prise vocale et il vous rend une feuille de paroles structurée. Whisper transcrit l'audio, puis un modèle lit le minutage mot par mot pour en déduire la forme de la chanson — couplets, refrains, prises refaites, apartés parlés — et signale les lignes qu'il n'est pas sûr d'avoir bien entendues. Le résultat est au format BarStock, le sous-ensemble paroles-et-structure du format de partition de [MusicForge](/fr/projects/musicforge) : une ossature à laquelle ajouter les accords là-bas.
+
+Une application de bureau affine la partition au fil d'un échange par chat, avec une transcription assurée par OpenAI Whisper ou par un modèle local. L'import direct dans MusicForge est une prochaine étape, pas encore construite.

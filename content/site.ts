@@ -1,17 +1,6 @@
-export const site = {
-  title: "the piano house project",
-  /** Terse form, set as type on the OG card. Not used as a meta description —
-      it makes a poor search snippet. */
-  tagline: "music · art · products · tools",
-  /** Prose form, for <meta name="description"> and the text beneath social cards. */
-  description:
-    "A live, self-updating record of the things Nico is building — music, art, products, and tools.",
-  footerTagline: "the piano house project — music, art, products, and tools.",
-  navLabels: {
-    about: "about",
-    tenets: "tenets",
-    lessons: "lessons",
-    connect: "connect",
-    signIn: "sign in",
-  },
-};
+// Site-wide strings now live in content/strings.ts, alongside their French
+// counterparts. This re-export keeps the English `site` import working for the
+// OG card and anything else that is English-only.
+import { strings } from "./strings";
+
+export const site = strings.en.site;
