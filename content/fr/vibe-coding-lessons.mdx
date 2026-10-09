@@ -4,7 +4,7 @@ export const metadata = {
 
 <MachineNote label="par claude">
 
-C'est moi qui ai écrit ces leçons. Leur source, c'est l'historique des sessions de Nico — environ 500 prompts et les décisions derrière quelques mois d'applications livrées. Je l'ai relu, j'ai repéré les habitudes qui revenaient, et je les ai mises par écrit. Les prompts marqués **[réel]** sont ses propres mots (traduits ici) ; ceux marqués **[reconstitué]** sont des versions retravaillées du même geste. C'est Nico qui a choisi les leçons retenues. Voyez les [principes](/fr/tenets) pour comprendre pourquoi ce texte est signalé ainsi.
+C'est moi qui ai écrit ces leçons. Leur source, c'est l'historique des sessions de Nico — environ 500 prompts et les décisions derrière quelques mois d'applications livrées. Je l'ai relu, j'ai repéré les habitudes qui revenaient, et je les ai mises par écrit. Les prompts marqués **[réel]** sont ses propres mots (traduits ici) ; ceux marqués **[reconstitué]** sont des versions retravaillées du même geste. C'est Nico qui a choisi les leçons retenues. Voir les [principes](/fr/tenets) pour comprendre pourquoi ce texte est signalé ainsi.
 
 </MachineNote>
 
@@ -18,13 +18,13 @@ Mettez l'approche et les questions ouvertes sur la table avant toute fonctionnal
 
 ## 2. Cadrer serré — dire ce qu'il ne faut pas construire
 
-Le MVP de prntd excluait l'import d'images, la place de marché, les commandes de plusieurs articles et les designs sauvegardés — et il a été livré en trois jours. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd)
+Le MVP de prntd excluait l'import d'images, la place de marché, les commandes de plusieurs articles et les motifs sauvegardés — et il a été livré en trois jours. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd)
 
 > **[reconstitué]** « Voici le périmètre de la v1. Explicitement hors périmètre : [liste]. Si tu penses que quelque chose hors périmètre est nécessaire, signale-le — ne le construis pas d'office. »
 
 ## 3. Vérifier soi-même de bout en bout
 
-Des tests qui passent ne prouvent rien. Sur ibuild4you, c'est en cliquant soi-même qu'on a repéré une mauvaise configuration de `github_repo` qu'aucun test ne couvrait. → [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
+Des tests qui passent ne sont pas une preuve. Sur ibuild4you, c'est en cliquant soi-même qu'on a repéré une mauvaise configuration de `github_repo` qu'aucun test ne couvrait. → [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
 
 > **[reconstitué]** « Explique-moi exactement comment vérifier que ça marche en production, étape par étape. Je vais cliquer moi-même et je te fais un retour. »
 
@@ -54,15 +54,15 @@ Les plans vivent dans le dépôt (`docs/`, `CLAUDE.md`), pas dans des fichiers b
 
 ## 8. Nommer qui est qui ; rédiger les specs sans regarder l'implémentation
 
-Une note sur les rôles a permis de ne pas confondre le développeur et l'intermédiaire d'une session à l'autre (byside). La spec côté créateur d'ibuild4you a été écrite sans montrer l'interface actuelle, pour que les agents ne s'y ancrent pas.
+Une note sur les rôles a permis de ne pas confondre le développeur et l'intermédiaire d'une session à l'autre (byside). La spec côté maker d'ibuild4you a été écrite sans montrer l'interface actuelle, pour que les agents ne soient pas influencés par elle.
 
-> **[reconstitué]** « Je suis le développeur ; [nom] est le client. Décris le parcours idéal en partant de zéro — ne regarde pas l'implémentation actuelle, je ne veux pas que tu t'y ancres. »
+> **[reconstitué]** « Je suis le développeur ; [nom] est le client. Décris le parcours idéal en partant de zéro — ne regarde pas l'implémentation actuelle, je ne veux pas que ça t'influence. »
 
 ## 9. Changer de cap quand un outil ne marche pas
 
 prntd est passé de Flux à Ideogram v3 Turbo quand le rendu du texte sur les t-shirts — tout l'intérêt du produit — échouait encore et encore. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd)
 
-> **[réel]** « Peut-être que ce modèle n'est pas le meilleur, finalement... quelles seraient d'autres options, meilleures — ou une combinaison de deux, un pour l'image, un pour les mots ? »
+> **[réel]** « Peut-être que ce modèle n'est pas le meilleur, finalement… quelles seraient d'autres options, meilleures — ou une combinaison de deux, un pour l'image, un pour les mots ? »
 
 ## 10. Traiter les identifiants avec soin dès le premier jour
 
@@ -90,10 +90,10 @@ Une erreur passagère « Invalid token » sur ibuild4you a valu à `verifyIdTo
 
 ## 14. Déléguer la plomberie, garder les décisions
 
-prntd a branché six services externes (Turso, Better-Auth, Stripe, Printful, Replicate, Cloudflare R2) ; ibuild4you a mis en place toute la pile S3. C'est Nico qui a tranché sur la pile technique et le périmètre. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd) · [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
+prntd a branché six services externes (Turso, Better-Auth, Stripe, Printful, Replicate, Cloudflare R2) ; ibuild4you a mis en place toute la stack S3. C'est Nico qui a tranché sur la stack technique et le périmètre. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd) · [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
 
 > **[reconstitué]** « Tu t'occupes du câblage — CI, configuration de l'environnement, code d'intégration standard. Remonte-moi chaque vraie décision au lieu de trancher toi-même. Je décide ; tu construis. »
 
 ## La version en une ligne
 
-Planifiez d'abord. Cadrez serré. Vérifiez vous-même. Contestez. Restez réversible. Mettez-le par écrit. Déléguez la plomberie, gardez le jugement.
+Planifier d'abord. Cadrer serré. Vérifier soi-même. Oser contredire. Tout garder réversible. Tout consigner. Déléguer la plomberie, garder la main sur les décisions.

@@ -201,7 +201,7 @@ const fr: Strings = {
   },
   tile: {
     viewAllAria: (label: string) => `${label} — tout voir`,
-    more: (n: number) => `+${n} de plus →`,
+    more: (n: number) => `+${n} autres →`,
     view: "voir →",
   },
   feed: {
@@ -217,7 +217,7 @@ const fr: Strings = {
   },
   project: {
     allProjects: "← Tous les projets",
-    latest: "dernière",
+    latest: "dernière semaine",
     activity: "activité",
     source: "source",
     fromClaude: "↳ par claude",
@@ -233,7 +233,7 @@ const fr: Strings = {
     openSite: "ouvrir le site ↗",
     iframeTitle: (name: string) => `aperçu en direct de ${name}`,
     follow: "suivre",
-    following: "suivi ✓",
+    following: "vous suivez ✓",
   },
   evolution: {
     activeSince: (when: string) => `Actif depuis ${when}`,
@@ -243,7 +243,7 @@ const fr: Strings = {
       "↳ par claude · généré automatiquement à chaque fin de session · en anglais",
   },
   calendar: {
-    caption: (n: string) => `${n} au cours de la dernière année`,
+    caption: (n: string) => `${n} sur les 12 derniers mois`,
   },
   machineNote: { label: "par claude" },
   notes: {
@@ -261,7 +261,7 @@ const fr: Strings = {
       empty: "Écrivez d’abord quelque chose.",
       name: "Ajoutez un nom affiché pour qu’on sache qui parle.",
       tooMany: "Beaucoup de notes d’un coup — réessayez dans une heure.",
-      failed: "La publication a échoué. Réessayez dans une minute ?",
+      failed: "La publication a échoué. Réessayez dans une minute ?",
     },
   },
   connect: {
@@ -277,7 +277,7 @@ const fr: Strings = {
       collaborate: "Collaborer / construire quelque chose",
     },
     message: "Message",
-    links: "Où vous trouver en ligne ? (facultatif)",
+    links: "Où vous trouver en ligne ? (facultatif)",
     linksPlaceholder: "LinkedIn, GitHub, site perso…",
     sending: "Envoi…",
     send: "Envoyer",
@@ -288,7 +288,7 @@ const fr: Strings = {
       required: "L’e-mail et le message sont obligatoires.",
       email: "Cette adresse e-mail semble incorrecte.",
       unknownProject: "Projet inconnu.",
-      failed: "L’enregistrement a échoué. Réessayez dans une minute ?",
+      failed: "L’enregistrement a échoué. Réessayez dans une minute ?",
     },
   },
   signin: {
@@ -298,7 +298,7 @@ const fr: Strings = {
       missing: "Ce lien est incomplet. Demandez-en un nouveau.",
     },
     footnote:
-      "Une fois connecté, vous pouvez suivre les projets et participer à la conversation. Nous ne conservons que votre e-mail — voir les principes pour la façon dont nous le traitons.",
+      "La connexion vous permet de suivre les projets et de participer à la conversation. Nous ne conservons que votre e-mail — voir les principes pour la façon dont nous le traitons.",
     checkEmail: "Consultez vos e-mails",
     sentTo: "Nous avons envoyé un lien de connexion à",
     sentToTail: ". Il ne sert qu’une fois et expire dans 15 minutes.",
@@ -307,7 +307,7 @@ const fr: Strings = {
     emailLabel: "E-mail",
     placeholder: "vous@exemple.com",
     sending: "Envoi…",
-    sendLink: "Envoyez-moi un lien",
+    sendLink: "M’envoyer un lien",
     moreWays: "d’autres options bientôt",
     google: "Continuer avec Google",
     soon: "bientôt",
@@ -315,20 +315,20 @@ const fr: Strings = {
     errors: {
       email: "Cette adresse e-mail semble incorrecte.",
       tooMany: "Trop de liens demandés. Patientez quelques minutes et réessayez.",
-      failed: "L’envoi du lien a échoué. Réessayez dans une minute ?",
+      failed: "L’envoi du lien a échoué. Réessayez dans une minute ?",
     },
   },
   lessons: {
     teaserBefore:
-      "C’est moi qui les ai écrites. La source, c’est l’historique des sessions de Nico — environ 500 prompts derrière quelques mois d’applications livrées : je l’ai relu, j’ai repéré les habitudes qui revenaient, et je les ai rédigées. Voir les ",
+      "C’est moi qui les ai écrites. La source, c’est l’historique des sessions de Nico — environ 500 prompts derrière quelques mois d’applications livrées : je l’ai relu, j’ai repéré les habitudes qui revenaient, et je les ai rédigées. Voir les ",
     teaserLink: "principes",
     teaserAfter: " pour comprendre pourquoi ce texte est signalé.",
     oneLineHeading: "La version en une ligne",
     oneLine:
-      "Planifier d’abord. Cadrer serré. Vérifier soi-même. Oser contredire. Rester réversible. Tout consigner. Déléguer la plomberie, garder le jugement.",
+      "Planifier d’abord. Cadrer serré. Vérifier soi-même. Oser contredire. Tout garder réversible. Tout consigner. Déléguer la plomberie, garder la main sur les décisions.",
     readAll: "Lire les quatorze",
     readAllBody: "Chaque habitude avec un exemple tiré du travail et un prompt à copier.",
-    signIn: "Connexion",
+    signIn: "Se connecter",
   },
 };
 
