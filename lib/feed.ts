@@ -1,6 +1,7 @@
 import { cacheLife } from "next/cache";
 import {
-  projects,
+  localizedProjects,
+  categoryLabel,
   projectHistoryKey,
   categories,
   type ProjectStatus,
@@ -8,6 +9,8 @@ import {
 } from "@/lib/projects";
 import { getProjectHistory } from "@/lib/history";
 import { getOgPreview } from "@/lib/og";
+import type { Locale } from "@/lib/i18n";
+import type { Project } from "@/lib/projects";
 
 export type FeedEntry = {
   project: string;
@@ -28,7 +31,7 @@ export type FeedEntry = {
 
 export type FeedGroup = { key: ProjectCategory; label: string; entries: FeedEntry[] };
 
-async function toEntry(p: (typeof projects)[number]): Promise<FeedEntry> {
+async function toEntry(p: Project): Promise<FeedEntry> {
   const [history, og] = await Promise.all([
     getProjectHistory(projectHistoryKey(p)),
     p.url ? getOgPreview(p.url) : null,
@@ -58,7 +61,7 @@ async function toEntry(p: (typeof projects)[number]): Promise<FeedEntry> {
  * feed is stale. Within a category, projects with recent activity come first
  * and rollup-less ones fall to the end in manifest order.
  */
-export async function getGroupedFeed(): Promise<FeedGroup[]> {
+export async function getGroupedFeed(locale: Locale = "en"): Promise<FeedGroup[]> {
   "use cache";
   // Explicit outer lifetime: recountly.org permanently lacks an og:image, so
   // its OG scrape always fails and caches as `minutes` (1 min revalidate).
@@ -68,12 +71,13 @@ export async function getGroupedFeed(): Promise<FeedGroup[]> {
   // staying in the prerendered shell for an hour.
   cacheLife("hours");
 
-  const entries = await Promise.all(projects.map(toEntry));
+  // `locale` is an argument, so it's part of the cache key: one entry per language.
+  const entries = await Promise.all(localizedProjects(locale).map(toEntry));
 
   return categories
-    .map(({ key, label }) => ({
+    .map(({ key }) => ({
       key,
-      label,
+      label: categoryLabel(key, locale),
       entries: entries
         .filter((e) => e.category === key)
         .sort((a, b) => (b.weekOf ?? "").localeCompare(a.weekOf ?? "")),

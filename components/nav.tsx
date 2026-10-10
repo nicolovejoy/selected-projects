@@ -1,21 +1,23 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import buildInfo from "@/lib/build-info.json";
-import { site } from "@/content/site";
+import { strings } from "@/content/strings";
 import { MobileMenu } from "@/components/mobile-menu";
+import { LangSwitch } from "@/components/lang-switch";
 import { getSessionUser } from "@/lib/auth";
+import { intlTag, localePath, type Locale } from "@/lib/i18n";
 
-const builtAt = new Date(buildInfo.built_at)
-  .toLocaleString("en-US", {
+function builtAt(locale: Locale): string {
+  const s = new Date(buildInfo.built_at).toLocaleString(intlTag[locale], {
     timeZone: "America/Los_Angeles",
     month: "short",
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
-    hour12: true,
-  })
-  .replace(/AM/, "am")
-  .replace(/PM/, "pm");
+    hour12: locale === "en",
+  });
+  return locale === "en" ? s.replace(/AM/, "am").replace(/PM/, "pm") : s;
+}
 
 function GitHubMark({ className }: { className?: string }) {
   return (
@@ -25,12 +27,15 @@ function GitHubMark({ className }: { className?: string }) {
   );
 }
 
-const links = [
-  { href: "/about", label: site.navLabels.about },
-  { href: "/tenets", label: site.navLabels.tenets },
-  { href: "/vibe-coding-lessons", label: site.navLabels.lessons },
-  { href: "/connect", label: site.navLabels.connect },
-];
+function navLinks(locale: Locale) {
+  const labels = strings[locale].site.navLabels;
+  return [
+    { href: localePath(locale, "/about"), label: labels.about },
+    { href: localePath(locale, "/tenets"), label: labels.tenets },
+    { href: localePath(locale, "/vibe-coding-lessons"), label: labels.lessons },
+    { href: localePath(locale, "/connect"), label: labels.connect },
+  ];
+}
 
 /**
  * The session-dependent slice of the desktop nav. It is the ONLY reason any
@@ -38,13 +43,17 @@ const links = [
  * cookie read at lib/auth.ts propagated to all 13 page routes (#19). Behind a
  * Suspense boundary it becomes a dynamic hole in an otherwise static shell.
  */
-async function SessionSlot() {
+async function SessionSlot({ locale }: { locale: Locale }) {
   const user = await getSessionUser();
+  const site = strings[locale].site;
 
   if (!user) {
     return (
       <li>
-        <Link href="/signin" className="font-medium text-neutral-800 hover:text-neutral-950">
+        <Link
+          href={localePath(locale, "/signin")}
+          className="font-medium text-neutral-800 hover:text-neutral-950"
+        >
           {site.navLabels.signIn}
         </Link>
       </li>
@@ -67,7 +76,7 @@ async function SessionSlot() {
       <li>
         <form action="/api/auth/signout" method="post">
           <button type="submit" className="hover:text-neutral-900">
-            sign out
+            {site.signOut}
           </button>
         </form>
       </li>
@@ -85,16 +94,18 @@ function SessionSlotFallback() {
 }
 
 /** Same boundary for the phone nav, which also branches on the session. */
-async function MobileSlot() {
+async function MobileSlot({ locale }: { locale: Locale }) {
   const user = await getSessionUser();
-  return <MobileMenu links={links} signInLabel={site.navLabels.signIn} user={user} />;
+  return <MobileMenu locale={locale} links={navLinks(locale)} user={user} />;
 }
 
-export function Nav() {
+export function Nav({ locale }: { locale: Locale }) {
+  const site = strings[locale].site;
+  const links = navLinks(locale);
   return (
     <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/90 backdrop-blur">
       <nav className="relative mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-[15px] font-normal tracking-tight">
+        <Link href={localePath(locale, "/")} className="text-[15px] font-normal tracking-tight">
           the <span className="font-bold">piano house</span> project
         </Link>
 
@@ -111,34 +122,42 @@ export function Nav() {
               href="https://github.com/nicolovejoy"
               target="_blank"
               rel="noopener"
-              aria-label="Nico on GitHub"
+              aria-label={site.githubAria}
               className="block hover:text-neutral-900"
             >
               <GitHubMark className="size-4" />
             </a>
           </li>
+          <li>
+            <LangSwitch locale={locale} />
+          </li>
           <Suspense fallback={<SessionSlotFallback />}>
-            <SessionSlot />
+            <SessionSlot locale={locale} />
           </Suspense>
         </ul>
 
-        <Suspense
-          fallback={<MobileMenu links={links} signInLabel={site.navLabels.signIn} user={null} />}
-        >
-          <MobileSlot />
+        <Suspense fallback={<MobileMenu locale={locale} links={links} user={null} />}>
+          <MobileSlot locale={locale} />
         </Suspense>
       </nav>
     </header>
   );
 }
 
-export function Footer() {
+export function Footer({ locale }: { locale: Locale }) {
+  const site = strings[locale].site;
   return (
     <footer className="mt-24 border-t border-neutral-200">
       <div className="mx-auto flex max-w-5xl flex-col items-start gap-2 px-6 py-8 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
-        <span>{site.footerTagline}</span>
+        <span>
+          {site.footerTagline}
+          {site.translationNote && (
+            <span className="block text-xs text-neutral-400">{site.translationNote}</span>
+          )}
+        </span>
         <span className="font-mono text-[11px] text-neutral-400">
-          Built {builtAt} PT{buildInfo.commit && <> · {buildInfo.commit}</>}
+          {site.builtAt(builtAt(locale))}
+          {buildInfo.commit && <> · {buildInfo.commit}</>}
         </span>
       </div>
     </footer>

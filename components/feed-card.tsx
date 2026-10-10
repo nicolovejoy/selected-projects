@@ -2,14 +2,8 @@ import Link from "next/link";
 import type { FeedEntry } from "@/lib/feed";
 import { Sparkline } from "@/components/sparkline";
 import { StatusBadge } from "@/components/status-badge";
-
-function weekLabel(iso: string): string {
-  return new Date(iso.replace(" ", "T") + "Z").toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
+import { strings } from "@/content/strings";
+import { formatDate, localePath, plural, type Locale } from "@/lib/i18n";
 
 function host(url: string): string {
   return new URL(url).hostname.replace(/^www\./, "");
@@ -22,7 +16,8 @@ function host(url: string): string {
  * projects (no weekly history published yet) still render a full row —
  * summary/authorship/week are simply absent.
  */
-export function FeedCard({ entry }: { entry: FeedEntry }) {
+export function FeedCard({ entry, locale }: { entry: FeedEntry; locale: Locale }) {
+  const t = strings[locale].feed;
   const hasSpark = entry.spark.length >= 2;
 
   return (
@@ -30,14 +25,14 @@ export function FeedCard({ entry }: { entry: FeedEntry }) {
     // inside the row without nesting anchors (it stacks above via z-10).
     <li className="relative grid grid-cols-[1fr_auto] gap-x-6 gap-y-2.5 border-t border-neutral-200 p-5 transition-colors first:border-t-0 hover:bg-neutral-50 max-[560px]:grid-cols-1 sm:p-6">
       <Link
-        href={`/projects/${entry.project}`}
-        aria-label={`${entry.projectName} — project page`}
+        href={localePath(locale, `/projects/${entry.project}`)}
+        aria-label={t.projectPageAria(entry.projectName)}
         className="absolute inset-0"
       />
 
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2.5">
-          <StatusBadge status={entry.status} />
+          <StatusBadge status={entry.status} locale={locale} />
           {hasSpark && (
             <>
               <span className="text-neutral-300" aria-hidden="true">
@@ -51,7 +46,7 @@ export function FeedCard({ entry }: { entry: FeedEntry }) {
               <span className="text-neutral-300" aria-hidden="true">
                 /
               </span>
-              <span className="mono-label">no rollup published</span>
+              <span className="mono-label">{t.noRollup}</span>
             </>
           )}
         </div>
@@ -61,20 +56,20 @@ export function FeedCard({ entry }: { entry: FeedEntry }) {
         </h3>
         <p className="mt-1 font-serif text-base italic text-neutral-600">{entry.tagline}</p>
         {entry.summary && (
-          <p className="mt-2.5 max-w-[60ch] text-sm leading-relaxed text-neutral-600">
+          <p lang="en" className="mt-2.5 max-w-[60ch] text-sm leading-relaxed text-neutral-600">
             {entry.summary}
           </p>
         )}
         {entry.sessionCount !== null && (
           <p className="mono-label mt-3">
-            ↳ from claude · {entry.sessionCount} session{entry.sessionCount === 1 ? "" : "s"}
+            {t.fromClaude} · {plural(entry.sessionCount, t.session, t.sessions, locale)}
           </p>
         )}
       </div>
 
       <div className="flex flex-col items-end gap-2 whitespace-nowrap text-right max-[560px]:flex-row max-[560px]:items-baseline max-[560px]:justify-start max-[560px]:gap-4 max-[560px]:text-left">
         {entry.weekOf ? (
-          <span className="mono-label">week of {weekLabel(entry.weekOf)}</span>
+          <span className="mono-label">{t.weekOf(formatDate(entry.weekOf, locale))}</span>
         ) : (
           <span className="mono-label text-neutral-300">—</span>
         )}
@@ -85,10 +80,10 @@ export function FeedCard({ entry }: { entry: FeedEntry }) {
             rel="noopener"
             className="relative z-10 font-mono text-[0.62rem] tracking-wide text-neutral-600 underline underline-offset-4 hover:text-neutral-900"
           >
-            visit {host(entry.url)} ↗
+            {t.visit(host(entry.url))}
           </a>
         ) : (
-          entry.weekOf && <span className="mono-label text-neutral-300">github only</span>
+          entry.weekOf && <span className="mono-label text-neutral-300">{t.githubOnly}</span>
         )}
       </div>
     </li>

@@ -1,0 +1,113 @@
+export const metadata = {
+  title: "leçons de vibe coding",
+};
+
+<MachineNote label="par claude">
+
+C'est moi qui ai écrit ces leçons. Leur source, c'est l'historique des sessions de Nico — environ 500 prompts et les décisions derrière quelques mois d'applications livrées. Je l'ai relu, j'ai repéré les habitudes qui revenaient, et je les ai mises par écrit. Les prompts marqués **[réel]** sont ses propres mots, en anglais, suivis de leur traduction ; ceux marqués **[reconstitué]** sont des versions retravaillées du même geste. C'est Nico qui a choisi les leçons retenues. Voir les [principes](/fr/tenets) pour comprendre pourquoi ce texte est signalé ainsi.
+
+</MachineNote>
+
+Quatorze habitudes, chacune avec un exemple tiré du travail et un prompt à copier.
+
+## 1. Planifier avant de coder — et se faire réexpliquer le plan
+
+Mettez l'approche et les questions ouvertes sur la table avant toute fonctionnalité non triviale. prntd est passé par spécification → stack → squelette → développement. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd)
+
+> **[réel]** "Let's plan this out and then clear and build. But ask more questions and think about ways to improve our code quality as we go."
+>
+> *Traduction : « Planifions ça, puis on vide le contexte et on construit. Mais pose plus de questions et réfléchis à des façons d'améliorer la qualité de notre code au fur et à mesure. »*
+
+## 2. Cadrer serré — dire ce qu'il ne faut pas construire
+
+Le MVP de prntd excluait l'import d'images, la place de marché, les commandes de plusieurs articles et les motifs sauvegardés — et il a été livré en trois jours. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd)
+
+> **[reconstitué]** « Voici le périmètre de la v1. Explicitement hors périmètre : [liste]. Si tu penses que quelque chose hors périmètre est nécessaire, signale-le — ne le construis pas d'office. »
+
+## 3. Vérifier soi-même de bout en bout
+
+Des tests qui passent ne sont pas une preuve. Sur ibuild4you, c'est en cliquant soi-même qu'on a repéré une mauvaise configuration de `github_repo` qu'aucun test ne couvrait. → [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
+
+> **[reconstitué]** « Explique-moi exactement comment vérifier que ça marche en production, étape par étape. Je vais cliquer moi-même et je te fais un retour. »
+
+## 4. Contester — lui demander de réfléchir encore
+
+Refus d'une abstraction qui n'aurait servi qu'à un seul consommateur sur ibuild4you ; rejet de l'idée de regrouper visites, coûts et retours dans une seule bibliothèque partagée dans prompt-lab. → [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you) · [github.com/nicolovejoy/prompt-lab](https://github.com/nicolovejoy/prompt-lab)
+
+> **[réel]** "This seems like the right way to go, but think through it one more time to be sure."
+>
+> *Traduction : « Ça me semble la bonne direction, mais réfléchis-y encore une fois pour être sûr. »*
+
+## 5. S'aligner sur le code existant, ne pas imposer un style
+
+Sur ibuild4you, choix de TypeScript tout simple et de tests mis à jour en parallèle, plutôt que d'une source de vérité unique en Zod, pour coller au style existant du projet. → [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
+
+> **[reconstitué]** « Respecte les conventions déjà en place dans ce fichier/dossier. N'introduis pas de nouveaux patterns ni de nouvelles bibliothèques sans le signaler et l'expliquer d'abord. »
+
+## 6. Garder les changements réversibles
+
+Dans prompt-lab, les renommages sont normalisés à la lecture — un INSERT réversible, pas une modification des données. Une adresse e-mail obsolète a été retirée de `.gitconfig` au lieu de supprimer le fichier. → [github.com/nicolovejoy/prompt-lab](https://github.com/nicolovejoy/prompt-lab)
+
+> **[réel]** "That's an old work account that's defunct, it's in my `.gitconfig`. Should I just delete that file?"
+>
+> *Traduction : « C'est un vieux compte pro qui n'existe plus, il est dans mon `.gitconfig`. Je devrais juste supprimer ce fichier ? »*
+
+## 7. Écrire les décisions là où l'IA les lira la prochaine fois
+
+Les plans vivent dans le dépôt (`docs/`, `CLAUDE.md`), pas dans des fichiers brouillons. prompt-lab publie ses conventions une fois pour toutes sur un tableau d'affichage partagé entre projets. → [github.com/nicolovejoy/prompt-lab](https://github.com/nicolovejoy/prompt-lab)
+
+> **[réel]** "It would be nice to have a bulletin board that this project owns and publishes to, that other projects can subscribe to."
+>
+> *Traduction : « Ce serait bien d'avoir un tableau d'affichage qui appartienne à ce projet et sur lequel il publie, auquel les autres projets pourraient s'abonner. »*
+
+## 8. Nommer qui est qui ; rédiger les specs sans regarder l'implémentation
+
+Une note sur les rôles a permis de ne pas confondre le développeur et l'intermédiaire d'une session à l'autre (byside). La spec côté maker d'ibuild4you a été écrite sans montrer l'interface actuelle, pour que les agents ne soient pas influencés par elle.
+
+> **[reconstitué]** « Je suis le développeur ; [nom] est le client. Décris le parcours idéal en partant de zéro — ne regarde pas l'implémentation actuelle, je ne veux pas que ça t'influence. »
+
+## 9. Changer de cap quand un outil ne marche pas
+
+prntd est passé de Flux à Ideogram v3 Turbo quand le rendu du texte sur les t-shirts — tout l'intérêt du produit — échouait encore et encore. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd)
+
+> **[réel]** "Maybe the model isn't the best after all... what would other, better options be — or a combo of two, one for the image, one for the words?"
+>
+> *Traduction : « Peut-être que ce modèle n'est pas le meilleur, finalement… quelles seraient d'autres options, meilleures — ou une combinaison de deux, un pour l'image, un pour les mots ? »*
+
+## 10. Traiter les identifiants avec soin dès le premier jour
+
+ibuild4you utilisait un utilisateur IAM dédié, limité à S3, et des jetons distincts par service. Après une frayeur côté facturation, les clés d'un espace de travail ont été renouvelées sans toucher à rien d'autre. → [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
+
+> **[réel]** "I've created a new workspace and new API keys. Can we test that the new setup works?"
+>
+> *Traduction : « J'ai créé un nouvel espace de travail et de nouvelles clés d'API. On peut tester que la nouvelle configuration fonctionne ? »*
+
+## 11. Reporter, mais avec un plan d'évolution écrit
+
+ibuild4you a protégé un widget derrière une URL magique et documenté le signal qui justifierait de passer à une authentification par code. La limitation de débit a été reportée de la même façon. → [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
+
+> **[reconstitué]** « Ne construisons pas [X] tout de suite. Écris une note d'une ligne : ce qu'on a fait à la place, et le signal qui devrait nous pousser à y revenir. »
+
+## 12. Garder le fichier d'instructions léger
+
+Un `CLAUDE.md` réduit de 304 à 101 lignes (musicforge) ; remise en question de la commande `/readup`, qui en faisait trop à chaque lancement. → [github.com/nicolovejoy/prompt-lab](https://github.com/nicolovejoy/prompt-lab)
+
+> **[réel]** "What is the heavy part of the current readup command? Can we make it less heavy because it's unnecessary?"
+>
+> *Traduction : « Qu'est-ce qui est lourd dans la commande readup actuelle ? On peut l'alléger, puisque ce n'est pas nécessaire ? »*
+
+## 13. Déboguer en instrumentant, pas en devinant
+
+Une erreur passagère « Invalid token » sur ibuild4you a valu à `verifyIdToken` une journalisation de diagnostic, pour que le prochain incident révèle la vraie cause. → [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
+
+> **[reconstitué]** « Ne devine pas le correctif. Ajoute d'abord des logs qui nous disent exactement ce qui se passe, puis reproduis le problème et lis la vraie erreur avant de changer quoi que ce soit. »
+
+## 14. Déléguer la plomberie, garder les décisions
+
+prntd a branché six services externes (Turso, Better-Auth, Stripe, Printful, Replicate, Cloudflare R2) ; ibuild4you a mis en place toute la stack S3. C'est Nico qui a tranché sur la stack technique et le périmètre. → [github.com/nicolovejoy/prntd](https://github.com/nicolovejoy/prntd) · [github.com/nicolovejoy/ibuild4you](https://github.com/nicolovejoy/ibuild4you)
+
+> **[reconstitué]** « Tu t'occupes du câblage — CI, configuration de l'environnement, code d'intégration standard. Remonte-moi chaque vraie décision au lieu de trancher toi-même. Je décide ; tu construis. »
+
+## La version en une ligne
+
+Planifier d'abord. Cadrer serré. Vérifier soi-même. Oser contredire. Tout garder réversible. Tout consigner. Déléguer la plomberie, garder la main sur les décisions.

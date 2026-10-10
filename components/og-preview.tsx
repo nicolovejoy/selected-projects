@@ -1,5 +1,7 @@
 import { getOgPreview } from "@/lib/og";
 import type { Project } from "@/lib/projects";
+import { strings } from "@/content/strings";
+import type { Locale } from "@/lib/i18n";
 
 /**
  * Clickable preview of a project's live site — the same card you'd see sharing
@@ -7,7 +9,7 @@ import type { Project } from "@/lib/projects";
  * field > nothing rendered. Async server component; wrap in <Suspense> so the
  * OG fetch doesn't block.
  */
-export async function OgPreview({ project }: { project: Project }) {
+export async function OgPreview({ project, locale }: { project: Project; locale: Locale }) {
   if (!project.url) return null;
 
   const og = await getOgPreview(project.url);
@@ -27,7 +29,7 @@ export async function OgPreview({ project }: { project: Project }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={image}
-        alt={`${project.name} preview`}
+        alt={strings[locale].project.previewAlt(project.name)}
         className="aspect-[1200/630] w-full bg-neutral-100 object-cover"
         loading="lazy"
       />

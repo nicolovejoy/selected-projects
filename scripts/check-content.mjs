@@ -88,6 +88,28 @@ for (const file of projectFiles) {
   );
 }
 
+// French mirror: every project needs a translated file (tagline + body only),
+// and the standalone pages need theirs. A missing one would silently fall back
+// to English on /fr, which is easy to miss.
+for (const file of projectFiles) {
+  const slug = path.parse(file).name;
+  const frPath = path.join("content/fr/projects", file);
+  expect(existsSync(frPath), `${frPath}: missing French translation of ${file}`);
+  expect(
+    projectsRegistry.includes(`@/content/fr/projects/${slug}.mdx`),
+    `lib/projects.ts: missing import for "fr/projects/${slug}.mdx"`,
+  );
+  if (existsSync(frPath)) {
+    expect(
+      /export const metadata = \{[^}]*tagline:/s.test(readFileSync(frPath, "utf8")),
+      `${frPath}: must export metadata with a translated tagline`,
+    );
+  }
+}
+for (const page of ["home", "about", "tenets", "connect", "vibe-coding-lessons"]) {
+  expect(existsSync(`content/fr/${page}.mdx`), `content/fr/${page}.mdx: missing French page`);
+}
+
 if (errors.length) {
   console.error(`✗ Content check failed (${errors.length} error${errors.length === 1 ? "" : "s"}):`);
   for (const e of errors) console.error(`  ${e}`);

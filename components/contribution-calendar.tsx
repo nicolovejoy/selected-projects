@@ -1,4 +1,6 @@
 import type { CommitWeek } from "@/lib/github";
+import { strings } from "@/content/strings";
+import { intlTag, plural, type Locale } from "@/lib/i18n";
 
 // GitHub's 5-level activity scale, tokenized — the light ramp darkens as it
 // intensifies, so dark mode needs the inverse ramp or busy days read dimmest.
@@ -12,9 +14,11 @@ function level(n: number): number {
   return 4;
 }
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-export function ContributionCalendar({ weeks }: { weeks: CommitWeek[] }) {
+export function ContributionCalendar({ weeks, locale }: { weeks: CommitWeek[]; locale: Locale }) {
+  const t = strings[locale];
+  const monthFmt = new Intl.DateTimeFormat(intlTag[locale], { month: "short" });
+  const commits = (n: number) => plural(n, t.evolution.commit, t.evolution.commits, locale);
   const cols = weeks.length;
   const total = weeks.reduce((sum, w) => sum + w.total, 0);
 
@@ -22,9 +26,10 @@ export function ContributionCalendar({ weeks }: { weeks: CommitWeek[] }) {
   const labels: { col: number; text: string }[] = [];
   let prevMonth = -1;
   weeks.forEach((w, i) => {
-    const m = new Date(w.week * 1000).getMonth();
+    const d = new Date(w.week * 1000);
+    const m = d.getMonth();
     if (m !== prevMonth) {
-      labels.push({ col: i + 1, text: MONTHS[m] });
+      labels.push({ col: i + 1, text: monthFmt.format(d) });
       prevMonth = m;
     }
   });
@@ -51,7 +56,7 @@ export function ContributionCalendar({ weeks }: { weeks: CommitWeek[] }) {
           w.days.map((count, di) => (
             <span
               key={`${ci}-${di}`}
-              title={`${count} commit${count === 1 ? "" : "s"}`}
+              title={commits(count)}
               className="rounded-[2px]"
               style={{
                 gridColumnStart: ci + 1,
@@ -63,7 +68,7 @@ export function ContributionCalendar({ weeks }: { weeks: CommitWeek[] }) {
         )}
       </div>
       <figcaption className="mt-2 text-xs text-neutral-500">
-        {total} commit{total === 1 ? "" : "s"} in the last year
+        {t.calendar.caption(commits(total))}
       </figcaption>
     </figure>
   );
