@@ -46,6 +46,9 @@ export type ProjectMeta = {
   /** Opt-in to the split-pane live preview action on the detail page (#12).
    * Requires `url` — validated in check-content.mjs. */
   embed?: boolean;
+  /** Made through iBuild4You. Listed in the grid on the ibuild4you page and
+   *  labelled in the detail header. Absent = false. */
+  ibuild4you?: boolean;
 };
 
 export function projectHistoryKey(p: { slug: string; historyKey?: string }): string {
@@ -109,6 +112,11 @@ export function getProject(slug: string, locale: Locale = "en"): Project | undef
 /** Localized project list, same order as `projects`. */
 export function localizedProjects(locale: Locale): Project[] {
   return projects.map((p) => getProject(p.slug, locale)!);
+}
+
+/** Projects built through iBuild4You, localized, in `projects` order. */
+export function builtWithIbuild4you(locale: Locale = "en"): Project[] {
+  return localizedProjects(locale).filter((p) => p.ibuild4you && p.slug !== "ibuild4you");
 }
 
 export function getProjectBody(slug: string, locale: Locale = "en"): MDXContent | undefined {
