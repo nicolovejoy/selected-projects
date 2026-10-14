@@ -35,7 +35,7 @@ export async function BuiltWithGrid({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={image}
-                    alt={strings[locale].project.previewAlt(p.name)}
+                    alt=""
                     className="aspect-[1200/630] w-full bg-neutral-100 object-cover"
                     loading="lazy"
                   />
