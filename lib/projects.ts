@@ -7,6 +7,8 @@ import recountly, { metadata as recountlyMeta } from "@/content/projects/recount
 import splitRecording, { metadata as splitRecordingMeta } from "@/content/projects/split-recording.mdx";
 import songscribe, { metadata as songscribeMeta } from "@/content/projects/songscribe.mdx";
 import rocksculpture, { metadata as rocksculptureMeta } from "@/content/projects/rocksculpture.mdx";
+import tideline, { metadata as tidelineMeta } from "@/content/projects/tideline.mdx";
+import bakerylouise, { metadata as bakerylouiseMeta } from "@/content/projects/bakerylouise.mdx";
 import selectedProjects, { metadata as selectedProjectsMeta } from "@/content/projects/selected-projects.mdx";
 import musicforgeFr, { metadata as musicforgeFrMeta } from "@/content/fr/projects/musicforge.mdx";
 import ibuild4youFr, { metadata as ibuild4youFrMeta } from "@/content/fr/projects/ibuild4you.mdx";
@@ -16,6 +18,8 @@ import recountlyFr, { metadata as recountlyFrMeta } from "@/content/fr/projects/
 import splitRecordingFr, { metadata as splitRecordingFrMeta } from "@/content/fr/projects/split-recording.mdx";
 import songscribeFr, { metadata as songscribeFrMeta } from "@/content/fr/projects/songscribe.mdx";
 import rocksculptureFr, { metadata as rocksculptureFrMeta } from "@/content/fr/projects/rocksculpture.mdx";
+import tidelineFr, { metadata as tidelineFrMeta } from "@/content/fr/projects/tideline.mdx";
+import bakerylouiseFr, { metadata as bakerylouiseFrMeta } from "@/content/fr/projects/bakerylouise.mdx";
 import selectedProjectsFr, { metadata as selectedProjectsFrMeta } from "@/content/fr/projects/selected-projects.mdx";
 import { strings } from "@/content/strings";
 import type { Locale } from "@/lib/i18n";
@@ -68,6 +72,8 @@ const entries: Record<string, Entry> = {
   recountly: { meta: recountlyMeta as ProjectMeta, Body: recountly },
   "split-recording": { meta: splitRecordingMeta as ProjectMeta, Body: splitRecording },
   songscribe: { meta: songscribeMeta as ProjectMeta, Body: songscribe },
+  tideline: { meta: tidelineMeta as ProjectMeta, Body: tideline },
+  bakerylouise: { meta: bakerylouiseMeta as ProjectMeta, Body: bakerylouise },
   "selected-projects": { meta: selectedProjectsMeta as ProjectMeta, Body: selectedProjects },
 };
 
@@ -83,6 +89,8 @@ const frEntries: Record<string, { meta: FrMeta; Body: MDXContent }> = {
   "split-recording": { meta: splitRecordingFrMeta as FrMeta, Body: splitRecordingFr },
   "songscribe": { meta: songscribeFrMeta as FrMeta, Body: songscribeFr },
   "rocksculpture": { meta: rocksculptureFrMeta as FrMeta, Body: rocksculptureFr },
+  "tideline": { meta: tidelineFrMeta as FrMeta, Body: tidelineFr },
+  "bakerylouise": { meta: bakerylouiseFrMeta as FrMeta, Body: bakerylouiseFr },
   "selected-projects": { meta: selectedProjectsFrMeta as FrMeta, Body: selectedProjectsFr },
 };
 
