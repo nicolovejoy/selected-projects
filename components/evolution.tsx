@@ -7,7 +7,9 @@ function headline(history: ProjectHistory, locale: Locale): string | undefined {
   const t = strings[locale];
   const firstSeen = formatDate(history.firstActivityAt, locale, { month: "long", year: "numeric" });
   const sessions = plural(history.totalSessions, t.feed.session, t.feed.sessions, locale);
-  const commits = history.weekly.reduce((sum, w) => sum + w.commitCount, 0);
+  // Only the private endpoint knows the all-time figure. Summing the ≤6
+  // displayed rollups (the old behaviour) shrank as the window slid.
+  const commits = history.totalCommits ?? 0;
   const commitText =
     commits > 0 ? ` · ${plural(commits, t.evolution.commit, t.evolution.commits, locale)}` : "";
   return `${t.evolution.activeSince(firstSeen)} · ${sessions}${commitText}`;
