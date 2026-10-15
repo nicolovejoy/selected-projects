@@ -29,7 +29,7 @@ French versions live at the same name under `content/fr/` (e.g. `content/fr/abou
 
 ## Project content
 
-`content/projects/<slug>.mdx` — one file per project. Nine today: `musicforge.mdx`, `split-recording.mdx`, `songscribe.mdx`, `rocksculpture.mdx`, `prntd.mdx`, `recountly.mdx`, `ibuild4you.mdx`, `prompt-lab.mdx`, `selected-projects.mdx`. Each has:
+`content/projects/<slug>.mdx` — one file per project, with its French twin at `content/fr/projects/<slug>.mdx` (`ls content/projects` for the current list; `npm run check` fails if one isn't registered in `lib/projects.ts`). Each has:
 
 - **Frontmatter** (`export const metadata = { ... }`) — the project's `name`, `tagline`, `status`, `category`, `url`, and `github` repo slug. Status must be one of `live`, `beta`, `alpha`, `demo`, `concept`; category one of `music`, `art`, `products`, `tools`. Category decides which section of the home page the project appears under; section order lives in `lib/projects.ts`. Optional `cardImage` sets a curated card image (`/cards/<slug>.jpg`, see `assets/README.md`) that overrides the live `og:image` scrape. Optional `ibuild4you: true` lists the project in the "built with iBuild4You" grid on the ibuild4you page and adds a header label linking there; never set on ibuild4you itself.
 - **Body** — the prose description shown on `/projects/<slug>`. Plain markdown. Paragraph breaks are blank lines.
