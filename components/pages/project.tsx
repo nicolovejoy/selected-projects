@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getProject, getProjectBody, projectHistoryKey, projects } from "@/lib/projects";
+import { builtWithIbuild4you, getProject, getProjectBody, projectHistoryKey, projects } from "@/lib/projects";
 import { strings } from "@/content/strings";
 import { formatDate, localePath, plural, type Locale } from "@/lib/i18n";
 import { getProjectHistory } from "@/lib/history";
@@ -16,6 +16,7 @@ import { Evolution } from "@/components/evolution";
 import { FollowButton } from "@/components/project/follow-button";
 import { LivePreviewLayout, LivePreviewTrigger } from "@/components/project/live-preview";
 import { Notes } from "@/components/project/notes";
+import { BuiltWithGrid } from "@/components/project/built-with-grid";
 
 async function CommitGraph({ github, locale }: { github: string; locale: Locale }) {
   const weeks = await getCommitActivity(github);
@@ -71,6 +72,8 @@ export async function ProjectView({
   // the "permitted" switch from issue #12.
   const embedUrl = project.embed ? project.url : undefined;
 
+  const builtWith = slug === "ibuild4you" ? builtWithIbuild4you(locale) : [];
+
   const hasEvolution =
     history.totalSessions > 0 || history.weekly.length > 0 || history.recent.length > 0;
   const latestWeek =
@@ -98,6 +101,19 @@ export async function ProjectView({
                 ·
               </span>
               <StatusBadge status={project.status} locale={locale} />
+              {project.ibuild4you && (
+                <>
+                  <span className="text-neutral-300" aria-hidden="true">
+                    ·
+                  </span>
+                  <Link
+                    href={localePath(locale, "/projects/ibuild4you")}
+                    className="mono-label underline decoration-neutral-300 underline-offset-4 hover:text-neutral-900"
+                  >
+                    {t.builtWith}
+                  </Link>
+                </>
+              )}
             </div>
             <h1 className="mt-2 font-serif text-[2.75rem] leading-[1.05] tracking-[-0.02em] max-[560px]:text-[2.2rem]">
               {project.name}
@@ -183,6 +199,15 @@ export async function ProjectView({
           <Body />
         </article>
       </CollapsibleSection>
+
+      {builtWith.length > 0 && (
+        <CollapsibleSection title={t.sections.builtWith} defaultOpen>
+          <p className="font-serif italic text-neutral-600 mb-5">{t.builtWithIntro}</p>
+          <Suspense fallback={<div className="h-40 animate-pulse rounded-md bg-neutral-100" />}>
+            <BuiltWithGrid projects={builtWith} locale={locale} />
+          </Suspense>
+        </CollapsibleSection>
+      )}
 
       {(hasEvolution || project.github) && (
         <CollapsibleSection title={t.sections.evolution}>

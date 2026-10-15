@@ -77,6 +77,13 @@ for (const file of projectFiles) {
       expect(!!meta.url, `${fullPath}: embed: true requires url`);
     }
   }
+  if (meta.ibuild4you !== undefined) {
+    expect(typeof meta.ibuild4you === "boolean", `${fullPath}: ibuild4you must be a boolean`);
+    expect(
+      !(meta.ibuild4you && slug === "ibuild4you"),
+      `${fullPath}: the ibuild4you project can't flag itself`,
+    );
+  }
 }
 
 const projectsRegistry = readFileSync("lib/projects.ts", "utf8");
