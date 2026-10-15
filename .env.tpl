@@ -9,3 +9,5 @@ AUTH_FROM_EMAIL=the piano house project <noreply@mail.pianohouseproject.org>
 CONNECT_TO_EMAIL=nlovejoy@me.com
 ADMIN_EMAIL=nlovejoy@me.com
 GITHUB_TOKEN=op://dev-secrets/github-pat-readonly/password
+# prompt-lab Tier 1 private history (true session/commit totals). Optional: without it the site shows published-only counts.
+PROMPT_LAB_SERVICE_KEY=op://dev-secrets/prompt-lab-service-history-key/password

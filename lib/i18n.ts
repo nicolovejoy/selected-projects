@@ -41,5 +41,6 @@ export function formatDate(
 /** "1 session" / "3 sessions". French treats 0 and 1 as singular (CLDR "one"). */
 export function plural(n: number, one: string, other: string, locale: Locale): string {
   const form = new Intl.PluralRules(intlTag[locale]).select(n);
-  return `${n} ${form === "one" ? one : other}`;
+  // Locale digit grouping: 2,073 commits / 2 073 commits.
+  return `${new Intl.NumberFormat(intlTag[locale]).format(n)} ${form === "one" ? one : other}`;
 }

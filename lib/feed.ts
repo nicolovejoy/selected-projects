@@ -7,7 +7,7 @@ import {
   type ProjectStatus,
   type ProjectCategory,
 } from "@/lib/projects";
-import { getProjectHistory } from "@/lib/history";
+import { getProjectHistory, type ProjectHistory } from "@/lib/history";
 import { getOgPreview } from "@/lib/og";
 import type { Locale } from "@/lib/i18n";
 import type { Project } from "@/lib/projects";
@@ -31,6 +31,43 @@ export type FeedEntry = {
 
 export type FeedGroup = { key: ProjectCategory; label: string; entries: FeedEntry[] };
 
+const SPARK_WEEKS = 12;
+const DAY_MS = 86_400_000;
+
+/** Monday of the week containing `now`, as YYYY-MM-DD on Nico's calendar
+ *  (Pacific), matching the upstream `week_of` convention. */
+function currentWeekOf(now: number): string {
+  const day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(now);
+  // From here on it's pure UTC-midnight arithmetic on an already-Pacific
+  // calendar day, so `toISOString().slice(0, 10)` can't roll the date over.
+  const d = new Date(`${day}T00:00:00Z`);
+  const back = (d.getUTCDay() + 6) % 7; // Mon → 0 … Sun → 6
+  return new Date(d.getTime() - back * DAY_MS).toISOString().slice(0, 10);
+}
+
+/**
+ * True weekly sessions when the private endpoint answered — a 12-week
+ * calendar window ending this week, quiet weeks filled as 0, because
+ * `activity[]` only lists weeks that had sessions and a gap would otherwise
+ * collapse into one step. Otherwise the published rollups' counts, as before.
+ *
+ * `Date.now()` evaluates when the enclosing feed cache entry fills; its
+ * `hours` lifetime keeps the window current.
+ */
+function sparkValues(history: ProjectHistory): number[] {
+  if (history.activity.length > 0) {
+    const byWeek = new Map(history.activity.map((w) => [w.weekOf, w.sessionCount]));
+    const end = new Date(`${currentWeekOf(Date.now())}T00:00:00Z`).getTime();
+    return Array.from({ length: SPARK_WEEKS }, (_, i) => {
+      const weekOf = new Date(end - (SPARK_WEEKS - 1 - i) * 7 * DAY_MS).toISOString().slice(0, 10);
+      return byWeek.get(weekOf) ?? 0;
+    });
+  }
+  return [...history.weekly]
+    .sort((a, b) => a.weekOf.localeCompare(b.weekOf))
+    .map((w) => w.sessionCount);
+}
+
 async function toEntry(p: Project): Promise<FeedEntry> {
   const [history, og] = await Promise.all([
     getProjectHistory(projectHistoryKey(p)),
@@ -48,9 +85,7 @@ async function toEntry(p: Project): Promise<FeedEntry> {
     weekOf: latest?.weekOf ?? null,
     summary: latest?.publicSummary ?? null,
     sessionCount: latest?.sessionCount ?? null,
-    spark: [...history.weekly]
-      .sort((a, b) => a.weekOf.localeCompare(b.weekOf))
-      .map((w) => w.sessionCount),
+    spark: sparkValues(history),
   };
 }
 
