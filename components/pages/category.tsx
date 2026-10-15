@@ -2,32 +2,21 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { categories, isCategory, categoryLabel } from "@/lib/projects";
+import { categoryLabel, type ProjectCategory } from "@/lib/projects";
 import { getGroupedFeed } from "@/lib/feed";
 import { FeedCard } from "@/components/feed-card";
 import { strings } from "@/content/strings";
 import { localePath, type Locale } from "@/lib/i18n";
 
-type Params = Promise<{ category: string }>;
-
-export function categoryStaticParams() {
-  return categories.map((c) => ({ category: c.key }));
-}
-
-export async function categoryMetadata(params: Params, locale: Locale): Promise<Metadata> {
-  const { category } = await params;
-  if (!isCategory(category)) return {};
+export function categoryMetadata(category: ProjectCategory, locale: Locale): Metadata {
   return { title: `${categoryLabel(category, locale)} — ${strings[locale].site.title}` };
 }
 
-// Awaiting `params` suspends (it's only known at request/nav time for a dynamic
-// segment), so it needs its own boundary per the instant-navigation guide's
-// /store/[slug] pattern. The feed lookup lives here too since it depends on
-// `category`; getGroupedFeed() itself is already 'use cache' and cheap once warm.
-async function CategoryBody({ params, locale }: { params: Params; locale: Locale }) {
-  const { category } = await params;
-  if (!isCategory(category)) notFound();
-
+// Each category is its own static route folder (app/(en)/music, …) rather than
+// a [category] segment, so an unknown path like /nope matches nothing and gets
+// a true 404 from global-not-found (#36). The feed lookup stays under Suspense;
+// getGroupedFeed() is 'use cache', so the whole page prerenders.
+async function CategoryBody({ category, locale }: { category: ProjectCategory; locale: Locale }) {
   const group = (await getGroupedFeed(locale)).find((g) => g.key === category);
   if (!group) notFound();
 
@@ -44,7 +33,7 @@ async function CategoryBody({ params, locale }: { params: Params; locale: Locale
   );
 }
 
-export function CategoryView({ params, locale }: { params: Params; locale: Locale }) {
+export function CategoryView({ category, locale }: { category: ProjectCategory; locale: Locale }) {
   const t = strings[locale];
   return (
     <div className="mx-auto max-w-xl px-5 pb-20">
@@ -63,7 +52,7 @@ export function CategoryView({ params, locale }: { params: Params; locale: Local
           </p>
         }
       >
-        <CategoryBody params={params} locale={locale} />
+        <CategoryBody category={category} locale={locale} />
       </Suspense>
     </div>
   );

@@ -95,6 +95,26 @@ for (const file of projectFiles) {
   );
 }
 
+// proxy.ts 404s any /projects/<slug> not in lib/project-slugs.ts (#36), so the
+// list must match content/projects/ exactly — a missing slug would 404 a real page.
+const slugList = [
+  ...readFileSync("lib/project-slugs.ts", "utf8").matchAll(/^\s*"([^"]+)",?\s*$/gm),
+].map((m) => m[1]);
+const slugFiles = projectFiles.map((f) => path.parse(f).name);
+for (const slug of slugFiles) {
+  expect(slugList.includes(slug), `lib/project-slugs.ts: missing "${slug}"`);
+}
+for (const slug of slugList) {
+  expect(slugFiles.includes(slug), `lib/project-slugs.ts: "${slug}" has no content/projects/${slug}.mdx`);
+}
+
+// Categories are static route folders, not a [category] segment (#36).
+for (const category of ALLOWED_CATEGORY) {
+  for (const dir of [`app/(en)/${category}`, `app/(fr)/fr/${category}`]) {
+    expect(existsSync(`${dir}/page.tsx`), `${dir}/page.tsx: missing category route`);
+  }
+}
+
 // French mirror: every project needs a translated file (tagline + body only),
 // and the standalone pages need theirs. A missing one would silently fall back
 // to English on /fr, which is easy to miss.
