@@ -7,7 +7,7 @@ export const PROJECT_SLUGS: readonly string[] = [
   "musicforge",
   "prntd",
   "prompt-lab",
-  "recountly",
+  "raconte",
   "rocksculpture",
   "selected-projects",
   "songscribe",

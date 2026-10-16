@@ -98,8 +98,9 @@ async function toEntry(p: Project): Promise<FeedEntry> {
  */
 export async function getGroupedFeed(locale: Locale = "en"): Promise<FeedGroup[]> {
   "use cache";
-  // Explicit outer lifetime: recountly.org permanently lacks an og:image, so
-  // its OG scrape always fails and caches as `minutes` (1 min revalidate).
+  // Explicit outer lifetime: a project whose url lacks an og:image (recountly.org
+  // did, until it became Raconte) fails its OG scrape and caches as `minutes`
+  // (1 min revalidate).
   // Without this explicit `hours` override, that leaf's short lifetime would
   // win at this level too, and the feed — plus the `/` and category shells
   // that render it — would regenerate on nearly every request instead of

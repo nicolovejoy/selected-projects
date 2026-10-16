@@ -3,7 +3,7 @@ import musicforge, { metadata as musicforgeMeta } from "@/content/projects/music
 import ibuild4you, { metadata as ibuild4youMeta } from "@/content/projects/ibuild4you.mdx";
 import prntd, { metadata as prntdMeta } from "@/content/projects/prntd.mdx";
 import promptLab, { metadata as promptLabMeta } from "@/content/projects/prompt-lab.mdx";
-import recountly, { metadata as recountlyMeta } from "@/content/projects/recountly.mdx";
+import raconte, { metadata as raconteMeta } from "@/content/projects/raconte.mdx";
 import splitRecording, { metadata as splitRecordingMeta } from "@/content/projects/split-recording.mdx";
 import songscribe, { metadata as songscribeMeta } from "@/content/projects/songscribe.mdx";
 import rocksculpture, { metadata as rocksculptureMeta } from "@/content/projects/rocksculpture.mdx";
@@ -14,7 +14,7 @@ import musicforgeFr, { metadata as musicforgeFrMeta } from "@/content/fr/project
 import ibuild4youFr, { metadata as ibuild4youFrMeta } from "@/content/fr/projects/ibuild4you.mdx";
 import prntdFr, { metadata as prntdFrMeta } from "@/content/fr/projects/prntd.mdx";
 import promptLabFr, { metadata as promptLabFrMeta } from "@/content/fr/projects/prompt-lab.mdx";
-import recountlyFr, { metadata as recountlyFrMeta } from "@/content/fr/projects/recountly.mdx";
+import raconteFr, { metadata as raconteFrMeta } from "@/content/fr/projects/raconte.mdx";
 import splitRecordingFr, { metadata as splitRecordingFrMeta } from "@/content/fr/projects/split-recording.mdx";
 import songscribeFr, { metadata as songscribeFrMeta } from "@/content/fr/projects/songscribe.mdx";
 import rocksculptureFr, { metadata as rocksculptureFrMeta } from "@/content/fr/projects/rocksculpture.mdx";
@@ -69,7 +69,7 @@ const entries: Record<string, Entry> = {
   rocksculpture: { meta: rocksculptureMeta as ProjectMeta, Body: rocksculpture },
   ibuild4you: { meta: ibuild4youMeta as ProjectMeta, Body: ibuild4you },
   "prompt-lab": { meta: promptLabMeta as ProjectMeta, Body: promptLab },
-  recountly: { meta: recountlyMeta as ProjectMeta, Body: recountly },
+  raconte: { meta: raconteMeta as ProjectMeta, Body: raconte },
   "split-recording": { meta: splitRecordingMeta as ProjectMeta, Body: splitRecording },
   songscribe: { meta: songscribeMeta as ProjectMeta, Body: songscribe },
   tideline: { meta: tidelineMeta as ProjectMeta, Body: tideline },
@@ -85,7 +85,7 @@ const frEntries: Record<string, { meta: FrMeta; Body: MDXContent }> = {
   "ibuild4you": { meta: ibuild4youFrMeta as FrMeta, Body: ibuild4youFr },
   "prntd": { meta: prntdFrMeta as FrMeta, Body: prntdFr },
   "prompt-lab": { meta: promptLabFrMeta as FrMeta, Body: promptLabFr },
-  "recountly": { meta: recountlyFrMeta as FrMeta, Body: recountlyFr },
+  "raconte": { meta: raconteFrMeta as FrMeta, Body: raconteFr },
   "split-recording": { meta: splitRecordingFrMeta as FrMeta, Body: splitRecordingFr },
   "songscribe": { meta: songscribeFrMeta as FrMeta, Body: songscribeFr },
   "rocksculpture": { meta: rocksculptureFrMeta as FrMeta, Body: rocksculptureFr },
