@@ -7,6 +7,7 @@ import raconte, { metadata as raconteMeta } from "@/content/projects/raconte.mdx
 import splitRecording, { metadata as splitRecordingMeta } from "@/content/projects/split-recording.mdx";
 import songscribe, { metadata as songscribeMeta } from "@/content/projects/songscribe.mdx";
 import rocksculpture, { metadata as rocksculptureMeta } from "@/content/projects/rocksculpture.mdx";
+import anomatom, { metadata as anomatomMeta } from "@/content/projects/anomatom.mdx";
 import tideline, { metadata as tidelineMeta } from "@/content/projects/tideline.mdx";
 import bakerylouise, { metadata as bakerylouiseMeta } from "@/content/projects/bakerylouise.mdx";
 import selectedProjects, { metadata as selectedProjectsMeta } from "@/content/projects/selected-projects.mdx";
@@ -18,6 +19,7 @@ import raconteFr, { metadata as raconteFrMeta } from "@/content/fr/projects/raco
 import splitRecordingFr, { metadata as splitRecordingFrMeta } from "@/content/fr/projects/split-recording.mdx";
 import songscribeFr, { metadata as songscribeFrMeta } from "@/content/fr/projects/songscribe.mdx";
 import rocksculptureFr, { metadata as rocksculptureFrMeta } from "@/content/fr/projects/rocksculpture.mdx";
+import anomatomFr, { metadata as anomatomFrMeta } from "@/content/fr/projects/anomatom.mdx";
 import tidelineFr, { metadata as tidelineFrMeta } from "@/content/fr/projects/tideline.mdx";
 import bakerylouiseFr, { metadata as bakerylouiseFrMeta } from "@/content/fr/projects/bakerylouise.mdx";
 import selectedProjectsFr, { metadata as selectedProjectsFrMeta } from "@/content/fr/projects/selected-projects.mdx";
@@ -67,6 +69,7 @@ const entries: Record<string, Entry> = {
   musicforge: { meta: musicforgeMeta as ProjectMeta, Body: musicforge },
   prntd: { meta: prntdMeta as ProjectMeta, Body: prntd },
   rocksculpture: { meta: rocksculptureMeta as ProjectMeta, Body: rocksculpture },
+  anomatom: { meta: anomatomMeta as ProjectMeta, Body: anomatom },
   ibuild4you: { meta: ibuild4youMeta as ProjectMeta, Body: ibuild4you },
   "prompt-lab": { meta: promptLabMeta as ProjectMeta, Body: promptLab },
   raconte: { meta: raconteMeta as ProjectMeta, Body: raconte },
@@ -82,6 +85,7 @@ const entries: Record<string, Entry> = {
 type FrMeta = { tagline: string };
 const frEntries: Record<string, { meta: FrMeta; Body: MDXContent }> = {
   "musicforge": { meta: musicforgeFrMeta as FrMeta, Body: musicforgeFr },
+  "anomatom": { meta: anomatomFrMeta as FrMeta, Body: anomatomFr },
   "ibuild4you": { meta: ibuild4youFrMeta as FrMeta, Body: ibuild4youFr },
   "prntd": { meta: prntdFrMeta as FrMeta, Body: prntdFr },
   "prompt-lab": { meta: promptLabFrMeta as FrMeta, Body: promptLabFr },
