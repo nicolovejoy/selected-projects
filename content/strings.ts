@@ -44,6 +44,8 @@ const en = {
     viewAllAria: (label: string) => `${label} — view all`,
     more: (n: number) => `+${n} more →`,
     view: "view →",
+    livePreview: "live preview",
+    livePreviewAria: (name: string) => `${name} — live preview`,
   },
   feed: {
     projectPageAria: (name: string) => `${name} — project page`,
@@ -205,6 +207,8 @@ const fr: Strings = {
     viewAllAria: (label: string) => `${label} — tout voir`,
     more: (n: number) => `+${n} autres →`,
     view: "voir →",
+    livePreview: "aperçu en direct",
+    livePreviewAria: (name: string) => `${name} — aperçu en direct`,
   },
   feed: {
     projectPageAria: (name: string) => `${name} — page du projet`,

@@ -13,6 +13,9 @@ const statusDot: Record<ProjectStatus, string> = {
   concept: "bg-neutral-400",
 };
 
+const previewLink =
+  "font-mono text-[0.62rem] tracking-[0.08em] uppercase text-neutral-500 underline decoration-neutral-300 underline-offset-4 hover:text-neutral-900 hover:decoration-neutral-500";
+
 /**
  * One quadrant of the home grid. Every project in the category gets a row with
  * an activity sparkline; a supporting line (the latest rollup summary, or the
@@ -50,6 +53,28 @@ export function CategoryTile({ group, locale }: { group: FeedGroup; locale: Loca
               >
                 {e.projectName}
               </Link>
+              {e.previewUrl && (
+                <>
+                  {/* lg+: the detail page opens in the split preview. Below lg
+                      there is no split, so go straight to the live site. */}
+                  <Link
+                    href={localePath(locale, `/projects/${e.project}`)}
+                    aria-label={t.livePreviewAria(e.projectName)}
+                    className={`relative z-10 hidden lg:inline ${previewLink}`}
+                  >
+                    {t.livePreview}
+                  </Link>
+                  <a
+                    href={e.previewUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t.livePreviewAria(e.projectName)}
+                    className={`relative z-10 lg:hidden ${previewLink}`}
+                  >
+                    {t.livePreview} ↗
+                  </a>
+                </>
+              )}
               <Sparkline values={e.spark} className="ml-auto" />
             </div>
             {/* max-md:hidden rather than `hidden md:…` — line-clamp sets its own
