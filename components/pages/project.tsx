@@ -181,7 +181,7 @@ export async function ProjectView({
           </header>
         </div>
 
-        {project.url && (
+        {(project.url || project.cardImage) && (
           <div className="shrink-0 @xl:w-80">
             <Suspense
               fallback={

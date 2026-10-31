@@ -1,9 +1,8 @@
 import { test, expect, type Page, type Locator } from "@playwright/test";
 
 // #12 split-pane live preview. ibuild4you is embed:true with a real, frameable
-// url (probed in the issue — no X-Frame-Options / frame-ancestors). recountly
-// has a public url but is intentionally left off the embed allowlist (frames
-// fine but redirects to its login screen — low preview value).
+// url (probed in the issue — no X-Frame-Options / frame-ancestors). raconte
+// is a native app with no public url, so it never gets a preview action.
 
 // The trigger is a plain <button> (no href fallback), so a click that lands
 // before React finishes hydrating is silently swallowed — Playwright's
@@ -24,7 +23,7 @@ test.describe("live preview — desktop", () => {
     await page.goto("/projects/ibuild4you");
     await expect(page.getByRole("button", { name: "live preview" })).toBeVisible();
 
-    await page.goto("/projects/recountly");
+    await page.goto("/projects/raconte");
     await expect(page.getByRole("button", { name: /live preview/i })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /live preview/i })).toHaveCount(0);
   });
@@ -94,7 +93,7 @@ test.describe("live preview — phone", () => {
 });
 
 test("non-embed projects show no live preview action", async ({ page }) => {
-  const res = await page.goto("/projects/recountly");
+  const res = await page.goto("/projects/raconte");
   expect(res?.status()).toBe(200);
   await expect(page.getByText(/live preview/i)).toHaveCount(0);
 });

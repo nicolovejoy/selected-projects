@@ -3,6 +3,12 @@ import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  // Recountly became Raconte (native rebuild, 2026-10). The old slug was live
+  // and linked, so keep it reachable in both languages.
+  redirects: async () => [
+    { source: "/projects/recountly", destination: "/projects/raconte", permanent: true },
+    { source: "/fr/projects/recountly", destination: "/fr/projects/raconte", permanent: true },
+  ],
   // Partial Prerendering: every page route ships a static shell, with the
   // session chip (and anything else request-scoped) streamed into a Suspense
   // hole. Replaces the old experimental.ppr flag. See #19.

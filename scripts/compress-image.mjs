@@ -3,13 +3,24 @@ import sharp from "sharp";
 import { readdirSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
-const slug = process.argv[2];
-const maxWidth = Number(process.argv[3] ?? 2000);
-const quality = Number(process.argv[4] ?? 85);
+// `--cover WxH` crops to that aspect (centre, like CSS object-cover) and resizes
+// to exactly WxH. Card images use `--cover 1200x630` (the OG shape).
+const coverArg = process.argv.find((a) => a.startsWith("--cover"));
+const cover = coverArg
+  ? (coverArg.split("=")[1] ?? process.argv[process.argv.indexOf(coverArg) + 1])
+      .split("x")
+      .map(Number)
+  : null;
+const positional = process.argv
+  .slice(2)
+  .filter((a, i, all) => !a.startsWith("--") && !(all[i - 1] === "--cover" && /^\d+x\d+$/.test(a)));
+const slug = positional[0];
+const maxWidth = Number(positional[1] ?? 2000);
+const quality = Number(positional[2] ?? 85);
 
 if (!slug) {
   console.error(
-    "Usage: node scripts/compress-image.mjs <slug> [maxWidth=2000] [quality=85]\n" +
+    "Usage: node scripts/compress-image.mjs <slug> [maxWidth=2000] [quality=85] [--cover WxH]\n" +
       "Slug may include subpaths, e.g. projects/musicforge.\n" +
       "Reads assets/originals/<slug>.<ext> and writes public/<slug>.jpg",
   );
@@ -48,7 +59,11 @@ mkdirSync(path.dirname(output), { recursive: true });
 
 const info = await sharp(input)
   .rotate()
-  .resize({ width: maxWidth, withoutEnlargement: true })
+  .resize(
+    cover
+      ? { width: cover[0], height: cover[1], fit: "cover", position: "centre" }
+      : { width: maxWidth, withoutEnlargement: true },
+  )
   .jpeg({ quality })
   .toFile(output);
 

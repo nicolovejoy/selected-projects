@@ -67,11 +67,14 @@ export const metadata = {
 Source and compress the same way as any other image, using the `cards/` subpath:
 
 ```
-node scripts/compress-image.mjs cards/musicforge
+node scripts/compress-image.mjs cards/musicforge --cover 1200x630
 ```
 
-Target 1200×630 (the OG aspect ratio both the feed cards and the detail-page
-preview crop to).
+`--cover WxH` centre-crops to that aspect and resizes to exactly WxH, the same
+crop `object-cover` applies on the page, so what you see in the file is what the
+card shows. 1200×630 is the OG shape both the feed cards and the detail-page
+preview crop to; they render at about 600 CSS px, so that is 2× already. Shoot wide (about 19:10) with the subject away
+from the edges; a taller screenshot loses its top and bottom.
 
 `cardImage` always wins. Card image precedence, resolved in `lib/feed.ts` and
 `components/og-preview.tsx`: **`cardImage` (curated) → scraped `og:image` (live

@@ -19,7 +19,7 @@ const users = [
 const follows = [
   ["seed-user-dev", "musicforge"],
   ["seed-user-dev", "prompt-lab"],
-  ["seed-user-dev", "recountly"],
+  ["seed-user-dev", "raconte"],
   ["seed-user-visitor", "musicforge"],
   ["seed-user-visitor", "prntd"],
 ];
@@ -27,7 +27,7 @@ const notes = [
   ["seed-note-1", "musicforge", "seed-user-dev", "Seeded note — the arrangement view is the part I keep coming back to."],
   ["seed-note-2", "musicforge", "seed-user-visitor", "Seeded note — how does this handle stems that are already mixed?"],
   ["seed-note-3", "prompt-lab", "seed-user-dev", "Seeded note — weekly rollups are the feature that made this stick."],
-  ["seed-note-4", "recountly", "seed-user-visitor", "Seeded note — tried it on a month of receipts, held up fine."],
+  ["seed-note-4", "raconte", "seed-user-visitor", "Seeded note — the backdated entries are the part that sold me."],
 ];
 
 const slugs = new Set(readdirSync("content/projects").map((f) => f.replace(/\.mdx$/, "")));

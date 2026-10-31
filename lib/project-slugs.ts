@@ -2,12 +2,13 @@
  *  proxy.ts can 404 unknown slugs without importing the MDX-heavy
  *  lib/projects.ts (#36). npm run check fails if this drifts from content/. */
 export const PROJECT_SLUGS: readonly string[] = [
+  "anomatom",
   "bakerylouise",
   "ibuild4you",
   "musicforge",
   "prntd",
   "prompt-lab",
-  "recountly",
+  "raconte",
   "rocksculpture",
   "selected-projects",
   "songscribe",
