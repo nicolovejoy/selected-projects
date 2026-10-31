@@ -50,7 +50,7 @@ test("a quadrant links through to its category page", async ({ page }) => {
 
 test("a project name on a quadrant links straight to its detail page", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "MusicForge" }).click();
+  await page.getByRole("link", { name: "MusicForge", exact: true }).click();
 
   await expect(page).toHaveURL(/\/projects\/musicforge$/);
   await expect(page.getByRole("heading", { level: 1, name: /musicforge/i })).toBeVisible();

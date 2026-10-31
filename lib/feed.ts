@@ -19,6 +19,9 @@ export type FeedEntry = {
   category: ProjectCategory;
   tagline: string;
   url: string | null;
+  /** Set when opted into the split-pane live preview (#12): where the preview
+   *  loads, and the signal that the tile offers a preview button. */
+  previewUrl: string | null;
   /** Precedence: curated cardImage > live OG scrape > legacy image field. */
   image: string | null;
   /** Null when no weekly rollup has been published — the card still renders. */
@@ -81,6 +84,7 @@ async function toEntry(p: Project): Promise<FeedEntry> {
     category: p.category,
     tagline: p.tagline,
     url: p.url ?? null,
+    previewUrl: p.embed && p.url ? (p.embedUrl ?? p.url) : null,
     image: p.cardImage ?? og?.image ?? p.image ?? null,
     weekOf: latest?.weekOf ?? null,
     summary: latest?.publicSummary ?? null,

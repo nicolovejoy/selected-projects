@@ -52,6 +52,10 @@ export type ProjectMeta = {
   /** Opt-in to the split-pane live preview action on the detail page (#12).
    * Requires `url` — validated in check-content.mjs. */
   embed?: boolean;
+  /** What the preview loads, when it should differ from `url` (a deep link to a
+   *  starting state, e.g. a pattern). Used by the split pane and the phone
+   *  link; "Visit site" still goes to `url`. */
+  embedUrl?: string;
   /** Made through iBuild4You. Listed in the grid on the ibuild4you page and
    *  labelled in the detail header. Absent = false. */
   ibuild4you?: boolean;

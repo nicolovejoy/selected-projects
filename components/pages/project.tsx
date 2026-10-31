@@ -70,7 +70,7 @@ export async function ProjectView({
   const repo = project.github ? await getPublicRepo(project.github) : null;
   // embed: true requires url (validated in check-content.mjs), so this is
   // the "permitted" switch from issue #12.
-  const embedUrl = project.embed ? project.url : undefined;
+  const embedUrl = project.embed ? (project.embedUrl ?? project.url) : undefined;
 
   const builtWith = slug === "ibuild4you" ? builtWithIbuild4you(locale) : [];
 

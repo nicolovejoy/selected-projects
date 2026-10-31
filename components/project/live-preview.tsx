@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { strings } from "@/content/strings";
 import type { Locale } from "@/lib/i18n";
@@ -10,8 +10,30 @@ const actLink =
 
 const LOAD_TIMEOUT_MS = 6000;
 
+/** The split only exists at lg+ (1024px). Below that the preview is an external
+ *  link, so the iframe must not even be mounted (it would load the live site
+ *  invisibly on phones). */
+const DESKTOP_QUERY = "(min-width: 1024px)";
+function useIsDesktop(): boolean {
+  return useSyncExternalStore(
+    (notify) => {
+      const mq = window.matchMedia(DESKTOP_QUERY);
+      mq.addEventListener("change", notify);
+      return () => mq.removeEventListener("change", notify);
+    },
+    () => window.matchMedia(DESKTOP_QUERY).matches,
+    () => false,
+  );
+}
+
+/** Embed projects open in the split by default; only an explicit `?preview=0`
+ *  (the close control, or Esc) shows the plain page. */
+function isPreviewOpen(params: { get(name: string): string | null }): boolean {
+  return params.get("preview") !== "0";
+}
+
 /**
- * Toggle `?preview=1` via the native History API rather than the Next
+ * Toggle `?preview=0` (closed; open is the bare path) via the native History API rather than the Next
  * router. This page is dynamically rendered (auth reads cookies()), and
  * `router.replace`/`push` is a real navigation there — it round-trips to the
  * server and can race/clobber the just-set query param. `history.pushState`/
@@ -21,7 +43,7 @@ const LOAD_TIMEOUT_MS = 6000;
  * single-page-applications.md#shallow-routing-on-the-client.
  */
 function setPreviewOpen(pathname: string, open: boolean) {
-  window.history.replaceState(null, "", open ? `${pathname}?preview=1` : pathname);
+  window.history.replaceState(null, "", open ? pathname : `${pathname}?preview=0`);
 }
 
 /**
@@ -54,7 +76,7 @@ function TriggerInner({ url, locale }: { url: string; locale: Locale }) {
   const t = strings[locale].project;
   const params = useSearchParams();
   const pathname = usePathname();
-  const open = params.get("preview") === "1";
+  const open = isPreviewOpen(params);
 
   return (
     <>
@@ -111,7 +133,9 @@ function LayoutInner({
   const t = strings[locale].project;
   const params = useSearchParams();
   const pathname = usePathname();
-  const open = params.get("preview") === "1";
+  const isDesktop = useIsDesktop();
+  // Split state: wanted (no ?preview=0) and there is room for it (lg+).
+  const open = isPreviewOpen(params) && isDesktop;
   const [timedOut, setTimedOut] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -155,6 +179,7 @@ function LayoutInner({
           title={t.iframeTitle(name)}
           loading="lazy"
           referrerPolicy="strict-origin-when-cross-origin"
+          allow="autoplay"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
           onLoad={() => {
             if (timerRef.current) clearTimeout(timerRef.current);

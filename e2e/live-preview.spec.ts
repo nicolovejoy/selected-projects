@@ -21,22 +21,18 @@ test.describe("live preview — desktop", () => {
 
   test("action present only for embed-enabled projects", async ({ page }) => {
     await page.goto("/projects/ibuild4you");
-    await expect(page.getByRole("button", { name: "live preview" })).toBeVisible();
+    // Open by default, so the toggle reads "close preview".
+    await expect(page.getByRole("button", { name: "close preview" })).toBeVisible();
 
     await page.goto("/projects/raconte");
-    await expect(page.getByRole("button", { name: /live preview/i })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /preview/i })).toHaveCount(0);
     await expect(page.getByRole("link", { name: /live preview/i })).toHaveCount(0);
   });
 
-  test("activating sets ?preview=1 and renders the iframe at ~2/3 width with the right src", async ({
+  test("embed projects open split by default: iframe at ~2/3 width with the right src", async ({
     page,
   }) => {
     await page.goto("/projects/ibuild4you");
-    await clickAndAwaitUrl(
-      page,
-      page.getByRole("button", { name: "live preview" }),
-      /\?preview=1$/,
-    );
 
     // Assert the src attribute rather than waiting for cross-origin load —
     // that's flaky in CI (see issue #12's test plan).
@@ -50,29 +46,40 @@ test.describe("live preview — desktop", () => {
     expect(ratio).toBeLessThan(0.75);
   });
 
-  test("the close control and Esc both return to the normal layout", async ({ page }) => {
-    // Deep link straight into the open state.
-    await page.goto("/projects/ibuild4you?preview=1");
+  test("the close control and Esc both close it; the toggle reopens it", async ({ page }) => {
+    await page.goto("/projects/ibuild4you");
     const iframe = page.locator('iframe[title="live preview of iBuild4You"]');
     await expect(iframe).toBeVisible();
 
     await clickAndAwaitUrl(
       page,
       page.getByRole("button", { name: "close preview" }),
-      /\/projects\/ibuild4you$/,
+      /\?preview=0$/,
     );
     await expect(iframe).toHaveCount(0);
 
-    // Re-open, this time close via Esc.
+    // Reopen: back to the bare path.
     await clickAndAwaitUrl(
       page,
       page.getByRole("button", { name: "live preview" }),
-      /\?preview=1$/,
+      /\/projects\/ibuild4you$/,
     );
     await expect(iframe).toBeVisible();
+
     await page.keyboard.press("Escape");
-    await expect(page).toHaveURL(/\/projects\/ibuild4you$/);
+    await expect(page).toHaveURL(/\?preview=0$/);
     await expect(iframe).toHaveCount(0);
+  });
+
+  test("home tiles invite the preview for embed projects only", async ({ page }) => {
+    await page.goto("/");
+    const link = page.getByRole("link", { name: "iBuild4You — live preview" });
+    await expect(link).toHaveAttribute("href", "/projects/ibuild4you");
+    await expect(page.getByRole("link", { name: "Raconte — live preview" })).toHaveCount(0);
+
+    await link.click();
+    await expect(page).toHaveURL(/\/projects\/ibuild4you$/);
+    await expect(page.locator('iframe[title="live preview of iBuild4You"]')).toBeVisible();
   });
 });
 
@@ -89,6 +96,17 @@ test.describe("live preview — phone", () => {
 
     await expect(page.getByRole("button", { name: /live preview/i })).toHaveCount(0);
     await expect(page.locator("iframe")).toHaveCount(0);
+  });
+});
+
+test.describe("live preview — phone home", () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test("the tile button goes straight to the live site", async ({ page }) => {
+    await page.goto("/");
+    const link = page.getByRole("link", { name: "iBuild4You — live preview" });
+    await expect(link).toHaveAttribute("href", "https://ibuild4you.com");
+    await expect(link).toHaveAttribute("target", "_blank");
   });
 });
 
