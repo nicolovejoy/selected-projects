@@ -5,6 +5,10 @@ export const metadata = {
   category: "music",
   github: "split-recording",
   cardImage: "/cards/split-recording.jpg",
+  home: "list",
+  rank: 1,
+  hard: "Takes are named by local Whisper transcription matched against the band's repertoire; the catalog is a static site on R2 with a Worker and D1 only for votes.",
+  facts: ["600+ commits", "~180 PRs", "pytest, vitest, Playwright"],
 };
 
 Take a long recording from a practice session or a gig, and Split Recording cuts it into per-song takes: find the boundaries, trim, name each take — automatically where it can. Transcription runs locally, and a lyric match against the [MusicForge](/projects/musicforge) repertoire names a take with its title, when possible. It can also estimate each song's tempo and drift.

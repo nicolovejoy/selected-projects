@@ -7,6 +7,10 @@
  * the singular/plural nouns from here.
  */
 
+/** Digit grouping per locale (2,073 / 2 073). Local to avoid a cycle with lib/i18n.ts. */
+const fmt = (n: number, locale: "en" | "fr") =>
+  new Intl.NumberFormat(locale === "fr" ? "fr-FR" : "en-US").format(n);
+
 const en = {
   site: {
     title: "the piano house project",
@@ -27,6 +31,8 @@ const en = {
     signOut: "sign out",
     menu: "Menu",
     githubAria: "Nico on GitHub",
+    /** LinkedIn profile URL; the button renders only when set. */
+    linkedin: "",
     builtAt: (when: string) => `Built ${when} PT`,
     /** Shown in the footer on translated pages only. */
     translationNote: "",
@@ -36,9 +42,23 @@ const en = {
   categories: { music: "Music", art: "Art", products: "Products", tools: "Tools" },
   status: { live: "live", beta: "beta", alpha: "alpha", demo: "demo", concept: "concept" },
   home: {
-    heading: "What’s cooking",
+    heading: "Nico’s agentic coding projects",
+    sub: "Nico Lovejoy, Seattle.",
     empty: "Nothing here yet — history is still syncing.",
     getInTouch: "Get in touch",
+    github: "GitHub",
+    linkedin: "LinkedIn",
+    featuredHeading: "LLM and agent work",
+    shippedHeading: "Shipped",
+    asideBefore: "Also here: ",
+    authorship: "Nico writes this site; Claude’s passages are marked.",
+    tenets: "Tenets",
+    table: { project: "Project", state: "State", what: "What it does", facts: "Facts" },
+    proof: {
+      contributions: (n: number) => `${fmt(n, "en")} contributions in the past year`,
+      repos: (n: number) => `${fmt(n, "en")} public repos`,
+      claudeCode: "daily with Claude Code since late 2025",
+    },
   },
   tile: {
     viewAllAria: (label: string) => `${label} — view all`,
@@ -191,6 +211,7 @@ const fr: Strings = {
     signOut: "déconnexion",
     menu: "Menu",
     githubAria: "Nico sur GitHub",
+    linkedin: "",
     builtAt: (when: string) => `Mis à jour le ${when} (heure du Pacifique)`,
     translationNote: "Traduit de l’anglais par Claude.",
     switchTo: { label: "EN", aria: "Read in English" },
@@ -199,9 +220,23 @@ const fr: Strings = {
   categories: { music: "Musique", art: "Art", products: "Produits", tools: "Outils" },
   status: { live: "en ligne", beta: "bêta", alpha: "alpha", demo: "démo", concept: "concept" },
   home: {
-    heading: "Ce qui mijote",
+    heading: "Les projets de Nico en programmation agentique",
+    sub: "Nico Lovejoy, Seattle.",
     empty: "Rien ici pour l’instant — l’historique est en cours de synchronisation.",
     getInTouch: "Nous écrire",
+    github: "GitHub",
+    linkedin: "LinkedIn",
+    featuredHeading: "Travail LLM et agents",
+    shippedHeading: "Livré",
+    asideBefore: "Aussi ici\u00a0: ",
+    authorship: "Nico écrit ce site\u00a0; les passages de Claude sont signalés.",
+    tenets: "Principes",
+    table: { project: "Projet", state: "État", what: "Ce que ça fait", facts: "Repères" },
+    proof: {
+      contributions: (n: number) => `${fmt(n, "fr")} contributions sur l’année écoulée`,
+      repos: (n: number) => `${fmt(n, "fr")} dépôts publics`,
+      claudeCode: "chaque jour avec Claude Code depuis fin 2025",
+    },
   },
   tile: {
     viewAllAria: (label: string) => `${label} — tout voir`,

@@ -157,3 +157,116 @@ async function fetchPublicRepo(github: string): Promise<RepoInfo | null> {
 export async function getPublicRepo(github: string): Promise<RepoInfo | null> {
   return fetchPublicRepo(github);
 }
+
+type GqlDay = { contributionCount: number; date: string };
+
+/**
+ * The user's public contribution calendar (all repos, last year) mapped into
+ * the CommitWeek shape. Partial first/last weeks are padded with 0 by weekday.
+ * Needs GITHUB_TOKEN (GraphQL has no anonymous access); without it, null.
+ * No Date.now(): the window comes from GitHub's own response.
+ */
+async function fetchUserContributions(): Promise<{ total: number; weeks: CommitWeek[] } | null> {
+  "use cache: remote";
+
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) {
+    cacheLife("minutes");
+    return null;
+  }
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 3000);
+  try {
+    let res: Response;
+    try {
+      res = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: `{ user(login: "${OWNER}") { contributionsCollection { contributionCalendar { totalContributions weeks { contributionDays { contributionCount date } } } } } }`,
+        }),
+        signal: ctrl.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+    if (!res.ok) throw new Error(`graphql ${res.status}`);
+    const json = (await res.json()) as {
+      data?: {
+        user?: {
+          contributionsCollection: {
+            contributionCalendar: {
+              totalContributions: number;
+              weeks: { contributionDays: GqlDay[] }[];
+            };
+          };
+        } | null;
+      };
+      errors?: { message: string }[];
+    };
+    const cal = json.data?.user?.contributionsCollection.contributionCalendar;
+    if (!cal) throw new Error(json.errors?.[0]?.message ?? "no calendar in response");
+
+    const weeks: CommitWeek[] = [];
+    for (const w of cal.weeks) {
+      if (w.contributionDays.length === 0) continue;
+      const days = [0, 0, 0, 0, 0, 0, 0];
+      let weekStart = Infinity; // day number (UTC) of that week's Sunday
+      for (const d of w.contributionDays) {
+        const dayNum = Math.floor(Date.parse(`${d.date}T00:00:00Z`) / DAY_MS);
+        const dow = new Date(dayNum * DAY_MS).getUTCDay();
+        days[dow] = d.contributionCount;
+        weekStart = Math.min(weekStart, dayNum - dow);
+      }
+      weeks.push({
+        week: (weekStart * DAY_MS) / 1000,
+        days,
+        total: days.reduce((a, b) => a + b, 0),
+      });
+    }
+    if (weeks.length === 0) throw new Error("empty calendar");
+    cacheLife("hours");
+    return { total: cal.totalContributions, weeks };
+  } catch (err) {
+    console.warn(`[github] contributions: ${(err as Error).message}`);
+    cacheLife("minutes");
+    return null;
+  }
+}
+
+/** Last-year contributions across all of the owner's public activity, or null. */
+export async function getUserContributions(): Promise<{ total: number; weeks: CommitWeek[] } | null> {
+  return fetchUserContributions();
+}
+
+async function fetchPublicRepoCount(): Promise<number | null> {
+  "use cache: remote";
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 3000);
+  try {
+    let res: Response;
+    try {
+      res = await fetch(`https://api.github.com/users/${OWNER}`, {
+        headers: ghHeaders(),
+        signal: ctrl.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+    if (!res.ok) throw new Error(`user ${res.status}`);
+    const data = (await res.json()) as { public_repos?: number };
+    if (typeof data.public_repos !== "number") throw new Error("no public_repos");
+    cacheLife("days");
+    return data.public_repos;
+  } catch (err) {
+    console.warn(`[github] public_repos: ${(err as Error).message}`);
+    cacheLife("minutes");
+    return null;
+  }
+}
+
+/** Number of public repos owned by the user, or null. */
+export async function getPublicRepoCount(): Promise<number | null> {
+  return fetchPublicRepoCount();
+}

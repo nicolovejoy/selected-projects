@@ -70,17 +70,6 @@ test.describe("live preview — desktop", () => {
     await expect(page).toHaveURL(/\?preview=0$/);
     await expect(iframe).toHaveCount(0);
   });
-
-  test("home tiles invite the preview for embed projects only", async ({ page }) => {
-    await page.goto("/");
-    const link = page.getByRole("link", { name: "iBuild4You — live preview" });
-    await expect(link).toHaveAttribute("href", "/projects/ibuild4you");
-    await expect(page.getByRole("link", { name: "Raconte — live preview" })).toHaveCount(0);
-
-    await link.click();
-    await expect(page).toHaveURL(/\/projects\/ibuild4you$/);
-    await expect(page.locator('iframe[title="live preview of iBuild4You"]')).toBeVisible();
-  });
 });
 
 test.describe("live preview — phone", () => {
@@ -96,17 +85,6 @@ test.describe("live preview — phone", () => {
 
     await expect(page.getByRole("button", { name: /live preview/i })).toHaveCount(0);
     await expect(page.locator("iframe")).toHaveCount(0);
-  });
-});
-
-test.describe("live preview — phone home", () => {
-  test.use({ viewport: { width: 390, height: 844 } });
-
-  test("the tile button goes straight to the live site", async ({ page }) => {
-    await page.goto("/");
-    const link = page.getByRole("link", { name: "iBuild4You — live preview" });
-    await expect(link).toHaveAttribute("href", "https://ibuild4you.com");
-    await expect(link).toHaveAttribute("target", "_blank");
   });
 });
 

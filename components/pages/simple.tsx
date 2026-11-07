@@ -4,15 +4,15 @@
  */
 import Link from "next/link";
 import type { MDXContent } from "mdx/types";
-import { getGroupedFeed } from "@/lib/feed";
+import { getHomeEntries } from "@/lib/feed";
 import { getSessionUser } from "@/lib/auth";
-import { CategoryTile } from "@/components/category-tile";
+import { Hero } from "@/components/home/hero";
+import { FeaturedCard } from "@/components/home/featured-card";
+import { ProjectTable } from "@/components/home/project-table";
 import { MachineNote } from "@/components/machine-note";
 import { strings } from "@/content/strings";
 import { localePath, type Locale } from "@/lib/i18n";
 
-import HomeEn from "@/content/home.mdx";
-import HomeFr from "@/content/fr/home.mdx";
 import AboutEn, { metadata as aboutEnMeta } from "@/content/about.mdx";
 import AboutFr, { metadata as aboutFrMeta } from "@/content/fr/about.mdx";
 import TenetsEn, { metadata as tenetsEnMeta } from "@/content/tenets.mdx";
@@ -38,50 +38,58 @@ const docs: Record<"about" | "tenets" | "lessons", Record<Locale, Doc>> = {
   },
 };
 
-const homeIntro: Record<Locale, MDXContent> = { en: HomeEn, fr: HomeFr };
-
 // No `unstable_instant` on the home routes: they are fully static, and 16.2.4's
 // validator then misreports the root layout's static metadata as runtime data
 // (E1085, "would have been entirely prerenderable") and fails the build.
 // scripts/nav-cost.mjs is the check for this route instead.
+// content/home.mdx (and fr/) is no longer rendered; the copy is in strings.home.
 export async function HomeView({ locale }: { locale: Locale }) {
-  const groups = await getGroupedFeed(locale);
+  const { featured, list, aside } = await getHomeEntries(locale);
   const t = strings[locale].home;
-  const Intro = homeIntro[locale];
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col px-5 pb-4">
-      <section className="pt-4 pb-3">
-        <h1 className="font-serif text-2xl leading-tight tracking-tight sm:text-3xl lg:text-4xl">
-          {t.heading}
-        </h1>
-        {/* Hidden on phones: the four tiles + heading exactly fill an iPhone screen,
-            and this paragraph is the one element that pushes it into scrolling. */}
-        <div className="mt-2 text-[15px] leading-relaxed text-neutral-500 max-sm:hidden">
-          <Intro />
-        </div>
-      </section>
+    <div className="mx-auto max-w-[1040px] px-5 pb-4">
+      <Hero locale={locale} />
 
-      {groups.length === 0 ? (
-        <p className="text-sm text-neutral-400">{t.empty}</p>
-      ) : (
-        // Single column on phones so project names aren't truncated; a true 2x2
-        // from sm up. All four stay on one screen either way. The min-height at
-        // lg stops the grid collapsing into a strip on a tall desktop window.
-        <div className="grid grid-cols-1 gap-2 sm:gap-3 [grid-auto-rows:minmax(0,1fr)] sm:grid-cols-2 lg:min-h-[58vh]">
-          {groups.map((g) => (
-            <CategoryTile key={g.key} group={g} locale={locale} />
+      <h2 className="mt-[72px] mb-[22px] font-serif text-[26px] font-normal tracking-tight">
+        {t.featuredHeading}
+      </h2>
+      <div className="grid grid-cols-1 gap-7 min-[700px]:grid-cols-2 min-[1100px]:grid-cols-4">
+        {featured.map((e) => (
+          <FeaturedCard key={e.project} entry={e} locale={locale} />
+        ))}
+      </div>
+
+      <h2 className="mt-[72px] mb-[22px] font-serif text-[26px] font-normal tracking-tight">
+        {t.shippedHeading}
+      </h2>
+      <ProjectTable entries={list} locale={locale} />
+
+      <div className="mt-14 border-t border-neutral-200 pt-5 text-sm text-neutral-600">
+        <p className="m-0 max-w-[60ch]">
+          {t.asideBefore}
+          {aside.map((e, i) => (
+            <span key={e.project}>
+              {i > 0 && ", "}
+              <Link
+                href={localePath(locale, `/projects/${e.project}`)}
+                className="border-b border-neutral-200 text-neutral-900"
+              >
+                {e.projectName}
+              </Link>
+            </span>
           ))}
-        </div>
-      )}
-
-      <div className="mt-4 flex items-center justify-center gap-4 text-sm">
-        <Link
-          href={localePath(locale, "/connect")}
-          className="font-medium text-neutral-800 hover:text-neutral-950"
-        >
-          {t.getInTouch}
-        </Link>
+          .
+        </p>
+        <p className="mt-3 mb-0 max-w-[60ch]">
+          {t.authorship}{" "}
+          <Link
+            href={localePath(locale, "/tenets")}
+            className="border-b border-neutral-200 text-neutral-900"
+          >
+            {t.tenets}
+          </Link>
+        </p>
       </div>
     </div>
   );

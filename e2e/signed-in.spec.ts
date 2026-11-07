@@ -92,11 +92,11 @@ test.describe("signed in", () => {
   });
 
   test("note post/delete round-trip updates without a manual reload", async ({ page }) => {
-    // songscribe: distinct from prntd/musicforge (used by the follow tests above)
+    // split-recording: distinct from prntd/musicforge (used by the follow tests above)
     // and from any other project a parallel test posts to, so this test can't
     // collide with another under fullyParallel. Rate limit is 5 notes/hour/user
     // (components/project/actions.ts) — this test posts exactly 1.
-    await page.goto("/projects/songscribe");
+    await page.goto("/projects/split-recording");
     // "notes" is a native <details>/<summary> section, collapsed by default
     // (only "about" defaults open) — expand it before touching the form.
     await page.getByRole("heading", { name: "notes" }).click();

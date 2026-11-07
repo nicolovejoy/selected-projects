@@ -5,7 +5,6 @@ import prntd, { metadata as prntdMeta } from "@/content/projects/prntd.mdx";
 import promptLab, { metadata as promptLabMeta } from "@/content/projects/prompt-lab.mdx";
 import raconte, { metadata as raconteMeta } from "@/content/projects/raconte.mdx";
 import splitRecording, { metadata as splitRecordingMeta } from "@/content/projects/split-recording.mdx";
-import songscribe, { metadata as songscribeMeta } from "@/content/projects/songscribe.mdx";
 import rocksculpture, { metadata as rocksculptureMeta } from "@/content/projects/rocksculpture.mdx";
 import anomatom, { metadata as anomatomMeta } from "@/content/projects/anomatom.mdx";
 import tideline, { metadata as tidelineMeta } from "@/content/projects/tideline.mdx";
@@ -18,7 +17,6 @@ import prntdFr, { metadata as prntdFrMeta } from "@/content/fr/projects/prntd.md
 import promptLabFr, { metadata as promptLabFrMeta } from "@/content/fr/projects/prompt-lab.mdx";
 import raconteFr, { metadata as raconteFrMeta } from "@/content/fr/projects/raconte.mdx";
 import splitRecordingFr, { metadata as splitRecordingFrMeta } from "@/content/fr/projects/split-recording.mdx";
-import songscribeFr, { metadata as songscribeFrMeta } from "@/content/fr/projects/songscribe.mdx";
 import rocksculptureFr, { metadata as rocksculptureFrMeta } from "@/content/fr/projects/rocksculpture.mdx";
 import anomatomFr, { metadata as anomatomFrMeta } from "@/content/fr/projects/anomatom.mdx";
 import tidelineFr, { metadata as tidelineFrMeta } from "@/content/fr/projects/tideline.mdx";
@@ -61,7 +59,19 @@ export type ProjectMeta = {
   /** Made through iBuild4You. Listed in the grid on the ibuild4you page and
    *  labelled in the detail header. Absent = false. */
   ibuild4you?: boolean;
+  /** Where the project sits on the home page. Absent = "list". */
+  home?: HomePlacement;
+  /** Order within its home group, ascending; unranked sorts last. */
+  rank?: number;
+  /** One sentence: the part that took real work. */
+  hard?: string;
+  /** Short facts, shown as a mono row. */
+  facts?: string[];
+  /** Looping card video under public/ (.mp4 or .webm). */
+  cardVideo?: string;
 };
+
+export type HomePlacement = "featured" | "list" | "aside";
 
 export function projectHistoryKey(p: { slug: string; historyKey?: string }): string {
   return p.historyKey ?? p.slug;
@@ -81,15 +91,15 @@ const entries: Record<string, Entry> = {
   raconte: { meta: raconteMeta as ProjectMeta, Body: raconte },
   "l6-music": { meta: l6MusicMeta as ProjectMeta, Body: l6Music },
   "split-recording": { meta: splitRecordingMeta as ProjectMeta, Body: splitRecording },
-  songscribe: { meta: songscribeMeta as ProjectMeta, Body: songscribe },
   tideline: { meta: tidelineMeta as ProjectMeta, Body: tideline },
   bakerylouise: { meta: bakerylouiseMeta as ProjectMeta, Body: bakerylouise },
   "selected-projects": { meta: selectedProjectsMeta as ProjectMeta, Body: selectedProjects },
 };
 
-/** French overlay: only the translated tagline and body. Everything else
- *  (name, status, url, …) comes from the English file, so it can't drift. */
-type FrMeta = { tagline: string };
+/** French overlay: the translated tagline, optional hard/facts, and body.
+ *  Everything else (name, status, url, …) comes from the English file, so it
+ *  can't drift. */
+type FrMeta = { tagline: string; hard?: string; facts?: string[] };
 const frEntries: Record<string, { meta: FrMeta; Body: MDXContent }> = {
   "musicforge": { meta: musicforgeFrMeta as FrMeta, Body: musicforgeFr },
   "anomatom": { meta: anomatomFrMeta as FrMeta, Body: anomatomFr },
@@ -99,7 +109,6 @@ const frEntries: Record<string, { meta: FrMeta; Body: MDXContent }> = {
   "raconte": { meta: raconteFrMeta as FrMeta, Body: raconteFr },
   "l6-music": { meta: l6MusicFrMeta as FrMeta, Body: l6MusicFr },
   "split-recording": { meta: splitRecordingFrMeta as FrMeta, Body: splitRecordingFr },
-  "songscribe": { meta: songscribeFrMeta as FrMeta, Body: songscribeFr },
   "rocksculpture": { meta: rocksculptureFrMeta as FrMeta, Body: rocksculptureFr },
   "tideline": { meta: tidelineFrMeta as FrMeta, Body: tidelineFr },
   "bakerylouise": { meta: bakerylouiseFrMeta as FrMeta, Body: bakerylouiseFr },
@@ -126,12 +135,34 @@ export function projectsInCategory(key: ProjectCategory): Project[] {
 export function getProject(slug: string, locale: Locale = "en"): Project | undefined {
   const p = projects.find((p) => p.slug === slug);
   if (!p || locale === "en") return p;
-  return { ...p, tagline: frEntries[slug]?.meta.tagline ?? p.tagline };
+  const fr = frEntries[slug]?.meta;
+  return {
+    ...p,
+    tagline: fr?.tagline ?? p.tagline,
+    hard: fr?.hard ?? p.hard,
+    facts: fr?.facts ?? p.facts,
+  };
 }
 
 /** Localized project list, same order as `projects`. */
 export function localizedProjects(locale: Locale): Project[] {
   return projects.map((p) => getProject(p.slug, locale)!);
+}
+
+/** Home-page groups, each sorted by `rank` ascending (unranked last, stable). */
+export function homeProjects(locale: Locale = "en"): {
+  featured: Project[];
+  list: Project[];
+  aside: Project[];
+} {
+  const out = { featured: [] as Project[], list: [] as Project[], aside: [] as Project[] };
+  for (const p of localizedProjects(locale)) out[p.home ?? "list"].push(p);
+  const byRank = (a: Project, b: Project) =>
+    (a.rank ?? Infinity) === (b.rank ?? Infinity) ? 0 : (a.rank ?? Infinity) - (b.rank ?? Infinity);
+  out.featured.sort(byRank);
+  out.list.sort(byRank);
+  out.aside.sort(byRank);
+  return out;
 }
 
 /** Projects built through iBuild4You, localized, in `projects` order. */

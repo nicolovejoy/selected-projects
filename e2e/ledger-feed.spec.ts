@@ -1,19 +1,19 @@
 import { test, expect } from "@playwright/test";
 
 // #7 visual refresh: the feed became a single bordered ledger of row-cards
-// (no per-card borders/radius). Songscribe has no published weekly rollup —
+// (no per-card borders/radius). Split Recording has no published weekly rollup —
 // lib/feed.ts treats rollups as optional enrichment, so its row must still
 // render with the "no rollup published" fallback rather than disappearing.
-test("music feed renders as one bordered ledger, including the rollup-less songscribe row", async ({
+test("music feed renders as one bordered ledger, including the rollup-less Split Recording row", async ({
   page,
 }) => {
   const res = await page.goto("/music");
   expect(res?.status()).toBe(200);
 
   const musicforge = page.getByRole("heading", { name: "MusicForge", level: 3 });
-  const songscribe = page.getByRole("heading", { name: "Songscribe", level: 3 });
+  const splitRecording = page.getByRole("heading", { name: "Split Recording", level: 3 });
   await expect(musicforge).toBeVisible();
-  await expect(songscribe).toBeVisible();
+  await expect(splitRecording).toBeVisible();
 
   const ledger = page.locator("ul").filter({ has: musicforge });
   await expect(ledger).toHaveCount(1);
