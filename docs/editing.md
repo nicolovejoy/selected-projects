@@ -14,7 +14,7 @@ The `site` block holds:
 - `tagline` — terse form, drawn as type on the OG card. Not a meta description; the list form makes a poor search snippet.
 - `description` — prose form, for `<meta name="description">` and the text beneath social cards. Deliberately a different string from `tagline`.
 - `footerTagline` — full footer line ("the piano house project — music, art, products, and tools.").
-- `navLabels` — header nav labels (`about`, `tenets`, `lessons`, `connect`, `signIn`).
+- `navLabels` — header nav labels (`about`, `lessons`, `connect`, `signIn`).
 - `translationNote` — footer line shown only on French pages ("Traduit de l’anglais par Claude."), per tenet 1. Change it once Nico has reviewed the French.
 
 ## Standalone pages

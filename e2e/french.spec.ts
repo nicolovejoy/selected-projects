@@ -18,7 +18,6 @@ test("French home renders in French with French nav links", async ({ page }) => 
 
   const nav = page.locator("header");
   await expect(nav.getByRole("link", { name: "à propos" })).toHaveAttribute("href", "/fr/about");
-  await expect(nav.getByRole("link", { name: "principes" })).toHaveAttribute("href", "/fr/tenets");
   await expect(page.getByText("Traduit de l’anglais par Claude.")).toBeVisible();
 });
 

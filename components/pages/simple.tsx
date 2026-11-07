@@ -15,22 +15,16 @@ import { localePath, type Locale } from "@/lib/i18n";
 
 import AboutEn, { metadata as aboutEnMeta } from "@/content/about.mdx";
 import AboutFr, { metadata as aboutFrMeta } from "@/content/fr/about.mdx";
-import TenetsEn, { metadata as tenetsEnMeta } from "@/content/tenets.mdx";
-import TenetsFr, { metadata as tenetsFrMeta } from "@/content/fr/tenets.mdx";
 import LessonsEn, { metadata as lessonsEnMeta } from "@/content/vibe-coding-lessons.mdx";
 import LessonsFr, { metadata as lessonsFrMeta } from "@/content/fr/vibe-coding-lessons.mdx";
 
 type Meta = { title: string };
 type Doc = { Body: MDXContent; meta: Meta };
 
-const docs: Record<"about" | "tenets" | "lessons", Record<Locale, Doc>> = {
+const docs: Record<"about" | "lessons", Record<Locale, Doc>> = {
   about: {
     en: { Body: AboutEn, meta: aboutEnMeta as Meta },
     fr: { Body: AboutFr, meta: aboutFrMeta as Meta },
-  },
-  tenets: {
-    en: { Body: TenetsEn, meta: tenetsEnMeta as Meta },
-    fr: { Body: TenetsFr, meta: tenetsFrMeta as Meta },
   },
   lessons: {
     en: { Body: LessonsEn, meta: lessonsEnMeta as Meta },
@@ -81,22 +75,13 @@ export async function HomeView({ locale }: { locale: Locale }) {
           ))}
           .
         </p>
-        <p className="mt-3 mb-0 max-w-[60ch]">
-          {t.authorship}{" "}
-          <Link
-            href={localePath(locale, "/tenets")}
-            className="border-b border-neutral-200 text-neutral-900"
-          >
-            {t.tenets}
-          </Link>
-        </p>
       </div>
     </div>
   );
 }
 
-/** Title + MDX body pages (about, tenets). */
-export function DocView({ doc, locale }: { doc: "about" | "tenets"; locale: Locale }) {
+/** Title + MDX body pages (about). */
+export function DocView({ doc, locale }: { doc: "about"; locale: Locale }) {
   const { Body, meta } = docs[doc][locale];
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">
@@ -123,11 +108,7 @@ export async function LessonsView({ locale }: { locale: Locale }) {
         ) : (
           <>
             <MachineNote label={strings[locale].machineNote.label}>
-              <p>
-                {t.teaserBefore}
-                <Link href={localePath(locale, "/tenets")}>{t.teaserLink}</Link>
-                {t.teaserAfter}
-              </p>
+              <p>{t.teaserBefore}</p>
             </MachineNote>
 
             <h2>{t.oneLineHeading}</h2>

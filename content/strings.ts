@@ -16,14 +16,13 @@ const en = {
     title: "the piano house project",
     /** Terse form, set as type on the OG card. Not used as a meta description —
         it makes a poor search snippet. */
-    tagline: "music · art · products · tools",
+    tagline: "Nico’s agentic coding projects",
     /** Prose form, for <meta name="description"> and the text beneath social cards. */
     description:
-      "A live, self-updating record of the things Nico is building — music, art, products, and tools.",
-    footerTagline: "the piano house project — music, art, products, and tools.",
+      "A live, self-updating record of the things Nico is building.",
+    footerTagline: "the piano house project",
     navLabels: {
       about: "about",
-      tenets: "tenets",
       lessons: "lessons",
       connect: "connect",
       signIn: "sign in",
@@ -51,8 +50,6 @@ const en = {
     featuredHeading: "LLM and agent work",
     shippedHeading: "Shipped",
     asideBefore: "Also here: ",
-    authorship: "Nico writes this site; Claude’s passages are marked.",
-    tenets: "Tenets",
     table: { project: "Project", state: "State", what: "What it does", facts: "Facts" },
     proof: {
       contributions: (n: number) => `${fmt(n, "en")} contributions in the past year`,
@@ -155,7 +152,7 @@ const en = {
       missing: "That link was incomplete. Request a fresh one.",
     } as Record<string, string>,
     footnote:
-      "Signing in lets you follow projects and join the conversation. We only store your email — see the tenets for how we treat it.",
+      "Signing in lets you follow projects and join the conversation. We only store your email.",
     checkEmail: "Check your email",
     sentTo: "We sent a sign-in link to",
     sentToTail: ". It works once and expires in 15 minutes.",
@@ -177,9 +174,7 @@ const en = {
   },
   lessons: {
     teaserBefore:
-      "I wrote these. The source is Nico’s session history — roughly 500 prompts behind a few months of shipped apps: I read it back, found the habits that recurred, and wrote them up. See ",
-    teaserLink: "tenets",
-    teaserAfter: " for why this is marked.",
+      "I wrote these. The source is Nico’s session history — roughly 500 prompts behind a few months of shipped apps: I read it back, found the habits that recurred, and wrote them up.",
     oneLineHeading: "The one-line version",
     oneLine:
       "Plan first. Scope tight. Verify yourself. Push back. Keep it reversible. Write it down. Delegate the plumbing, own the judgment.",
@@ -194,13 +189,12 @@ export type Strings = typeof en;
 const fr: Strings = {
   site: {
     title: "the piano house project",
-    tagline: "musique · art · produits · outils",
+    tagline: "Les projets de Nico en programmation agentique",
     description:
-      "Un journal vivant, mis à jour automatiquement, de ce que Nico construit — musique, art, produits et outils.",
-    footerTagline: "the piano house project — musique, art, produits et outils.",
+      "Un journal vivant, mis à jour automatiquement, de ce que Nico construit.",
+    footerTagline: "the piano house project",
     navLabels: {
       about: "à propos",
-      tenets: "principes",
       lessons: "leçons",
       connect: "contact",
       signIn: "connexion",
@@ -226,8 +220,6 @@ const fr: Strings = {
     featuredHeading: "Travail LLM et agents",
     shippedHeading: "Livré",
     asideBefore: "Aussi ici\u00a0: ",
-    authorship: "Nico écrit ce site\u00a0; les passages de Claude sont signalés.",
-    tenets: "Principes",
     table: { project: "Projet", state: "État", what: "Ce que ça fait", facts: "Repères" },
     proof: {
       contributions: (n: number) => `${fmt(n, "fr")} contributions sur l’année écoulée`,
@@ -336,7 +328,7 @@ const fr: Strings = {
       missing: "Ce lien est incomplet. Demandez-en un nouveau.",
     },
     footnote:
-      "La connexion vous permet de suivre les projets et de participer à la conversation. Nous ne conservons que votre e-mail — voir les principes pour la façon dont nous le traitons.",
+      "La connexion vous permet de suivre les projets et de participer à la conversation. Nous ne conservons que votre adresse e-mail.",
     checkEmail: "Consultez vos e-mails",
     sentTo: "Nous avons envoyé un lien de connexion à",
     sentToTail: ". Il ne sert qu’une fois et expire dans 15 minutes.",
@@ -358,9 +350,7 @@ const fr: Strings = {
   },
   lessons: {
     teaserBefore:
-      "C’est moi qui les ai écrites. La source, c’est l’historique des sessions de Nico — environ 500 prompts derrière quelques mois d’applications livrées : je l’ai relu, j’ai repéré les habitudes qui revenaient, et je les ai rédigées. Voir les ",
-    teaserLink: "principes",
-    teaserAfter: " pour comprendre pourquoi ce texte est signalé.",
+      "C’est moi qui les ai écrites. La source, c’est l’historique des sessions de Nico — environ 500 prompts derrière quelques mois d’applications livrées : je l’ai relu, j’ai repéré les habitudes qui revenaient, et je les ai rédigées.",
     oneLineHeading: "La version en une ligne",
     oneLine:
       "Planifier d’abord. Cadrer serré. Vérifier soi-même. Oser contredire. Tout garder réversible. Tout consigner. Déléguer la plomberie, garder la main sur les décisions.",

@@ -31,7 +31,6 @@ function navLinks(locale: Locale) {
   const labels = strings[locale].site.navLabels;
   return [
     { href: localePath(locale, "/about"), label: labels.about },
-    { href: localePath(locale, "/tenets"), label: labels.tenets },
     { href: localePath(locale, "/vibe-coding-lessons"), label: labels.lessons },
     { href: localePath(locale, "/connect"), label: labels.connect },
   ];
