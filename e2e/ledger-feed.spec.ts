@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
 
-// #7 visual refresh: the feed became a single bordered ledger of row-cards
-// (no per-card borders/radius). Split Recording has no published weekly rollup —
-// lib/feed.ts treats rollups as optional enrichment, so its row must still
-// render with the "no rollup published" fallback rather than disappearing.
-test("music feed renders as one bordered ledger, including the rollup-less Split Recording row", async ({
+// Category pages list projects as rows in the home table's idiom: borders
+// between rows, no outer card. Split Recording has no published weekly rollup
+// and no public url; lib/feed.ts treats rollups as optional enrichment, so its
+// row must still render.
+test("music feed renders bordered rows, including the rollup-less Split Recording row", async ({
   page,
 }) => {
   const res = await page.goto("/music");
@@ -15,17 +15,23 @@ test("music feed renders as one bordered ledger, including the rollup-less Split
   await expect(musicforge).toBeVisible();
   await expect(splitRecording).toBeVisible();
 
-  const ledger = page.locator("ul").filter({ has: musicforge });
-  await expect(ledger).toHaveCount(1);
-  await expect(ledger).toHaveClass(/border/);
-  await expect(ledger).toHaveClass(/overflow-hidden/);
+  const list = page.locator("ul").filter({ has: musicforge });
+  await expect(list).toHaveCount(1);
+  // No bordered, rounded card wrapper around the list.
+  await expect(list).not.toHaveClass(/rounded/);
+  await expect(list).not.toHaveClass(/overflow-hidden/);
 
-  // Rows are plain <li> grid items inside the one ledger, not individually
-  // bordered/rounded cards.
-  const rows = ledger.locator("> li");
+  const rows = list.locator("> li");
   expect(await rows.count()).toBeGreaterThan(1);
-  const rowClass = await rows.first().getAttribute("class");
-  expect(rowClass).not.toMatch(/rounded-xl/);
+  for (const row of await rows.all()) {
+    await expect(row).toHaveClass(/border-b/);
+    await expect(row).not.toHaveClass(/rounded/);
+  }
 
-  await expect(page.getByText("no rollup published")).toBeVisible();
+  await expect(page.getByText(/no rollup published/i)).toHaveCount(0);
+
+  const mfRow = rows.filter({ has: musicforge });
+  const srRow = rows.filter({ has: splitRecording });
+  await expect(mfRow.getByRole("link", { name: /^visit .+ ↗$/ })).toHaveCount(1);
+  await expect(srRow.getByRole("link", { name: /^visit / })).toHaveCount(0);
 });

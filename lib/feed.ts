@@ -19,6 +19,8 @@ export type FeedEntry = {
   status: ProjectStatus;
   category: ProjectCategory;
   tagline: string;
+  hard: string | null;
+  facts: string[];
   url: string | null;
   /** Set when opted into the split-pane live preview (#12): where the preview
    *  loads, and the signal that the tile offers a preview button. */
@@ -84,6 +86,8 @@ async function toEntry(p: Project): Promise<FeedEntry> {
     status: p.status,
     category: p.category,
     tagline: p.tagline,
+    hard: p.hard ?? null,
+    facts: p.facts ?? [],
     url: p.url ?? null,
     previewUrl: p.embed && p.url ? (p.embedUrl ?? p.url) : null,
     image: p.cardImage ?? og?.image ?? p.image ?? null,

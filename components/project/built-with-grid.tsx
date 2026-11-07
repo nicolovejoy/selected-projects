@@ -4,7 +4,7 @@ import type { Project } from "@/lib/projects";
 import { strings } from "@/content/strings";
 import { localePath, type Locale } from "@/lib/i18n";
 
-/** Cards for projects made through iBuild4You. Image precedence matches OgPreview. */
+/** Cards for projects made through iBuild4You. Image precedence matches the detail header. */
 export async function BuiltWithGrid({
   projects,
   locale,

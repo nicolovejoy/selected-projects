@@ -1,89 +1,76 @@
 import Link from "next/link";
 import type { FeedEntry } from "@/lib/feed";
-import { Sparkline } from "@/components/sparkline";
-import { StatusBadge } from "@/components/status-badge";
+import { FactsRow, StatusText } from "@/components/project-facts";
 import { strings } from "@/content/strings";
-import { formatDate, localePath, plural, type Locale } from "@/lib/i18n";
+import { formatDate, localePath, type Locale } from "@/lib/i18n";
 
 function host(url: string): string {
   return new URL(url).hostname.replace(/^www\./, "");
 }
 
 /**
- * One ledger row inside a category feed. Rows are plain grid items — the
- * `<ul>` wrapper (app/[category]/page.tsx) supplies the single bordered
- * container; hover reads as a background tint, not a border lift. Rollup-less
- * projects (no weekly history published yet) still render a full row —
- * summary/authorship/week are simply absent.
+ * One row in a category list, set like the home table's rows: thumbnail left
+ * (always the still image, never video), then name / state / tagline / hard /
+ * facts, and the latest write-up week on the right. Rows are separated by a
+ * hairline; the name is the link to the detail page, and the external "visit"
+ * link sits beside it without nesting anchors.
  */
 export function FeedCard({ entry, locale }: { entry: FeedEntry; locale: Locale }) {
   const t = strings[locale].feed;
-  const hasSpark = entry.spark.length >= 2;
 
   return (
-    // The detail-page link is an overlay so the external "visit" link can sit
-    // inside the row without nesting anchors (it stacks above via z-10).
-    <li className="relative grid grid-cols-[1fr_auto] gap-x-6 gap-y-2.5 border-t border-neutral-200 p-5 transition-colors first:border-t-0 hover:bg-neutral-50 max-[560px]:grid-cols-1 sm:p-6">
-      <Link
-        href={localePath(locale, `/projects/${entry.project}`)}
-        aria-label={t.projectPageAria(entry.projectName)}
-        className="absolute inset-0"
-      />
+    <li className="flex gap-4 border-b border-neutral-200 py-3.5">
+      {entry.image && (
+        <div className="w-24 shrink-0 pt-1">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={entry.image}
+            alt=""
+            loading="lazy"
+            className="aspect-[1200/630] w-full rounded-[2px] border border-neutral-200 bg-neutral-50 object-cover"
+          />
+        </div>
+      )}
 
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <StatusBadge status={entry.status} locale={locale} />
-          {hasSpark && (
-            <>
-              <span className="text-neutral-300" aria-hidden="true">
-                /
-              </span>
-              <Sparkline values={entry.spark} />
-            </>
-          )}
-          {!entry.weekOf && (
-            <>
-              <span className="text-neutral-300" aria-hidden="true">
-                /
-              </span>
-              <span className="mono-label">{t.noRollup}</span>
-            </>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h3 className="m-0 font-serif text-[19px] leading-[1.2] font-medium">
+            <Link
+              href={localePath(locale, `/projects/${entry.project}`)}
+              aria-label={t.projectPageAria(entry.projectName)}
+              className="hover:underline hover:underline-offset-4"
+            >
+              {entry.projectName}
+            </Link>
+          </h3>
+          <StatusText status={entry.status} label={strings[locale].status[entry.status]} />
+          {entry.weekOf && (
+            <span className="ml-auto text-xs whitespace-nowrap text-faint">
+              {t.weekOf(formatDate(entry.weekOf, locale, { month: "short", day: "numeric" }))}
+            </span>
           )}
         </div>
-
-        <h3 className="mt-2 font-serif text-2xl leading-tight tracking-tight text-neutral-900">
-          {entry.projectName}
-        </h3>
-        <p className="mt-1 font-serif text-base italic text-neutral-600">{entry.tagline}</p>
+        <p className="mt-1 mb-0">{entry.tagline}</p>
+        {entry.hard && <p className="mt-0.5 mb-0 text-sm text-neutral-600">{entry.hard}</p>}
+        {entry.facts.length > 0 && (
+          <div className="mt-2">
+            <FactsRow facts={entry.facts} />
+          </div>
+        )}
         {entry.summary && (
-          <p lang="en" className="mt-2.5 max-w-[60ch] text-sm leading-relaxed text-neutral-600">
+          <p lang="en" className="mt-2.5 mb-0 max-w-[60ch] text-sm leading-relaxed text-neutral-500 italic">
             {entry.summary}
           </p>
         )}
-        {entry.sessionCount !== null && (
-          <p className="mono-label mt-3">
-            {t.fromClaude} · {plural(entry.sessionCount, t.session, t.sessions, locale)}
-          </p>
-        )}
-      </div>
-
-      <div className="flex flex-col items-end gap-2 whitespace-nowrap text-right max-[560px]:flex-row max-[560px]:items-baseline max-[560px]:justify-start max-[560px]:gap-4 max-[560px]:text-left">
-        {entry.weekOf ? (
-          <span className="mono-label">{t.weekOf(formatDate(entry.weekOf, locale))}</span>
-        ) : (
-          <span className="mono-label text-neutral-300">—</span>
-        )}
-        {entry.url ? (
+        {entry.url && (
           <a
             href={entry.url}
             target="_blank"
             rel="noopener"
-            className="relative z-10 font-mono text-[0.62rem] tracking-wide text-neutral-600 underline underline-offset-4 hover:text-neutral-900"
+            className="mt-2 inline-block font-mono text-xs text-neutral-600 underline underline-offset-4 hover:text-neutral-900"
           >
             {t.visit(host(entry.url))}
           </a>
-        ) : (
-          entry.weekOf && <span className="mono-label text-neutral-300">{t.githubOnly}</span>
         )}
       </div>
     </li>
