@@ -1,5 +1,7 @@
 # Home redesign for the job hunt (2026-11-06)
 
+Amended 2026-11-07: heading renamed to 'selected projects'; the aside placement was removed and rocksculpture / selected-projects joined the table (ranks 7, 8).
+
 Audience and card choices come from the 2026-11-05 brief in `~/src/.handoff/selected-projects-split-recording.md`. Nico ruled on 2026-11-06: layout from mock B (https://claude.ai/artifact/MYEWviFZ8aQBw4JLtSFhD4), claim "Nico's agentic coding projects", no bio (LinkedIn carries that), byside dropped entirely, Tideline featured instead, anomatom featured with motion, detail and category pages restyled in the same round. Nico edits the copy in the source files himself; seed it from the brief and keep every line factual. No section intros, no labels that restate a heading.
 
 ## Intent

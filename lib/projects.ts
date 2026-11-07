@@ -71,7 +71,7 @@ export type ProjectMeta = {
   cardVideo?: string;
 };
 
-export type HomePlacement = "featured" | "list" | "aside";
+export type HomePlacement = "featured" | "list";
 
 export function projectHistoryKey(p: { slug: string; historyKey?: string }): string {
   return p.historyKey ?? p.slug;
@@ -153,15 +153,13 @@ export function localizedProjects(locale: Locale): Project[] {
 export function homeProjects(locale: Locale = "en"): {
   featured: Project[];
   list: Project[];
-  aside: Project[];
 } {
-  const out = { featured: [] as Project[], list: [] as Project[], aside: [] as Project[] };
+  const out = { featured: [] as Project[], list: [] as Project[] };
   for (const p of localizedProjects(locale)) out[p.home ?? "list"].push(p);
   const byRank = (a: Project, b: Project) =>
     (a.rank ?? Infinity) === (b.rank ?? Infinity) ? 0 : (a.rank ?? Infinity) - (b.rank ?? Infinity);
   out.featured.sort(byRank);
   out.list.sort(byRank);
-  out.aside.sort(byRank);
   return out;
 }
 

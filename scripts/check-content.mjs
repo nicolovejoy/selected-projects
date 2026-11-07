@@ -4,7 +4,7 @@ import path from "node:path";
 
 const ALLOWED_STATUS = new Set(["live", "beta", "alpha", "demo", "concept"]);
 const ALLOWED_CATEGORY = new Set(["music", "art", "products", "tools"]);
-const ALLOWED_HOME = new Set(["featured", "list", "aside"]);
+const ALLOWED_HOME = new Set(["featured", "list"]);
 const errors = [];
 const expect = (cond, msg) => {
   if (!cond) errors.push(msg);

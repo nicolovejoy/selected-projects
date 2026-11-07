@@ -14,7 +14,12 @@ test("home renders the claim and the four featured projects in order", async ({ 
   const firstRow = page.locator("main table tbody tr").first();
   await expect(firstRow.getByRole("link", { name: "Split Recording" })).toBeVisible();
 
-  await expect(page.getByRole("link", { name: "Rock Sculpture" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: "selected projects", exact: true })).toBeVisible();
+  const rows = page.locator("main table tbody tr");
+  const count = await rows.count();
+  await expect(rows.nth(count - 2).getByRole("link", { name: "Rock Sculpture" })).toBeVisible();
+  await expect(rows.nth(count - 1).getByRole("link", { name: "Selected Projects" })).toBeVisible();
+  await expect(page.getByText("Also here")).toHaveCount(0);
 
   for (const label of ["Music", "Art", "Products", "Tools"]) {
     await expect(page.getByRole("heading", { level: 2, name: label, exact: true })).toHaveCount(0);

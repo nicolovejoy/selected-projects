@@ -163,14 +163,13 @@ async function toHomeEntry(p: Project): Promise<HomeEntry> {
  *  for the same reason: one failed OG scrape must not shorten the shell. */
 export async function getHomeEntries(
   locale: Locale = "en",
-): Promise<{ featured: HomeEntry[]; list: HomeEntry[]; aside: HomeEntry[] }> {
+): Promise<{ featured: HomeEntry[]; list: HomeEntry[] }> {
   "use cache";
   cacheLife("hours");
   const g = homeProjects(locale);
-  const [featured, list, aside] = await Promise.all([
+  const [featured, list] = await Promise.all([
     Promise.all(g.featured.map(toHomeEntry)),
     Promise.all(g.list.map(toHomeEntry)),
-    Promise.all(g.aside.map(toHomeEntry)),
   ]);
-  return { featured, list, aside };
+  return { featured, list };
 }
