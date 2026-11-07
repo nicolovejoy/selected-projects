@@ -5,6 +5,7 @@ export const PROJECT_SLUGS: readonly string[] = [
   "anomatom",
   "bakerylouise",
   "ibuild4you",
+  "l6-music",
   "musicforge",
   "prntd",
   "prompt-lab",

@@ -1,0 +1,17 @@
+export const metadata = {
+  tagline: "Des exercices de pratique tirés des propres partitions d'un professeur de piano, pour sa classe.",
+};
+
+L6 est une application d'entraînement pour une classe de piano scolaire. Son professeur, Danny, a recentré la classe sur l'apprentissage de vrais morceaux, et voulait que la pratique entre les cours suive : lente, note par note, et visible pour lui. L6 transforme ses propres partitions MusicXML en exercices. Notes et Intervalles sont en ligne, Formes et motifs arrive ensuite. Les élèves jouent sur un clavier de 88 touches à l'écran, sur ordinateur, iPad ou téléphone, et Danny voit qui a travaillé quoi.
+
+> La fréquentation reste au plus haut niveau depuis que j'enseigne ici. Les élèves ont vraiment adhéré à l'apprentissage de leurs morceaux, alors qu'avant on leur demandait sans cesse d'apprendre de nouvelles positions à cinq doigts et de nouveaux « morceaux » chaque semaine.
+>
+> L'application les obligerait à ralentir et à vraiment prendre conscience des notes qu'ils essaient de jouer, tout en me montrant qui fait réellement quoi, et à quelle fréquence.
+>
+> Dans l'ensemble, l'expérience a été extrêmement positive.
+
+— Danny, professeur de piano, novembre 2026 (traduit de l'anglais)
+
+C'est un projet iBuild4You. Danny façonne chaque étape en conversation avec l'assistant d'iBuild4You et envoie ses retours depuis un bouton dans l'application. Nico construit selon un périmètre validé par Danny (un morceau, quelques jeux, une étape par pull request), et Danny teste chaque version avant l'étape suivante.
+
+La difficulté, c'est la partition : afficher une vraie partition sous forme de pages d'exercices lisibles sur un téléphone, tout en gardant ses partitions privées, récupérées au moment du build et jamais publiées. Deux mois après le début : 273 commits, 181 pull requests fusionnées, 46 fichiers de tests, une CI sur chaque PR.

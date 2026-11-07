@@ -65,7 +65,7 @@ Older "Done" entries (through 2026-09-26) live in `docs/roadmap-archive.md`; sta
 - **Issue #5** — richer card visuals, the only open front-end thread. Direction agreed (spec in the issue's pinned comment), groundwork merged (PR #11: `cardImage` overrides the OG scrape, `public/cards/<slug>.<ext>` convention). **Assets shipped 2026-10-16** for prompt-lab, split-recording and raconte (`node scripts/compress-image.mjs cards/<slug> --cover 1200x630`; originals in gitignored `assets/originals/cards/`). Still wanted: songscribe (no URL, no scrape) and optionally musicforge/rocksculpture (both scrape fine). Then the mockup round for the `/[category]` cards + detail; home tiles stay text-dense. https://github.com/nicolovejoy/selected-projects/issues/5
 - **Follower email digest** (Resend); **hardening** (docs/environments.md): preview email split → prod backup habit.
 
-<!-- SHARED-CONVENTIONS:BEGIN v=ac9060beffa2 — auto-managed, do not edit here; source: prompt-lab/workflow/claude-md-shared.md (edit + re-sync) -->
+<!-- SHARED-CONVENTIONS:BEGIN v=3308b16045f0 — auto-managed, do not edit here; source: prompt-lab/workflow/claude-md-shared.md (edit + re-sync) -->
 ## Shared conventions
 
 <!-- These are Nico's cross-repo output rules. They're materialized into each repo's
@@ -75,6 +75,8 @@ truth: prompt-lab/workflow/claude-md-shared.md — edit there and re-sync, never
 - **Clickable URLs.** When pointing at any web destination (dashboard, repo, PR, deploy, settings, docs, localhost), print the full bare URL — `https://example.com` or `http://localhost:8080` — on its own, never just the page's name and never a markdown `[label](url)` link. Nico's terminal auto-linkifies raw `https://` text, so a bare URL is one-click and stays copyable.
 
 - **Number your questions.** Any time you ask Nico more than one question, present them as a numbered list (1., 2., 3.) so he can answer by number with no ambiguity. A single standalone question needs no number.
+
+- **Never ask Nico to recall a past moment.** No "think of the last time X happened", "walk me through the last time…", or any question he can only answer by remembering an event. Look the history up yourself (the prompt-history DB, git, logs, the data), then propose something concrete for him to react to, or ask directly what he wants. This overrides the brainstorming skill's "walk me through the last time" question style (Nico, 2026-11-03).
 
 - **Self-contained smoke-test instructions.** When you ask Nico to manually test or verify an app or website, assume zero carried-over context — he should never scroll back or recall a URL/path/credential from earlier. Always include: the exact URL (full `https://…` or `http://localhost:…`, restated even if mentioned above), the precise steps in order, and what a pass vs. fail looks like. Repetition here is a feature, not clutter.
 
