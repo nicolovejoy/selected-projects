@@ -32,7 +32,7 @@ const en = {
     menu: "Menu",
     githubAria: "Nico on GitHub",
     /** LinkedIn profile URL; the button renders only when set. */
-    linkedin: "",
+    linkedin: "https://www.linkedin.com/in/nico-lovejoy/",
     builtAt: (when: string) => `Built ${when} PT`,
     /** Shown in the footer on translated pages only. */
     translationNote: "",
@@ -208,7 +208,7 @@ const fr: Strings = {
     signOut: "déconnexion",
     menu: "Menu",
     githubAria: "Nico sur GitHub",
-    linkedin: "",
+    linkedin: "https://www.linkedin.com/in/nico-lovejoy/",
     builtAt: (when: string) => `Mis à jour le ${when} (heure du Pacifique)`,
     translationNote: "Traduit de l’anglais par Claude.",
     switchTo: { label: "EN", aria: "Read in English" },
