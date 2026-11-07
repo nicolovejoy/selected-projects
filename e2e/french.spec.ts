@@ -14,7 +14,7 @@ test("French home renders in French with French nav links", async ({ page }) => 
   const res = await page.goto("/fr");
   expect(res?.status()).toBe(200);
   await expect(page.locator("html")).toHaveAttribute("lang", "fr");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Ce qui mijote");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Les projets de Nico en programmation agentique");
 
   const nav = page.locator("header");
   await expect(nav.getByRole("link", { name: "à propos" })).toHaveAttribute("href", "/fr/about");

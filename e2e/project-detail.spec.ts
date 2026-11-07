@@ -17,28 +17,33 @@ test("project detail page renders title and about section", async ({ page }) => 
   await expect(about.locator("article")).toContainText(/MusicForge/);
 });
 
-// #7 visual refresh: the action row lost its chunky pill buttons. "Visit
-// site" is the one filled (invert) element; everything else is a mono
-// underlined link, not a bordered/rounded button. Uses the site's own project
-// page (public repo + live url) rather than musicforge, whose repo is
-// private and would make the GitHub-link assertion flaky.
+// The action row uses the home hero's button style: "Visit site" is the one
+// filled (neutral-900) button; the rest are bordered 2px-radius buttons, never
+// pills.
 test("project detail actions row has no pill buttons", async ({ page }) => {
   const res = await page.goto("/projects/selected-projects");
   expect(res?.status()).toBe(200);
 
   const visit = page.getByRole("link", { name: /visit site/i });
   await expect(visit).toBeVisible();
-  await expect(visit).toHaveClass(/bg-invert/);
-  await expect(visit).toHaveClass(/font-mono/);
+  await expect(visit).toHaveClass(/bg-neutral-900/);
+  await expect(visit).toHaveClass(/rounded-\[2px\]/);
+  await expect(visit).not.toHaveClass(/rounded-(md|lg|xl|full)/);
 
   const github = page.getByRole("link", { name: /code on github/i });
   await expect(github).toBeVisible();
-  await expect(github).toHaveClass(/underline/);
-  await expect(github).not.toHaveClass(/border/);
-  await expect(github).not.toHaveClass(/bg-invert/);
+  await expect(github).toHaveClass(/border/);
+  await expect(github).toHaveClass(/rounded-\[2px\]/);
+  await expect(github).not.toHaveClass(/bg-neutral-900/);
 
   const touch = page.getByRole("link", { name: /get in touch/i });
   await expect(touch).toBeVisible();
-  await expect(touch).toHaveClass(/underline/);
-  await expect(touch).not.toHaveClass(/border/);
+  await expect(touch).toHaveClass(/border/);
+  await expect(touch).not.toHaveClass(/bg-neutral-900/);
+});
+
+test("project header is one summary sentence line, not a mono strip", async ({ page }) => {
+  await page.goto("/projects/musicforge");
+  await expect(page.getByText(/^Music, \w+\./).first()).toBeVisible();
+  await expect(page.getByText(/^Music, \w+\./).first()).toContainText("Latest write-up week of");
 });

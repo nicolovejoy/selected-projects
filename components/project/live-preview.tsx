@@ -5,8 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { strings } from "@/content/strings";
 import type { Locale } from "@/lib/i18n";
 
-const actLink =
-  "font-mono text-[0.66rem] tracking-[0.08em] uppercase text-neutral-600 underline decoration-neutral-300 underline-offset-4 hover:text-neutral-900 hover:decoration-neutral-500";
+import { btn } from "@/components/project/buttons";
 
 const LOAD_TIMEOUT_MS = 6000;
 
@@ -66,7 +65,7 @@ export function LivePreviewTrigger({ url, locale }: { url: string; locale: Local
 
 function ExternalLink({ url, locale }: { url: string; locale: Locale }) {
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className={`lg:hidden ${actLink}`}>
+    <a href={url} target="_blank" rel="noopener noreferrer" className={`lg:hidden ${btn}`}>
       {strings[locale].project.livePreviewExternal}
     </a>
   );
@@ -83,7 +82,7 @@ function TriggerInner({ url, locale }: { url: string; locale: Locale }) {
       <button
         type="button"
         onClick={() => setPreviewOpen(pathname, !open)}
-        className={`hidden lg:inline ${actLink}`}
+        className={`hidden lg:inline-flex ${btn} cursor-pointer`}
       >
         {open ? t.closePreview : t.livePreview}
       </button>
@@ -190,7 +189,7 @@ function LayoutInner({
         {timedOut && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-surface/95 text-center">
             <p className="text-sm text-neutral-600">{t.slowLoad}</p>
-            <a href={url} target="_blank" rel="noopener noreferrer" className={actLink}>
+            <a href={url} target="_blank" rel="noopener noreferrer" className={btn}>
               {t.openSite}
             </a>
           </div>

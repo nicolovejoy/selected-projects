@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   redirects: async () => [
     { source: "/projects/recountly", destination: "/projects/raconte", permanent: true },
     { source: "/fr/projects/recountly", destination: "/fr/projects/raconte", permanent: true },
+    // Songscribe was dropped from the site (2026-11, home redesign).
+    { source: "/projects/songscribe", destination: "/music", permanent: true },
+    { source: "/fr/projects/songscribe", destination: "/fr/music", permanent: true },
   ],
   // Partial Prerendering: every page route ships a static shell, with the
   // session chip (and anything else request-scoped) streamed into a Suspense

@@ -24,7 +24,7 @@ async function CategoryBody({ category, locale }: { category: ProjectCategory; l
     <>
       <h1 className="pt-4 pb-6 font-serif text-4xl leading-tight tracking-tight">{group.label}</h1>
 
-      <ul className="overflow-hidden rounded-xl border border-neutral-200 bg-white">
+      <ul className="m-0 list-none border-t border-neutral-900 p-0">
         {group.entries.map((e) => (
           <FeedCard key={e.project} entry={e} locale={locale} />
         ))}
@@ -36,9 +36,9 @@ async function CategoryBody({ category, locale }: { category: ProjectCategory; l
 export function CategoryView({ category, locale }: { category: ProjectCategory; locale: Locale }) {
   const t = strings[locale];
   return (
-    <div className="mx-auto max-w-xl px-5 pb-20">
+    <div className="mx-auto max-w-[1040px] px-5 pb-20">
       <div className="pt-6">
-        <Link href={localePath(locale, "/")} className="mono-label hover:text-neutral-600">
+        <Link href={localePath(locale, "/")} className="text-[13px] text-neutral-500 hover:text-neutral-900">
           {t.feed.allWork}
         </Link>
       </div>

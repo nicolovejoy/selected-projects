@@ -8,10 +8,13 @@ import { getProjectHistory } from "@/lib/history";
 import { getCommitActivity, getPublicRepo } from "@/lib/github";
 import { getSessionUser, isAdmin } from "@/lib/auth";
 import { getNotes, isFollowing } from "@/lib/community";
-import { StatusBadge } from "@/components/status-badge";
+import { FactsRow, StatusText } from "@/components/project-facts";
+import { CardMedia } from "@/components/card-media";
+import { getOgPreview } from "@/lib/og";
+import { btn, btnPrimary } from "@/components/project/buttons";
+import type { Project } from "@/lib/projects";
 import { ContributionCalendar } from "@/components/contribution-calendar";
 import { CollapsibleSection } from "@/components/collapsible-section";
-import { OgPreview } from "@/components/og-preview";
 import { Evolution } from "@/components/evolution";
 import { FollowButton } from "@/components/project/follow-button";
 import { LivePreviewLayout, LivePreviewTrigger } from "@/components/project/live-preview";
@@ -24,8 +27,14 @@ async function CommitGraph({ github, locale }: { github: string; locale: Locale 
   return <ContributionCalendar weeks={weeks} locale={locale} />;
 }
 
-const actLink =
-  "font-mono text-[0.66rem] tracking-[0.08em] uppercase text-neutral-600 underline decoration-neutral-300 underline-offset-4 hover:text-neutral-900 hover:decoration-neutral-500";
+/** Same image selection as the home cards: cardVideo / cardImage, else the OG
+ *  scrape, else the legacy image field, else nothing (no text tile here). */
+async function DetailMedia({ project }: { project: Project }) {
+  const og = project.cardImage || !project.url ? null : await getOgPreview(project.url);
+  const image = project.cardImage ?? og?.image ?? project.image ?? null;
+  if (!image && !project.cardVideo) return null;
+  return <CardMedia project={project} image={image} />;
+}
 
 // `export const revalidate = 86400` lived here but was inert — the page reads
 // cookies() below, which forced dynamic rendering regardless. cacheComponents
@@ -80,119 +89,78 @@ export async function ProjectView({
     [...history.weekly].sort((a, b) => b.weekOf.localeCompare(a.weekOf))[0] ?? null;
 
   const body = (
-    // @container: the header below reflows by *available* width, not viewport
-    // width — #12's split view squeezes this into a ~1/3-viewport column, and
-    // a viewport-based `sm:` breakpoint would still fire there and overlap
-    // the title with the preview card. @xl (36rem/576px, Tailwind's container
-    // query scale — narrower than its viewport scale) sits between the split
-    // column's ~400px and the full page's ~720px.
+    // @container: kept so the split view (#12) can squeeze this into a narrow
+    // column; the header is single-column now, so nothing here reflows by width.
     <div className="@container mx-auto max-w-3xl px-6 py-16">
-      <Link href={localePath(locale, "/")} className="text-sm text-neutral-500 hover:text-neutral-900">
+      <Link href={localePath(locale, "/")} className="text-[13px] text-neutral-500 hover:text-neutral-900">
         {t.allProjects}
       </Link>
 
-      {/* Above the fold: title + actions on the left, live-site preview on the right. */}
-      <div className="mt-8 flex flex-col gap-6 @xl:flex-row @xl:items-start">
-        <div className="min-w-0 flex-1">
-          <header>
-            <div className="flex items-center gap-2.5">
-              <span className="mono-label">{strings[locale].categories[project.category]}</span>
-              <span className="text-neutral-300" aria-hidden="true">
-                ·
-              </span>
-              <StatusBadge status={project.status} locale={locale} />
-              {project.ibuild4you && (
-                <>
-                  <span className="text-neutral-300" aria-hidden="true">
-                    ·
-                  </span>
-                  <Link
-                    href={localePath(locale, "/projects/ibuild4you")}
-                    className="mono-label underline decoration-neutral-300 underline-offset-4 hover:text-neutral-900"
-                  >
-                    {t.builtWith}
-                  </Link>
-                </>
-              )}
-            </div>
-            <h1 className="mt-2 font-serif text-[2.75rem] leading-[1.05] tracking-[-0.02em] max-[560px]:text-[2.2rem]">
-              {project.name}
-            </h1>
-            <p className="mt-3 max-w-[46ch] font-serif text-xl italic text-neutral-600">
-              {project.tagline}
-            </p>
-
-            {latestWeek && (
-              <div className="mt-[18px] flex gap-7 border-t border-b border-neutral-200 py-3.5">
-                <div>
-                  <span className="mono-label block">{t.latest}</span>
-                  <span className="text-sm text-neutral-900">
-                    {formatDate(latestWeek.weekOf, locale)}
-                  </span>
-                </div>
-                <div>
-                  <span className="mono-label block">{t.activity}</span>
-                  <span className="text-sm text-neutral-900">
-                    {plural(
-                      latestWeek.sessionCount,
-                      strings[locale].feed.session,
-                      strings[locale].feed.sessions,
-                      locale,
-                    )}
-                  </span>
-                </div>
-                <div>
-                  <span className="mono-label block">{t.source}</span>
-                  <span className="text-sm text-neutral-900">{t.fromClaude}</span>
-                </div>
-              </div>
-            )}
-
-            <div className="mt-[18px] flex flex-wrap items-center gap-4">
-              {project.url && (
-                <a
-                  href={project.url}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-invert bg-invert px-3 py-1.5 font-mono text-[0.66rem] tracking-[0.1em] text-invert-fg uppercase hover:border-[var(--n-700)] hover:bg-[var(--n-700)]"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t.visitSite}
-                </a>
-              )}
-              {repo && (
-                <a href={repo.htmlUrl} className={actLink} target="_blank" rel="noopener noreferrer">
-                  {t.codeOnGithub}
-                </a>
-              )}
-              {embedUrl && <LivePreviewTrigger url={embedUrl} locale={locale} />}
-              <FollowButton
-                project={slug}
-                following={following}
-                signedIn={!!user}
-                locale={locale}
-              />
-              <Link
-                href={`${localePath(locale, "/connect")}?project=${project.slug}`}
-                className={actLink}
-              >
-                {t.getInTouch}
-              </Link>
-            </div>
-          </header>
+      <header className="mt-8">
+        {(project.cardVideo || project.cardImage || project.image || project.url) && (
+          <Suspense
+            fallback={<div className="aspect-[1200/630] w-full animate-pulse rounded-[2px] bg-neutral-100" />}
+          >
+            <DetailMedia project={project} />
+          </Suspense>
+        )}
+        <div className="mt-5 flex items-baseline gap-3">
+          <h1 className="m-0 font-serif text-[2.75rem] leading-[1.05] tracking-[-0.02em] max-[560px]:text-[2.2rem]">
+            {project.name}
+          </h1>
+          <StatusText status={project.status} label={strings[locale].status[project.status]} />
         </div>
-
-        {(project.url || project.cardImage) && (
-          <div className="shrink-0 @xl:w-80">
-            <Suspense
-              fallback={
-                <div className="aspect-[1200/630] w-full animate-pulse rounded-xl bg-neutral-100" />
-              }
-            >
-              <OgPreview project={project} locale={locale} />
-            </Suspense>
+        <p className="mt-3 mb-0">{project.tagline}</p>
+        {project.hard && <p className="mt-1 mb-0 text-sm text-neutral-600">{project.hard}</p>}
+        {project.facts && project.facts.length > 0 && (
+          <div className="mt-2.5">
+            <FactsRow facts={project.facts} />
           </div>
         )}
-      </div>
+
+        <p className="mt-4 mb-0 text-[13px] text-neutral-500">
+          {t.summaryLine.kind(strings[locale].categories[project.category], strings[locale].status[project.status])}
+          {latestWeek &&
+            ` ${t.summaryLine.latest(
+              formatDate(latestWeek.weekOf, locale, { month: "short", day: "numeric" }),
+              plural(
+                latestWeek.sessionCount,
+                strings[locale].feed.session,
+                strings[locale].feed.sessions,
+                locale,
+              ),
+            )}`}
+          {project.ibuild4you && (
+            <>
+              {" "}
+              <Link
+                href={localePath(locale, "/projects/ibuild4you")}
+                className="underline decoration-neutral-300 underline-offset-4 hover:text-neutral-900"
+              >
+                {t.builtWith}
+              </Link>
+            </>
+          )}
+        </p>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2.5">
+          {project.url && (
+            <a href={project.url} className={btnPrimary} target="_blank" rel="noopener noreferrer">
+              {t.visitSite}
+            </a>
+          )}
+          {repo && (
+            <a href={repo.htmlUrl} className={btn} target="_blank" rel="noopener noreferrer">
+              {t.codeOnGithub}
+            </a>
+          )}
+          {embedUrl && <LivePreviewTrigger url={embedUrl} locale={locale} />}
+          <FollowButton project={slug} following={following} signedIn={!!user} locale={locale} />
+          <Link href={`${localePath(locale, "/connect")}?project=${project.slug}`} className={btn}>
+            {t.getInTouch}
+          </Link>
+        </div>
+      </header>
 
       <CollapsibleSection title={t.sections.about} defaultOpen>
         <article className="prose prose-stone dark:prose-invert prose-lg max-w-none">

@@ -1,6 +1,7 @@
 import { cacheLife } from "next/cache";
 import {
   localizedProjects,
+  homeProjects,
   categoryLabel,
   projectHistoryKey,
   categories,
@@ -18,6 +19,8 @@ export type FeedEntry = {
   status: ProjectStatus;
   category: ProjectCategory;
   tagline: string;
+  hard: string | null;
+  facts: string[];
   url: string | null;
   /** Set when opted into the split-pane live preview (#12): where the preview
    *  loads, and the signal that the tile offers a preview button. */
@@ -83,6 +86,8 @@ async function toEntry(p: Project): Promise<FeedEntry> {
     status: p.status,
     category: p.category,
     tagline: p.tagline,
+    hard: p.hard ?? null,
+    facts: p.facts ?? [],
     url: p.url ?? null,
     previewUrl: p.embed && p.url ? (p.embedUrl ?? p.url) : null,
     image: p.cardImage ?? og?.image ?? p.image ?? null,
@@ -123,4 +128,49 @@ export async function getGroupedFeed(locale: Locale = "en"): Promise<FeedGroup[]
         .sort((a, b) => (b.weekOf ?? "").localeCompare(a.weekOf ?? "")),
     }))
     .filter((g) => g.entries.length > 0);
+}
+
+/** What the home page needs per project: no history, just copy and media. */
+export type HomeEntry = {
+  project: string;
+  projectName: string;
+  status: ProjectStatus;
+  tagline: string;
+  hard: string | null;
+  facts: string[];
+  /** cardImage, else the OG scrape, else the legacy image field. */
+  image: string | null;
+  cardImage: string | null;
+  cardVideo: string | null;
+};
+
+async function toHomeEntry(p: Project): Promise<HomeEntry> {
+  const og = p.cardImage || !p.url ? null : await getOgPreview(p.url);
+  return {
+    project: p.slug,
+    projectName: p.name,
+    status: p.status,
+    tagline: p.tagline,
+    hard: p.hard ?? null,
+    facts: p.facts ?? [],
+    image: p.cardImage ?? og?.image ?? p.image ?? null,
+    cardImage: p.cardImage ?? null,
+    cardVideo: p.cardVideo ?? null,
+  };
+}
+
+/** Home page groups in display order. Same `hours` outer lifetime as the feed,
+ *  for the same reason: one failed OG scrape must not shorten the shell. */
+export async function getHomeEntries(
+  locale: Locale = "en",
+): Promise<{ featured: HomeEntry[]; list: HomeEntry[]; aside: HomeEntry[] }> {
+  "use cache";
+  cacheLife("hours");
+  const g = homeProjects(locale);
+  const [featured, list, aside] = await Promise.all([
+    Promise.all(g.featured.map(toHomeEntry)),
+    Promise.all(g.list.map(toHomeEntry)),
+    Promise.all(g.aside.map(toHomeEntry)),
+  ]);
+  return { featured, list, aside };
 }

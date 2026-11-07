@@ -4,6 +4,7 @@ import path from "node:path";
 
 const ALLOWED_STATUS = new Set(["live", "beta", "alpha", "demo", "concept"]);
 const ALLOWED_CATEGORY = new Set(["music", "art", "products", "tools"]);
+const ALLOWED_HOME = new Set(["featured", "list", "aside"]);
 const errors = [];
 const expect = (cond, msg) => {
   if (!cond) errors.push(msg);
@@ -75,6 +76,39 @@ for (const file of projectFiles) {
     expect(typeof meta.embed === "boolean", `${fullPath}: embed must be a boolean`);
     if (meta.embed) {
       expect(!!meta.url, `${fullPath}: embed: true requires url`);
+    }
+  }
+  if (meta.home !== undefined) {
+    expect(
+      ALLOWED_HOME.has(meta.home),
+      `${fullPath}: home "${meta.home}" not in {${[...ALLOWED_HOME].join(", ")}}`,
+    );
+  }
+  if (meta.rank !== undefined) {
+    expect(
+      Number.isInteger(meta.rank) && meta.rank > 0,
+      `${fullPath}: rank "${meta.rank}" must be a positive integer`,
+    );
+  }
+  if (meta.hard !== undefined) {
+    expect(typeof meta.hard === "string" && meta.hard.trim(), `${fullPath}: hard must be a non-empty string`);
+  }
+  if (meta.facts !== undefined) {
+    expect(
+      Array.isArray(meta.facts) && meta.facts.every((f) => typeof f === "string" && f.trim()),
+      `${fullPath}: facts must be an array of non-empty strings`,
+    );
+  }
+  if (meta.cardVideo !== undefined) {
+    const v = meta.cardVideo;
+    expect(
+      typeof v === "string" && v.startsWith("/"),
+      `${fullPath}: cardVideo "${v}" must start with "/"`,
+    );
+    if (typeof v === "string") {
+      expect(/\.(mp4|webm)$/.test(v), `${fullPath}: cardVideo "${v}" must end in .mp4 or .webm`);
+      const videoPath = path.join("public", v.replace(/^\//, ""));
+      expect(existsSync(videoPath), `${fullPath}: cardVideo "${v}" not found at ${videoPath}`);
     }
   }
   if (meta.ibuild4you !== undefined) {

@@ -1,5 +1,7 @@
 export const metadata = {
   tagline: "Une répète du groupe en entrée, une prise par morceau en sortie.",
+  hard: "Les prises sont nommées par transcription Whisper locale, comparée au répertoire du groupe ; le catalogue est un site statique sur R2, avec un Worker et D1 seulement pour les votes.",
+  facts: ["600+ commits", "~180 PR", "pytest, vitest, Playwright"],
 };
 
 Prenez un long enregistrement d'une répétition ou d'un concert, et Split Recording le découpe en prises, une par morceau : repérer les limites, couper, nommer chaque prise — automatiquement quand c'est possible. La transcription tourne en local, et une comparaison des paroles avec le répertoire de [MusicForge](/fr/projects/musicforge) permet, quand c'est possible, de nommer une prise d'après son titre. L'outil peut aussi estimer le tempo de chaque morceau et sa dérive.
