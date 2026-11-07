@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   // Recountly became Raconte (native rebuild, 2026-10). The old slug was live
   // and linked, so keep it reachable in both languages.
   redirects: async () => [
+    { source: "/tenets", destination: "/about", permanent: true },
+    { source: "/fr/tenets", destination: "/fr/about", permanent: true },
     { source: "/projects/recountly", destination: "/projects/raconte", permanent: true },
     { source: "/fr/projects/recountly", destination: "/fr/projects/raconte", permanent: true },
     // Songscribe was dropped from the site (2026-11, home redesign).

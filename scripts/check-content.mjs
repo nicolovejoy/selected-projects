@@ -167,7 +167,7 @@ for (const file of projectFiles) {
     );
   }
 }
-for (const page of ["home", "about", "tenets", "connect", "vibe-coding-lessons"]) {
+for (const page of ["home", "about", "connect", "vibe-coding-lessons"]) {
   expect(existsSync(`content/fr/${page}.mdx`), `content/fr/${page}.mdx: missing French page`);
 }
 
