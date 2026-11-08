@@ -16,6 +16,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
+      - run: npm run test:unit
       # Blocking: a rendering/caching misconfiguration fails at build time, and
       # until now `next build` only ran inside the non-blocking e2e job below —
       # so it could ship green. `next build` also typechecks.

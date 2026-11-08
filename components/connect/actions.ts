@@ -11,25 +11,13 @@ import {
   MAX_CONNECTS_PER_IP_PER_HOUR,
 } from "@/lib/connect";
 import { strings } from "@/content/strings";
+import { truncateIp } from "@/lib/truncate-ip.mjs";
 
 export type ConnectFormState = {
   ok: boolean;
   message?: string;
 };
 
-
-function truncateIp(raw: string | null): string | null {
-  if (!raw) return null;
-  const first = raw.split(",")[0]?.trim();
-  if (!first) return null;
-  if (first.includes(":")) {
-    const parts = first.split(":").filter(Boolean);
-    return parts.slice(0, 3).join(":") + "::";
-  }
-  const parts = first.split(".");
-  if (parts.length === 4) return `${parts[0]}.${parts[1]}.${parts[2]}.0`;
-  return null;
-}
 
 function decodeHeader(v: string | null): string | null {
   if (!v) return null;
