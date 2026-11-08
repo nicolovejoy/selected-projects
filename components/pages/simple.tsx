@@ -38,7 +38,7 @@ const docs: Record<"about" | "lessons", Record<Locale, Doc>> = {
 // scripts/nav-cost.mjs is the check for this route instead.
 // content/home.mdx (and fr/) is no longer rendered; the copy is in strings.home.
 export async function HomeView({ locale }: { locale: Locale }) {
-  const { featured, list, aside } = await getHomeEntries(locale);
+  const { featured, list } = await getHomeEntries(locale);
   const t = strings[locale].home;
 
   return (
@@ -58,24 +58,6 @@ export async function HomeView({ locale }: { locale: Locale }) {
         {t.shippedHeading}
       </h2>
       <ProjectTable entries={list} locale={locale} />
-
-      <div className="mt-14 border-t border-neutral-200 pt-5 text-sm text-neutral-600">
-        <p className="m-0 max-w-[60ch]">
-          {t.asideBefore}
-          {aside.map((e, i) => (
-            <span key={e.project}>
-              {i > 0 && ", "}
-              <Link
-                href={localePath(locale, `/projects/${e.project}`)}
-                className="border-b border-neutral-200 text-neutral-900"
-              >
-                {e.projectName}
-              </Link>
-            </span>
-          ))}
-          .
-        </p>
-      </div>
     </div>
   );
 }

@@ -48,8 +48,7 @@ const en = {
     github: "GitHub",
     linkedin: "LinkedIn",
     featuredHeading: "LLM and agent work",
-    shippedHeading: "Shipped",
-    asideBefore: "Also here: ",
+    shippedHeading: "selected projects",
     table: { project: "Project", state: "State", what: "What it does", facts: "Facts" },
     proof: {
       contributions: (n: number) => `${fmt(n, "en")} contributions in the past year`,
@@ -218,8 +217,7 @@ const fr: Strings = {
     github: "GitHub",
     linkedin: "LinkedIn",
     featuredHeading: "Travail LLM et agents",
-    shippedHeading: "Livré",
-    asideBefore: "Aussi ici\u00a0: ",
+    shippedHeading: "projets choisis",
     table: { project: "Projet", state: "État", what: "Ce que ça fait", facts: "Repères" },
     proof: {
       contributions: (n: number) => `${fmt(n, "fr")} contributions sur l’année écoulée`,
