@@ -12,6 +12,7 @@
     "check": "node scripts/check-content.mjs",
     "postinstall": "node scripts/write-build-info.mjs && simple-git-hooks 2>/dev/null || true",
     "test:e2e": "playwright test",
+    "test:unit": "node --test scripts/*.test.mjs",
     "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
     "db:seed": "node --env-file=.env.local scripts/seed-dev.mjs"
   },

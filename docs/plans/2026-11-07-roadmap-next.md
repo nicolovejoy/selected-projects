@@ -34,6 +34,8 @@ Rules that apply to every item: branch off `main`, PR, `npm run check` + `npx ts
 
 **Done when** the suite passes locally on Edge and CI stays green.
 
+**Status 2026-11-07:** done. PR #45 merged as `4649e0c`; local runs launch Edge (46 passed, 1 skipped), `CI` keeps Chromium.
+
 ## 3. Issue #32: `truncateIp` mangles compressed IPv6
 
 **Where.** `components/connect/actions.ts`, `truncateIp` (~line 25). It splits on `:` and `filter(Boolean)`s, so `::` compression loses its zero groups: `2001:db8::5` → `2001:db8:5::` instead of the `/48` prefix `2001:db8:0::`. Since PR #31 this is the connect-form rate-limit key (10/hr per truncated IP), so a bad prefix splits a bucket. Low impact, but it's a correctness bug with a two-line fix.
@@ -41,6 +43,8 @@ Rules that apply to every item: branch off `main`, PR, `npm run check` + `npx ts
 **Steps.** Expand `::` to the right number of zero groups before taking the first three. Add a unit test. `package.json` has no vitest or `test` script, so export `truncateIp` and cover it with a `node --test` file at `scripts/truncate-ip.test.mjs` (plain Node, no new dependency), wired into `npm run check` or a new `test:unit` script. Don't add a test framework for one function. Cases from the issue: `2001:db8::5`, `::1`, a full uncompressed address, and an IPv4 address unchanged. Close #32 from the PR body.
 
 **Done when** the three IPv6 cases produce the expected `/48` prefixes and `e2e/connect-rate-limit.spec.ts` still passes.
+
+**Status 2026-11-07:** PR #46 open. `truncateIp` moved to `lib/truncate-ip.mjs`, because a `"use server"` file can only export async functions; `npm run test:unit` (7/7) also runs in CI.
 
 ## 4. French copy review (Nico or a native reader, not a model)
 
