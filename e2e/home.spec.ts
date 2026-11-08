@@ -14,7 +14,7 @@ test("home renders the claim and the four featured projects in order", async ({ 
   const firstRow = page.locator("main table tbody tr").first();
   await expect(firstRow.getByRole("link", { name: "Split Recording" })).toBeVisible();
 
-  await expect(page.getByRole("heading", { level: 2, name: "selected projects", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: "other projects", exact: true })).toBeVisible();
   const rows = page.locator("main table tbody tr");
   const count = await rows.count();
   await expect(rows.nth(count - 2).getByRole("link", { name: "Rock Sculpture" })).toBeVisible();

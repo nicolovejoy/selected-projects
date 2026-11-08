@@ -47,8 +47,8 @@ const en = {
     getInTouch: "Get in touch",
     github: "GitHub",
     linkedin: "LinkedIn",
-    featuredHeading: "LLM and agent work",
-    shippedHeading: "selected projects",
+    featuredHeading: "4 examples",
+    shippedHeading: "other projects",
     table: { project: "Project", state: "State", what: "What it does", facts: "Facts" },
     proof: {
       contributions: (n: number) => `${fmt(n, "en")} contributions in the past year`,
@@ -216,8 +216,8 @@ const fr: Strings = {
     getInTouch: "Nous écrire",
     github: "GitHub",
     linkedin: "LinkedIn",
-    featuredHeading: "Travail LLM et agents",
-    shippedHeading: "projets choisis",
+    featuredHeading: "4 exemples",
+    shippedHeading: "autres projets",
     table: { project: "Projet", state: "État", what: "Ce que ça fait", facts: "Repères" },
     proof: {
       contributions: (n: number) => `${fmt(n, "fr")} contributions sur l’année écoulée`,
