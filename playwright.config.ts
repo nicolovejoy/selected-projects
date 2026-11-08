@@ -24,7 +24,12 @@ export default defineConfig({
     { name: "setup", testMatch: /.*\.setup\.ts/ },
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        // Local runs use Edge per house convention; CI only installs Chromium
+        // (check.yml), and Edge isn't guaranteed on the runner image.
+        channel: process.env.CI ? undefined : "msedge",
+      },
       dependencies: ["setup"],
     },
   ],
