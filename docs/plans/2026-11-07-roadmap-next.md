@@ -26,6 +26,8 @@ Rules that apply to every item: branch off `main`, PR, `npm run check` + `npx ts
 
 **Done when** the home proof line shows a number within 5% of Nico's profile page. If the honest number stays near 6,200, change the brief, not the code: the proof line is still true.
 
+**Status 2026-11-07:** done. The cause was the profile setting: Nico turned it on, and the API went from 6,231 to 13,005 (6,773 restricted). No token or code change. Correction to step 1: `restrictedContributionsCount` counts private contributions the viewer *can't* see and is non-zero only when the setting is on. This token sees 0 private repos, so 0 meant the setting was off, not that the token lacked scope.
+
 ## 2. Playwright on Edge
 
 **Where.** `playwright.config.ts:26`, project `chromium` uses `devices["Desktop Chrome"]`. Convention (CLAUDE.md "Browser testing runs headless") says desktop runs use Edge via `channel: "msedge"`.
