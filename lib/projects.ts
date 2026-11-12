@@ -11,6 +11,7 @@ import tideline, { metadata as tidelineMeta } from "@/content/projects/tideline.
 import l6Music, { metadata as l6MusicMeta } from "@/content/projects/l6-music.mdx";
 import bakerylouise, { metadata as bakerylouiseMeta } from "@/content/projects/bakerylouise.mdx";
 import selectedProjects, { metadata as selectedProjectsMeta } from "@/content/projects/selected-projects.mdx";
+import skitrack, { metadata as skitrackMeta } from "@/content/projects/skitrack.mdx";
 import musicforgeFr, { metadata as musicforgeFrMeta } from "@/content/fr/projects/musicforge.mdx";
 import ibuild4youFr, { metadata as ibuild4youFrMeta } from "@/content/fr/projects/ibuild4you.mdx";
 import prntdFr, { metadata as prntdFrMeta } from "@/content/fr/projects/prntd.mdx";
@@ -23,6 +24,7 @@ import tidelineFr, { metadata as tidelineFrMeta } from "@/content/fr/projects/ti
 import l6MusicFr, { metadata as l6MusicFrMeta } from "@/content/fr/projects/l6-music.mdx";
 import bakerylouiseFr, { metadata as bakerylouiseFrMeta } from "@/content/fr/projects/bakerylouise.mdx";
 import selectedProjectsFr, { metadata as selectedProjectsFrMeta } from "@/content/fr/projects/selected-projects.mdx";
+import skitrackFr, { metadata as skitrackFrMeta } from "@/content/fr/projects/skitrack.mdx";
 import { strings } from "@/content/strings";
 import type { Locale } from "@/lib/i18n";
 
@@ -94,6 +96,7 @@ const entries: Record<string, Entry> = {
   tideline: { meta: tidelineMeta as ProjectMeta, Body: tideline },
   bakerylouise: { meta: bakerylouiseMeta as ProjectMeta, Body: bakerylouise },
   "selected-projects": { meta: selectedProjectsMeta as ProjectMeta, Body: selectedProjects },
+  skitrack: { meta: skitrackMeta as ProjectMeta, Body: skitrack },
 };
 
 /** French overlay: the translated tagline, optional hard/facts, and body.
@@ -113,6 +116,7 @@ const frEntries: Record<string, { meta: FrMeta; Body: MDXContent }> = {
   "tideline": { meta: tidelineFrMeta as FrMeta, Body: tidelineFr },
   "bakerylouise": { meta: bakerylouiseFrMeta as FrMeta, Body: bakerylouiseFr },
   "selected-projects": { meta: selectedProjectsFrMeta as FrMeta, Body: selectedProjectsFr },
+  "skitrack": { meta: skitrackFrMeta as FrMeta, Body: skitrackFr },
 };
 
 export const projects: Project[] = Object.entries(entries).map(([slug, e]) => ({

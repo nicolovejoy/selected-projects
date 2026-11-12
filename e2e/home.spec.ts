@@ -9,10 +9,10 @@ test("home renders the claim and the four featured projects in order", async ({ 
   ).toBeVisible();
 
   const names = page.locator("main a.group .font-serif");
-  await expect(names).toHaveText(["PRNTD", "Tideline", "Prompt Lab", "anomatom"]);
+  await expect(names).toHaveText(["MusicForge", "Tideline", "Prompt Lab", "anomatom"]);
 
   const firstRow = page.locator("main table tbody tr").first();
-  await expect(firstRow.getByRole("link", { name: "Split Recording" })).toBeVisible();
+  await expect(firstRow.getByRole("link", { name: "SkiTrack" })).toBeVisible();
 
   await expect(page.getByRole("heading", { level: 2, name: "other projects", exact: true })).toBeVisible();
   const rows = page.locator("main table tbody tr");
@@ -28,9 +28,9 @@ test("home renders the claim and the four featured projects in order", async ({ 
 
 test("a project name in the table links to its detail page", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("link", { name: "MusicForge", exact: true }).click();
-  await expect(page).toHaveURL(/\/projects\/musicforge$/);
-  await expect(page.getByRole("heading", { level: 1, name: /musicforge/i })).toBeVisible();
+  await page.getByRole("link", { name: "PRNTD", exact: true }).click();
+  await expect(page).toHaveURL(/\/projects\/prntd$/);
+  await expect(page.getByRole("heading", { level: 1, name: /prntd/i })).toBeVisible();
 });
 
 test("the claim and Get in touch sit above the fold on an iPhone", async ({ page }) => {

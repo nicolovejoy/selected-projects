@@ -1,0 +1,14 @@
+export const metadata = {
+  name: "SkiTrack",
+  tagline: "How far ahead do mogul skiers look?",
+  status: "alpha",
+  category: "tools",
+  home: "list",
+  rank: 1,
+  hard: "Camera pose on the slope for each video frame, so a glance lands on the right mogul.",
+  facts: ["research software", "private repo"],
+};
+
+SkiTrack is a large Python project for a research study examining how far mogul skiers look ahead. The data come from skiers wearing eye-tracking glasses and motion sensors on a prepared mogul slope. SkiTrack works out where the camera is on the slope, then projects each glance onto the moguls. TL;DR: On average, novices looked 0–1 moguls ahead and experts 2–3.
+
+The study is by Petr Janata (Center for Mind and Brain, UC Davis) and Ulman Lindenberger (Max Planck Institute for Human Development, Berlin), with Nico working with Petr on the software for camera-pose estimation and automatic mogul detection in the scene video, built with Claude.

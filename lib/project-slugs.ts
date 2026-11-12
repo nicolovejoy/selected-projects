@@ -12,6 +12,7 @@ export const PROJECT_SLUGS: readonly string[] = [
   "raconte",
   "rocksculpture",
   "selected-projects",
+  "skitrack",
   "split-recording",
   "tideline",
 ];
